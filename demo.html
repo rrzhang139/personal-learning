@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+  h1 { margin-bottom: 1rem; font-size: 1.5rem; }
+  canvas { border: 1px solid #334155; border-radius: 8px; cursor: crosshair; }
+  p { margin-top: 1rem; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<h1>Click anywhere to spawn particles!</h1>
+<canvas id="c" width="600" height="400"></canvas>
+<p>Move your mouse to attract particles</p>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouse = { x: 300, y: 200 };
+
+class Particle {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.vx = (Math.random() - 0.5) * 8;
+    this.vy = (Math.random() - 0.5) * 8;
+    this.life = 1;
+    this.hue = Math.random() * 360;
+    this.size = Math.random() * 4 + 2;
+  }
+  update() {
+    const dx = mouse.x - this.x;
+    const dy = mouse.y - this.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) + 1;
+    this.vx += (dx / dist) * 0.3;
+    this.vy += (dy / dist) * 0.3;
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life -= 0.003;
+    this.hue += 0.5;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${this.hue}, 80%, 60%, ${this.life})`;
+    ctx.fill();
+  }
+}
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  for (let i = 0; i < 30; i++) particles.push(new Particle(x, y));
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+function animate() {
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  particles = particles.filter(p => p.life > 0);
+  requestAnimationFrame(animate);
+}
+animate();
+
+// Seed some initial particles
+for (let i = 0; i < 50; i++) {
+  particles.push(new Particle(Math.random() * 600, Math.random() * 400));
+}
+</script>
+</body>
+</html>
