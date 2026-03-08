@@ -8,6 +8,7 @@ import { lesson_2_1 } from './lessons/lesson_2_1.js';
 import { lesson_2_4 } from './lessons/lesson_2_4.js';
 import { lesson_3_1 } from './lessons/lesson_3_1.js';
 import { lesson_3_2 } from './lessons/lesson_3_2.js';
+import { lesson_4_1 } from './lessons/lesson_4_1.js';
 
 // Lesson registry
 const lessons = {
@@ -16,6 +17,7 @@ const lessons = {
   '2.4': lesson_2_4,
   '3.1': lesson_3_1,
   '3.2': lesson_3_2,
+  '4.1': lesson_4_1,
 };
 
 // Init runner
