@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry — Interactive Learning</title>
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>Chemistry</h1>
+    <p>From scratch to materials science</p>
+  </div>
+  <div class="toc">
+    <div class="toc-module">Module 1: What is Matter?</div>
+    <div class="toc-item completed" data-lesson="1.1">1.1 What is Matter?</div>
+    <div class="toc-item completed" data-lesson="1.2">1.2 Atoms</div>
+    <div class="toc-item completed" data-lesson="1.3">1.3 Elements</div>
+    <div class="toc-item active" data-lesson="1.4">1.4 States of Matter</div>
+    <div class="toc-item" data-lesson="1.5">1.5 Substances vs Mixtures</div>
+
+    <div class="toc-module">Module 2: The Atom</div>
+    <div class="toc-item completed" data-lesson="2.1">2.1 Subatomic Particles</div>
+    <div class="toc-item completed" data-lesson="2.2">2.2 Atomic Number</div>
+    <div class="toc-item completed" data-lesson="2.3">2.3 Isotopes & Ions</div>
+    <div class="toc-item completed" data-lesson="2.4">2.4 Electron Shells</div>
+
+    <div class="toc-module">Module 3: The Periodic Table</div>
+    <div class="toc-item" data-lesson="3.1">3.1 Table, Configs & Trends</div>
+    <div class="toc-item" data-lesson="3.2">3.2 Metals & Nonmetals</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="toolbar">
+    <button class="primary" id="btnStart">Start Lesson</button>
+    <button id="btnPause">Pause</button>
+    <button id="btnSkip">Skip Step</button>
+    <button id="btnRestart">Restart</button>
+    <div class="status" id="status"></div>
+    <div class="question-bar" id="questionBar">
+      <input type="text" id="questionInput" placeholder="Ask a question... (Space to focus)" autocomplete="off">
+      <span class="q-status" id="qStatus"></span>
+      <button id="questionSend">Ask</button>
+    </div>
+  </div>
+  <div class="lesson-container" id="lessonContainer"></div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

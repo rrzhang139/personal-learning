@@ -1,0 +1,87 @@
+{
+  "id": "lesson_1_4",
+  "title": "1.4 States of Matter",
+  "steps": [
+    {
+      "type": "show",
+      "text": "Let's start with a quick recap. We've learned that matter is anything with mass and volume. All matter is made of atoms. And a substance made of only one type of atom is called an element. There are 118 known elements, the building blocks of everything in the universe."
+    },
+    { "type": "pause" },
+    {
+      "type": "narrate",
+      "text": "Now here's the big question. Water can be a solid ice cube, a flowing liquid, or invisible steam. It's the same H2O molecules each time. So what's actually changing? That's what we're about to find out."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Here are the three states of matter, side by side. On the left, a solid. Particles locked in a rigid grid, barely moving. In the middle, a liquid. Particles sliding around each other, staying close. On the right, a gas. Particles flying freely in every direction."
+    },
+    {
+      "type": "narrate",
+      "text": "Notice the key pattern. The particles are the same in all three boxes. The only difference is how much energy they have. Less energy, they stay locked. More energy, they start sliding. Even more, they fly apart."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Now it's your turn. Below is a live simulation. Use the temperature slider to control the particles yourself."
+    },
+    {
+      "type": "checkpoint",
+      "text": "First, make sure the temperature is low, below 20. Watch how the particles vibrate in place but stay locked in their positions. That's a solid.",
+      "confirmText": "Perfect. See how they vibrate but don't go anywhere? The forces between them are too strong for them to escape. That's why solids hold their shape."
+    },
+    {
+      "type": "checkpoint",
+      "text": "Now slowly increase the temperature. Slide it up to around 50. Watch what happens as the particles gain energy.",
+      "confirmText": "There it is, a liquid! The particles broke free from their grid. They're sliding around each other, but still staying close. They have enough energy to move, but not enough to fly apart. That's why liquids flow but still have a definite volume."
+    },
+    {
+      "type": "checkpoint",
+      "text": "Now let's go all the way. Crank the temperature above 80 and watch the particles go wild.",
+      "confirmText": "Boom! A gas. The particles have so much energy they've completely overcome the attractive forces. They're flying in every direction, bouncing off the walls, filling the entire container. That's why gases expand to fill any space."
+    },
+    {
+      "type": "quiz",
+      "text": "Quick check. Let me test your understanding."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "So why does temperature change the state? Because temperature is really just a measure of kinetic energy, how fast the particles are moving."
+    },
+    {
+      "type": "narrate",
+      "text": "At low energy, particles can't escape each other. They're locked in a solid. Add energy, they start sliding, that's a liquid. Add even more, they fly apart, that's a gas. It's like people at a concert. Cold audience sits in their seats, locked in rows. Warm them up, they start moving and dancing in place. Really heat things up, and they break free and run around everywhere."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Now here's something surprising. Look at this heating curve. It shows what happens when you continuously add heat to ice."
+    },
+    {
+      "type": "narrate",
+      "text": "See those flat sections? During melting and boiling, the temperature stops rising, even though you're still adding heat! Where does the energy go? It goes into breaking the bonds between particles. Once all the bonds are broken, the temperature starts rising again. This is called latent heat, hidden heat. You add energy, but it's hidden because the temperature doesn't change."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Now let's compress everything into the math. There are two equations to know."
+    },
+    {
+      "type": "narrate",
+      "text": "First: q equals m times c times delta T. This is for heating within a phase, when temperature IS changing. Q is the heat energy in joules. M is the mass. C is the specific heat capacity, think of it as how stubborn the substance is. Water has a high C, which is why it takes a long time to boil. And delta T is the temperature change."
+    },
+    {
+      "type": "narrate",
+      "text": "Second: q equals m times L. This is for phase transitions, the flat parts of the heating curve. L is the latent heat. L sub f for melting, L sub v for boiling. Remember: during phase changes, temperature is flat, so delta T is zero. That first equation would give you zero, which is wrong. That's why you need this second equation."
+    },
+    {
+      "type": "quiz",
+      "text": "Final question for this lesson."
+    },
+    {
+      "type": "narrate",
+      "text": "Excellent work! You've completed lesson 1 point 4, States of Matter. You now understand that the same particles can be solid, liquid, or gas depending on their energy. You know about the heating curve and why temperature stays flat during phase changes. And you've got two equations: q equals m c delta T for heating within a phase, and q equals m L for changing between phases. Next up: pure substances versus mixtures. See you there!"
+    }
+  ]
+}

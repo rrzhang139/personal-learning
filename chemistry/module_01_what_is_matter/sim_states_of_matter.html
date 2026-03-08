@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>States of Matter Simulation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  h1 { color: #00d4ff; margin-bottom: 5px; font-size: 1.8em; }
+  .subtitle { color: #888; margin-bottom: 20px; font-size: 0.95em; }
+  .container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  canvas {
+    background: #0f0f23;
+    border: 2px solid #333;
+    border-radius: 12px;
+  }
+  .controls {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 25px;
+    width: 280px;
+    border: 1px solid #333;
+  }
+  .controls h2 { color: #00d4ff; font-size: 1.2em; margin-bottom: 15px; }
+  .temp-display {
+    text-align: center;
+    margin: 15px 0;
+  }
+  .temp-value {
+    font-size: 3em;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  .temp-label { color: #888; font-size: 0.9em; }
+  .state-badge {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 15px 0;
+    transition: all 0.3s;
+  }
+  .state-solid { background: #1e3a5f; color: #4fc3f7; }
+  .state-liquid { background: #1b5e20; color: #81c784; }
+  .state-gas { background: #b71c1c22; color: #ef5350; }
+  input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+    -webkit-appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #4fc3f7, #81c784, #ef5350);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .info-box {
+    background: #0f0f23;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 0.85em;
+    line-height: 1.6;
+  }
+  .info-box strong { color: #00d4ff; }
+  .legend {
+    margin-top: 15px;
+    font-size: 0.85em;
+    color: #aaa;
+  }
+  .phase-markers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    color: #666;
+    margin-top: 2px;
+  }
+  .buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .buttons button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #444;
+    background: #1a1a2e;
+    color: #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+  }
+  .buttons button:hover { background: #2a2a4e; border-color: #00d4ff; }
+  .transition-flash {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<h1>States of Matter</h1>
+<p class="subtitle">Module 1 — See how temperature changes particle behavior</p>
+
+<div class="container">
+  <canvas id="sim" width="500" height="450"></canvas>
+
+  <div class="controls">
+    <h2>Temperature</h2>
+    <div class="temp-display">
+      <div class="temp-value" id="tempValue">20</div>
+      <div class="temp-label">degrees (arbitrary units)</div>
+    </div>
+    <input type="range" id="tempSlider" min="0" max="100" value="20">
+    <div class="phase-markers">
+      <span>0 (cold)</span>
+      <span>|33 melt</span>
+      <span>|66 boil</span>
+      <span>100 (hot)</span>
+    </div>
+
+    <div class="state-badge state-solid" id="stateBadge">SOLID</div>
+
+    <div class="buttons">
+      <button onclick="setTemp(10)">Freeze</button>
+      <button onclick="setTemp(50)">Melt</button>
+      <button onclick="setTemp(90)">Boil</button>
+    </div>
+
+    <div class="info-box" id="infoBox">
+      <strong>Solid:</strong> Particles are locked in a fixed structure.
+      They vibrate in place but don't move around.
+      This is why solids hold their shape.
+    </div>
+
+    <div class="legend">
+      <strong>Key ideas:</strong><br>
+      - Same particles, different energy<br>
+      - Higher temp = faster movement<br>
+      - State changes at specific temps
+    </div>
+  </div>
+</div>
+
+<div class="transition-flash" id="flash"></div>
+
+<script>
+const canvas = document.getElementById('sim');
+const ctx = canvas.getContext('2d');
+const slider = document.getElementById('tempSlider');
+const tempDisplay = document.getElementById('tempValue');
+const stateBadge = document.getElementById('stateBadge');
+const infoBox = document.getElementById('infoBox');
+const flash = document.getElementById('flash');
+
+const W = canvas.width, H = canvas.height;
+const MELTING = 33, BOILING = 66;
+const NUM = 40;
+
+const stateInfo = {
+  SOLID: `<strong>Solid:</strong> Particles are locked in a fixed structure. They vibrate in place but don't move around. This is why solids hold their shape.`,
+  LIQUID: `<strong>Liquid:</strong> Particles slide past each other but stay close. They have enough energy to break free of the rigid structure, but not enough to fly apart. Liquids flow and take the shape of their container.`,
+  GAS: `<strong>Gas:</strong> Particles have so much energy they fly freely in all directions, filling any space available. Gas particles are far apart and move fast.`
+};
+
+let temperature = 20;
+let prevState = 'SOLID';
+let particles = [];
+
+class Particle {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.homeX = x; this.homeY = y;
+    this.vx = 0; this.vy = 0;
+    this.radius = 6;
+  }
+
+  update(state, temp) {
+    const energy = temp / 100;
+
+    if (state === 'SOLID') {
+      // Vibrate around home position
+      const jitter = energy * 8;
+      this.x = this.homeX + (Math.random() - 0.5) * jitter;
+      this.y = this.homeY + (Math.random() - 0.5) * jitter;
+    } else if (state === 'LIQUID') {
+      // Brownian motion, gravity pulls down
+      this.vx += (Math.random() - 0.5) * energy * 3;
+      this.vy += (Math.random() - 0.5) * energy * 3 + 0.15;
+      this.vx *= 0.92;
+      this.vy *= 0.92;
+      this.x += this.vx;
+      this.y += this.vy;
+      // Keep in bottom portion
+      if (this.y > H - 12) { this.y = H - 12; this.vy *= -0.5; }
+      if (this.y < H * 0.35) { this.vy += 0.3; }
+      if (this.x < 12) { this.x = 12; this.vx *= -0.8; }
+      if (this.x > W - 12) { this.x = W - 12; this.vx *= -0.8; }
+    } else {
+      // Gas — full freedom
+      this.vx += (Math.random() - 0.5) * energy * 5;
+      this.vy += (Math.random() - 0.5) * energy * 5;
+      this.vx *= 0.95;
+      this.vy *= 0.95;
+      this.x += this.vx;
+      this.y += this.vy;
+      // Bounce off walls
+      if (this.x < 12) { this.x = 12; this.vx = Math.abs(this.vx); }
+      if (this.x > W - 12) { this.x = W - 12; this.vx = -Math.abs(this.vx); }
+      if (this.y < 12) { this.y = 12; this.vy = Math.abs(this.vy); }
+      if (this.y > H - 12) { this.y = H - 12; this.vy = -Math.abs(this.vy); }
+    }
+  }
+
+  draw(temp) {
+    const energy = temp / 100;
+    // Color shifts: blue (cold) → green (medium) → red (hot)
+    let r, g, b;
+    if (temp < 50) {
+      const t = temp / 50;
+      r = Math.floor(70 + t * 50);
+      g = Math.floor(150 + t * 80);
+      b = Math.floor(255 - t * 100);
+    } else {
+      const t = (temp - 50) / 50;
+      r = Math.floor(120 + t * 135);
+      g = Math.floor(230 - t * 150);
+      b = Math.floor(155 - t * 120);
+    }
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fill();
+    ctx.strokeStyle = `rgba(255,255,255,0.15)`;
+    ctx.stroke();
+
+    // Glow effect at high temps
+    if (temp > 60) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius + 4, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${energy * 0.25})`;
+      ctx.fill();
+    }
+  }
+}
+
+function initParticles() {
+  particles = [];
+  const cols = 8, rows = 5;
+  const spacingX = 30, spacingY = 30;
+  const startX = W / 2 - (cols * spacingX) / 2;
+  const startY = H / 2 - (rows * spacingY) / 2 + 60;
+  let i = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols && i < NUM; c++, i++) {
+      const x = startX + c * spacingX + spacingX / 2;
+      const y = startY + r * spacingY + spacingY / 2;
+      particles.push(new Particle(x, y));
+    }
+  }
+}
+
+function getState(temp) {
+  if (temp < MELTING) return 'SOLID';
+  if (temp < BOILING) return 'LIQUID';
+  return 'GAS';
+}
+
+function setTemp(t) {
+  temperature = t;
+  slider.value = t;
+}
+
+function flashScreen(color) {
+  flash.style.background = color;
+  flash.style.opacity = '0.15';
+  setTimeout(() => flash.style.opacity = '0', 300);
+}
+
+function drawContainer(state) {
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+
+  if (state === 'SOLID') {
+    // Draw a "container" outline — full box
+    ctx.strokeRect(80, 150, W - 160, H - 180);
+  } else if (state === 'LIQUID') {
+    // Open top container
+    ctx.beginPath();
+    ctx.moveTo(40, H * 0.35);
+    ctx.lineTo(40, H - 10);
+    ctx.lineTo(W - 40, H - 10);
+    ctx.lineTo(W - 40, H * 0.35);
+    ctx.stroke();
+  }
+  // Gas: no container drawn (fills everything)
+}
+
+function animate() {
+  const state = getState(temperature);
+
+  // Detect state change
+  if (state !== prevState) {
+    if (state === 'GAS') flashScreen('#ef5350');
+    else if (state === 'LIQUID') flashScreen('#81c784');
+    else flashScreen('#4fc3f7');
+
+    stateBadge.className = 'state-badge state-' + state.toLowerCase();
+    stateBadge.textContent = state;
+    infoBox.innerHTML = stateInfo[state];
+    prevState = state;
+  }
+
+  // Update display
+  tempDisplay.textContent = temperature;
+  if (temperature < MELTING) tempDisplay.style.color = '#4fc3f7';
+  else if (temperature < BOILING) tempDisplay.style.color = '#81c784';
+  else tempDisplay.style.color = '#ef5350';
+
+  // Clear
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw label
+  ctx.fillStyle = '#555';
+  ctx.font = '13px system-ui';
+  ctx.textAlign = 'center';
+  if (state === 'SOLID') ctx.fillText('Particles locked in a crystal lattice', W/2, 30);
+  else if (state === 'LIQUID') ctx.fillText('Particles slide freely but stay close', W/2, 30);
+  else ctx.fillText('Particles fly in all directions', W/2, 30);
+
+  drawContainer(state);
+
+  // Draw bonds in solid state
+  if (state === 'SOLID') {
+    ctx.strokeStyle = 'rgba(79,195,247,0.15)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 45) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // Update and draw particles
+  for (const p of particles) {
+    p.update(state, temperature);
+    p.draw(temperature);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+slider.addEventListener('input', e => {
+  temperature = parseInt(e.target.value);
+});
+
+// Keyboard controls
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp') setTemp(Math.min(100, temperature + 3));
+  if (e.key === 'ArrowDown') setTemp(Math.max(0, temperature - 3));
+});
+
+initParticles();
+animate();
+</script>
+</body>
+</html>

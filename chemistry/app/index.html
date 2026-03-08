@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry — Interactive Learning</title>
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --surface2: #16213e;
+    --accent: #00d4ff;
+    --green: #81c784;
+    --orange: #ff9800;
+    --red: #ef5350;
+    --text: #e0e0e0;
+    --muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* --- Sidebar --- */
+  .sidebar {
+    width: 260px;
+    background: var(--surface);
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #333;
+  }
+  .sidebar-header h1 {
+    font-size: 1.2em;
+    color: var(--accent);
+  }
+  .sidebar-header p {
+    font-size: 0.8em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .toc {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+  }
+  .toc-module {
+    padding: 6px 20px;
+    font-size: 0.8em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+  }
+  .toc-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toc-item:hover { background: var(--surface2); }
+  .toc-item.active {
+    background: var(--surface2);
+    border-left-color: var(--accent);
+    color: var(--accent);
+  }
+  .toc-item.completed::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: bold;
+  }
+  .toc-item.locked {
+    opacity: 0.5;
+  }
+
+  /* --- Main content --- */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+  }
+  .toolbar button {
+    padding: 8px 16px;
+    border: 1px solid #444;
+    background: var(--surface2);
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar button.primary {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .toolbar button.primary:hover { background: #00b8d9; }
+  .toolbar .status {
+    flex: 1;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+  .toolbar label {
+    font-size: 0.8em;
+    color: var(--muted);
+  }
+  .toolbar input[type="range"] {
+    width: 80px;
+    vertical-align: middle;
+  }
+
+  .lesson-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+    scroll-behavior: smooth;
+  }
+
+  /* --- Lesson content --- */
+  .lesson-section {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .lesson-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .lesson-section h2 {
+    color: var(--accent);
+    font-size: 1.6em;
+    margin-bottom: 16px;
+  }
+  .lesson-section h3 {
+    color: var(--green);
+    font-size: 1.1em;
+    margin: 20px 0 10px;
+  }
+  .lesson-section p {
+    line-height: 1.7;
+    margin-bottom: 14px;
+    font-size: 1.05em;
+  }
+  .lesson-section .callout {
+    background: var(--surface2);
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  .lesson-section .callout.warning {
+    border-left-color: var(--orange);
+  }
+  .lesson-section .math-box {
+    background: #0a0a1a;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-family: 'Georgia', serif;
+    text-align: center;
+  }
+  .lesson-section .math-box .equation {
+    font-size: 1.8em;
+    color: var(--accent);
+    margin: 10px 0;
+  }
+  .lesson-section .symbol-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.9em;
+  }
+  .lesson-section .symbol-table th {
+    background: var(--surface2);
+    padding: 8px 12px;
+    text-align: left;
+    color: var(--accent);
+  }
+  .lesson-section .symbol-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #333;
+  }
+
+  /* --- Interactive elements --- */
+  .sim-canvas-wrap {
+    background: #0a0a1a;
+    border-radius: 12px;
+    border: 1px solid #333;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .sim-canvas-wrap canvas {
+    border-radius: 8px;
+  }
+  .slider-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+    padding: 16px 20px;
+    background: var(--surface2);
+    border-radius: 10px;
+  }
+  .slider-control label {
+    min-width: 120px;
+    font-weight: bold;
+  }
+  .slider-control input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #4fc3f7, #81c784, #ef5350);
+    outline: none;
+  }
+  .slider-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .slider-control .value {
+    min-width: 50px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+
+  .narrative-highlight {
+    outline: 3px solid var(--orange) !important;
+    outline-offset: 4px;
+    transition: outline 0.3s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255,152,0,0.4); }
+    50% { box-shadow: 0 4px 30px rgba(255,152,0,0.7); }
+  }
+
+  /* --- Step Progress Bar --- */
+  .step-progress {
+    max-width: 900px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    overflow-x: auto;
+  }
+  .step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 48px;
+    position: relative;
+  }
+  .step-dot .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 2px solid #333;
+    background: var(--bg);
+    color: #555;
+    transition: all 0.4s;
+    flex-shrink: 0;
+  }
+  .step-dot .label {
+    font-size: 0.6em;
+    color: #555;
+    margin-top: 4px;
+    text-align: center;
+    max-width: 60px;
+    line-height: 1.2;
+    transition: color 0.4s;
+  }
+  .step-dot.completed .icon {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+  .step-dot.completed .label { color: var(--green); }
+  .step-dot.active .icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    box-shadow: 0 0 12px rgba(0,212,255,0.5);
+    animation: dotPulse 1.5s infinite;
+  }
+  .step-dot.active .label { color: var(--accent); font-weight: bold; }
+  .step-dot.checkpoint .icon { border-color: var(--orange); }
+  .step-dot.checkpoint.active .icon {
+    background: var(--orange);
+    border-color: var(--orange);
+    box-shadow: 0 0 12px rgba(255,152,0,0.5);
+  }
+  .step-dot.quiz .icon { border-color: #ab47bc; }
+  .step-dot.quiz.active .icon {
+    background: #ab47bc;
+    border-color: #ab47bc;
+    box-shadow: 0 0 12px rgba(171,71,188,0.5);
+  }
+  .step-connector {
+    flex: 1;
+    height: 2px;
+    background: #333;
+    min-width: 8px;
+    transition: background 0.4s;
+  }
+  .step-connector.completed { background: var(--green); }
+  @keyframes dotPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(0,212,255,0.3); }
+    50% { box-shadow: 0 0 18px rgba(0,212,255,0.6); }
+  }
+
+  /* Transcript */
+  .transcript {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-radius: 10px;
+    font-size: 0.85em;
+    color: var(--muted);
+    line-height: 1.6;
+    max-height: 80px;
+    overflow-y: auto;
+    position: relative;
+  }
+  .transcript::before {
+    content: 'NARRATOR:';
+    font-size: 0.75em;
+    color: var(--accent);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* --- Question Box (inline) --- */
+  .question-bar {
+    max-width: 900px;
+    margin: 20px auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid #333;
+    border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  .question-bar:focus-within { border-color: var(--accent); }
+  .question-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 0.95em;
+    outline: none;
+    padding: 8px 0;
+  }
+  .question-bar input::placeholder { color: #555; }
+  .question-bar button {
+    padding: 8px 18px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+  .question-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .question-bar .q-status {
+    font-size: 0.8em;
+    color: var(--muted);
+    min-width: 20px;
+  }
+  .answer-bubble {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    padding: 16px 20px;
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-size: 0.95em;
+    line-height: 1.6;
+    display: none;
+    white-space: pre-wrap;
+  }
+  .answer-bubble.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>Chemistry</h1>
+    <p>From scratch to materials science</p>
+  </div>
+  <div class="toc">
+    <div class="toc-module">Module 1: What is Matter?</div>
+    <div class="toc-item completed" data-lesson="1.1">1.1 What is Matter?</div>
+    <div class="toc-item completed" data-lesson="1.2">1.2 Atoms</div>
+    <div class="toc-item completed" data-lesson="1.3">1.3 Elements</div>
+    <div class="toc-item active" data-lesson="1.4">1.4 States of Matter</div>
+    <div class="toc-item" data-lesson="1.5">1.5 Substances vs Mixtures</div>
+
+    <div class="toc-module">Module 2: The Atom</div>
+    <div class="toc-item completed" data-lesson="2.1">2.1 Subatomic Particles</div>
+    <div class="toc-item completed" data-lesson="2.2">2.2 Atomic Number</div>
+    <div class="toc-item completed" data-lesson="2.3">2.3 Isotopes & Ions</div>
+    <div class="toc-item completed" data-lesson="2.4">2.4 Electron Shells</div>
+
+    <div class="toc-module">Module 3: The Periodic Table</div>
+    <div class="toc-item" data-lesson="3.1">3.1 Table, Configs & Trends</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="toolbar">
+    <button class="primary" id="btnStart">Start Lesson</button>
+    <button id="btnPause">Pause</button>
+    <button id="btnSkip">Skip Step</button>
+    <button id="btnRestart">Restart</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="lesson-container" id="lessonContainer">
+
+    <!-- Step Progress Bar -->
+    <div class="step-progress" id="stepProgress"></div>
+
+    <!-- Section: Recap -->
+    <div class="lesson-section" id="sec-recap">
+      <h2>Quick Recap</h2>
+      <p>Before we dive into states of matter, let's remember what we've learned:</p>
+      <div class="callout">
+        <strong>From lessons 1.1–1.3:</strong> Matter is anything with mass and volume.
+        All matter is made of tiny particles called <strong>atoms</strong>.
+        A substance made of just one type of atom is an <strong>element</strong>.
+        There are 118 known elements — the building blocks of everything.
+      </div>
+      <p>Now the big question: <em>why does water sometimes flow, sometimes freeze into a block, and sometimes float away as steam?</em> It's the same atoms — so what's different?</p>
+    </div>
+
+    <!-- Section: Three States -->
+    <div class="lesson-section" id="sec-three-states">
+      <h2>1.4 States of Matter</h2>
+      <p>Matter exists in three common states. Let's see all three side by side:</p>
+      <div class="sim-canvas-wrap">
+        <canvas id="threeStatesCanvas" width="800" height="280"></canvas>
+      </div>
+      <p>Notice: <strong>same particles</strong>, just different amounts of energy. That's the whole idea.</p>
+    </div>
+
+    <!-- Section: Interactive Temperature -->
+    <div class="lesson-section" id="sec-interactive">
+      <h2>Try It Yourself</h2>
+      <p>Use the temperature slider below to control the particles. Watch how their behavior changes:</p>
+      <div class="sim-canvas-wrap" id="sim-interactive-wrap">
+        <canvas id="interactiveCanvas" width="500" height="400"></canvas>
+        <div class="slider-control" id="tempControl">
+          <label>Temperature:</label>
+          <input type="range" id="tempSlider" min="0" max="100" value="15">
+          <div class="value" id="tempValue">15</div>
+        </div>
+        <div id="stateLabel" style="font-size:1.4em;font-weight:bold;margin-top:10px;color:#4fc3f7">SOLID</div>
+      </div>
+    </div>
+
+    <!-- Section: Energy explanation -->
+    <div class="lesson-section" id="sec-energy">
+      <h3>Why Does Temperature Change the State?</h3>
+      <p>Temperature is really a measure of <strong>kinetic energy</strong> — how fast the particles are moving.</p>
+      <div class="callout">
+        <strong>Low energy (cold):</strong> Particles barely move. They're held in place by attractive forces between them → <strong>SOLID</strong><br><br>
+        <strong>Medium energy (warm):</strong> Particles have enough energy to break free of their fixed positions, but not enough to fly apart → <strong>LIQUID</strong><br><br>
+        <strong>High energy (hot):</strong> Particles have so much energy they completely overcome the attractive forces and fly freely → <strong>GAS</strong>
+      </div>
+    </div>
+
+    <!-- Section: Heating Curve -->
+    <div class="lesson-section" id="sec-heating-curve">
+      <h2>The Heating Curve</h2>
+      <p>What happens when you continuously add heat to ice? Let's trace it:</p>
+      <div class="sim-canvas-wrap">
+        <canvas id="heatingCurveCanvas" width="750" height="380"></canvas>
+      </div>
+      <div class="callout warning">
+        <strong>Key insight:</strong> During phase changes (melting, boiling), temperature <em>stops rising</em> even though you keep adding heat! The energy goes into breaking bonds between particles — not making them faster.
+      </div>
+    </div>
+
+    <!-- Section: Math -->
+    <div class="lesson-section" id="sec-math">
+      <h2>Distilled into Math</h2>
+      <p>Now that you understand <em>why</em>, here's the compressed equation:</p>
+      <div class="math-box">
+        <div style="color:var(--muted);font-size:0.9em">Heat to change temperature within a phase:</div>
+        <div class="equation">q = m · c · ΔT</div>
+      </div>
+      <table class="symbol-table">
+        <tr><th>Symbol</th><th>Name</th><th>Units</th><th>Meaning</th></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">q</td><td>Heat</td><td>Joules (J)</td><td>Energy you add or remove</td></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">m</td><td>Mass</td><td>grams (g)</td><td>How much stuff</td></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">c</td><td>Specific heat capacity</td><td>J/(g·°C)</td><td>How "stubborn" the substance is</td></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">ΔT</td><td>Temperature change</td><td>°C</td><td>T_final − T_initial</td></tr>
+      </table>
+      <div class="math-box" style="margin-top:20px">
+        <div style="color:var(--muted);font-size:0.9em">Heat to change state (phase transition):</div>
+        <div class="equation">q = m · L</div>
+      </div>
+      <table class="symbol-table">
+        <tr><th>Symbol</th><th>Name</th><th>Meaning</th></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">L</td><td>Latent heat</td><td>Energy per gram to change state (hidden heat)</td></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">L_f</td><td>Latent heat of fusion</td><td>For melting/freezing</td></tr>
+        <tr><td style="color:var(--accent);font-size:1.2em">L_v</td><td>Latent heat of vaporization</td><td>For boiling/condensing</td></tr>
+      </table>
+    </div>
+
+    <!-- Question box -->
+    <div class="question-bar" id="questionBar">
+      <input type="text" id="questionInput" placeholder="Ask a question... (lesson pauses, narrator answers)" autocomplete="off">
+      <span class="q-status" id="qStatus"></span>
+      <button id="questionSend">Ask</button>
+    </div>
+    <div class="answer-bubble" id="answerBubble"></div>
+
+    <!-- Transcript -->
+    <div class="transcript" id="transcript">Waiting to start...</div>
+
+  </div>
+</div>
+
+<!-- Question bar lives inside lesson container, placed before transcript -->
+
+<script src="narrative.js"></script>
+<script>
+// ============================================================
+// PARTICLE SIMULATION
+// ============================================================
+
+const MELTING = 33, BOILING = 66;
+
+class ParticleSim {
+  constructor(canvas, opts = {}) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.W = canvas.width;
+    this.H = canvas.height;
+    this.numParticles = opts.numParticles || 35;
+    this.temperature = opts.temperature || 15;
+    this.particles = [];
+    this._initParticles();
+    this._animate();
+  }
+
+  _initParticles() {
+    this.particles = [];
+    const cols = 7, rows = 5;
+    const sx = this.W / 2 - cols * 16, sy = this.H / 2 - rows * 16 + 40;
+    for (let i = 0; i < this.numParticles; i++) {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = sx + c * 32 + 16;
+      const y = sy + r * 32 + 16;
+      this.particles.push({
+        x, y, homeX: x, homeY: y,
+        vx: 0, vy: 0, radius: 7
+      });
+    }
+  }
+
+  get state() {
+    if (this.temperature < MELTING) return 'SOLID';
+    if (this.temperature < BOILING) return 'LIQUID';
+    return 'GAS';
+  }
+
+  _update() {
+    const t = this.temperature / 100;
+    const state = this.state;
+    for (const p of this.particles) {
+      if (state === 'SOLID') {
+        const j = t * 10;
+        p.x = p.homeX + (Math.random() - 0.5) * j;
+        p.y = p.homeY + (Math.random() - 0.5) * j;
+      } else if (state === 'LIQUID') {
+        p.vx += (Math.random() - 0.5) * t * 3;
+        p.vy += (Math.random() - 0.5) * t * 3 + 0.12;
+        p.vx *= 0.92; p.vy *= 0.92;
+        p.x += p.vx; p.y += p.vy;
+        if (p.y > this.H - 15) { p.y = this.H - 15; p.vy *= -0.5; }
+        if (p.y < this.H * 0.3) p.vy += 0.3;
+        if (p.x < 15) { p.x = 15; p.vx *= -0.8; }
+        if (p.x > this.W - 15) { p.x = this.W - 15; p.vx *= -0.8; }
+      } else {
+        p.vx += (Math.random() - 0.5) * t * 5;
+        p.vy += (Math.random() - 0.5) * t * 5;
+        p.vx *= 0.95; p.vy *= 0.95;
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 12) { p.x = 12; p.vx = Math.abs(p.vx); }
+        if (p.x > this.W - 12) { p.x = this.W - 12; p.vx = -Math.abs(p.vx); }
+        if (p.y < 12) { p.y = 12; p.vy = Math.abs(p.vy); }
+        if (p.y > this.H - 12) { p.y = this.H - 12; p.vy = -Math.abs(p.vy); }
+      }
+    }
+  }
+
+  _draw() {
+    const ctx = this.ctx;
+    const t = this.temperature;
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // Bonds in solid
+    if (this.state === 'SOLID') {
+      ctx.strokeStyle = 'rgba(79,195,247,0.12)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < this.particles.length; i++) {
+        for (let j = i + 1; j < this.particles.length; j++) {
+          const dx = this.particles[i].x - this.particles[j].x;
+          const dy = this.particles[i].y - this.particles[j].y;
+          if (Math.sqrt(dx*dx + dy*dy) < 40) {
+            ctx.beginPath();
+            ctx.moveTo(this.particles[i].x, this.particles[i].y);
+            ctx.lineTo(this.particles[j].x, this.particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Particles
+    for (const p of this.particles) {
+      let r, g, b;
+      if (t < 50) {
+        const f = t / 50;
+        r = 70 + f * 50; g = 150 + f * 80; b = 255 - f * 100;
+      } else {
+        const f = (t - 50) / 50;
+        r = 120 + f * 135; g = 230 - f * 150; b = 155 - f * 120;
+      }
+      // Glow
+      if (t > 50) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius + 5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${t/400})`;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.stroke();
+    }
+  }
+
+  _animate() {
+    this._update();
+    this._draw();
+    requestAnimationFrame(() => this._animate());
+  }
+}
+
+// ============================================================
+// THREE STATES STATIC COMPARISON
+// ============================================================
+
+function drawThreeStates(canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const boxW = 220, boxH = 240, gap = 30;
+  const startX = (W - 3 * boxW - 2 * gap) / 2;
+
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  const states = [
+    { name: 'SOLID', color: '#4fc3f7', desc: 'Locked in place' },
+    { name: 'LIQUID', color: '#81c784', desc: 'Slide around' },
+    { name: 'GAS', color: '#ef5350', desc: 'Fly freely' },
+  ];
+
+  states.forEach((s, i) => {
+    const x = startX + i * (boxW + gap);
+    const y = 10;
+
+    // Box
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, boxW, boxH);
+
+    // Title
+    ctx.fillStyle = s.color;
+    ctx.font = 'bold 18px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(s.name, x + boxW/2, y + boxH + 25);
+
+    ctx.fillStyle = '#888';
+    ctx.font = '12px system-ui';
+    ctx.fillText(s.desc, x + boxW/2, y + boxH + 42);
+
+    // Particles
+    const particles = [];
+    if (i === 0) {
+      // Grid
+      for (let r = 0; r < 5; r++)
+        for (let c = 0; c < 6; c++)
+          particles.push({ x: x + 30 + c * 30 + (Math.random()-0.5)*3,
+                           y: y + 30 + r * 38 + (Math.random()-0.5)*3 });
+    } else if (i === 1) {
+      // Bottom half, random
+      for (let k = 0; k < 30; k++)
+        particles.push({ x: x + 15 + Math.random() * (boxW - 30),
+                         y: y + boxH * 0.35 + Math.random() * (boxH * 0.6) });
+    } else {
+      // Everywhere
+      for (let k = 0; k < 18; k++)
+        particles.push({ x: x + 15 + Math.random() * (boxW - 30),
+                         y: y + 15 + Math.random() * (boxH - 30) });
+    }
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.globalAlpha = 0.85;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.stroke();
+    });
+
+    // Bonds for solid
+    if (i === 0) {
+      ctx.strokeStyle = 'rgba(79,195,247,0.15)';
+      ctx.lineWidth = 1;
+      particles.forEach((p1, idx) => {
+        particles.forEach((p2, jdx) => {
+          if (jdx > idx) {
+            const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            if (d < 42) {
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        });
+      });
+    }
+
+    // Velocity arrows for gas
+    if (i === 2) {
+      particles.forEach(p => {
+        const dx = (Math.random() - 0.5) * 20;
+        const dy = (Math.random() - 0.5) * 20;
+        ctx.strokeStyle = 'rgba(239,83,80,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + dx, p.y + dy);
+        ctx.stroke();
+        // Arrowhead
+        const angle = Math.atan2(dy, dx);
+        ctx.beginPath();
+        ctx.moveTo(p.x + dx, p.y + dy);
+        ctx.lineTo(p.x + dx - 5*Math.cos(angle-0.4), p.y + dy - 5*Math.sin(angle-0.4));
+        ctx.moveTo(p.x + dx, p.y + dy);
+        ctx.lineTo(p.x + dx - 5*Math.cos(angle+0.4), p.y + dy - 5*Math.sin(angle+0.4));
+        ctx.stroke();
+      });
+    }
+  });
+
+  // Arrows between boxes
+  ctx.fillStyle = '#666';
+  ctx.font = '24px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('→', startX + boxW + gap/2, 130);
+  ctx.fillText('→', startX + 2*boxW + gap + gap/2, 130);
+  ctx.font = '11px system-ui';
+  ctx.fillText('+heat', startX + boxW + gap/2, 150);
+  ctx.fillText('+heat', startX + 2*boxW + gap + gap/2, 150);
+}
+
+// ============================================================
+// HEATING CURVE
+// ============================================================
+
+function drawHeatingCurve(canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pad = { top: 40, right: 30, bottom: 50, left: 70 };
+  const gW = W - pad.left - pad.right;
+  const gH = H - pad.top - pad.bottom;
+
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Axes
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top);
+  ctx.lineTo(pad.left, H - pad.bottom);
+  ctx.lineTo(W - pad.right, H - pad.bottom);
+  ctx.stroke();
+
+  ctx.fillStyle = '#888';
+  ctx.font = '13px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('Heat Added →', W/2, H - 10);
+  ctx.save();
+  ctx.translate(18, H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('Temperature (°C)', 0, 0);
+  ctx.restore();
+
+  // Data segments: [xStart%, xEnd%, tempStart, tempEnd, label, color]
+  const segments = [
+    [0, 15, -20, 0, 'Ice\nwarming', '#4fc3f7'],
+    [15, 35, 0, 0, 'MELTING', '#00bcd4'],
+    [35, 55, 0, 100, 'Water\nwarming', '#81c784'],
+    [55, 80, 100, 100, 'BOILING', '#ff9800'],
+    [80, 100, 100, 130, 'Steam\nwarming', '#ef5350'],
+  ];
+
+  const tempToY = (t) => pad.top + gH - ((t + 30) / 170) * gH;
+  const pctToX = (p) => pad.left + (p / 100) * gW;
+
+  // Dashed lines
+  ctx.setLineDash([5, 5]);
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  [0, 100].forEach(t => {
+    const y = tempToY(t);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${t}°C`, pad.left - 8, y + 4);
+  });
+  ctx.setLineDash([]);
+
+  // Draw segments
+  segments.forEach(([x0, x1, t0, t1, label, color]) => {
+    const px0 = pctToX(x0), px1 = pctToX(x1);
+    const py0 = tempToY(t0), py1 = tempToY(t1);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(px0, py0); ctx.lineTo(px1, py1); ctx.stroke();
+
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = 'bold 11px system-ui';
+    ctx.textAlign = 'center';
+    const midX = (px0 + px1) / 2;
+    const midY = (py0 + py1) / 2;
+    const offset = (t0 === t1) ? -20 : 0;
+    label.split('\n').forEach((line, i) => {
+      ctx.fillText(line, midX, midY + offset + i * 14);
+    });
+  });
+
+  // Annotation
+  ctx.fillStyle = '#00bcd4';
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'center';
+  const annX = pctToX(25), annY = tempToY(0) + 50;
+  ctx.fillText('← Temperature FLAT here!', annX, annY);
+  ctx.fillText('Energy breaks bonds,', annX, annY + 16);
+  ctx.fillText('not speed.', annX, annY + 32);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+// Draw static visuals
+drawThreeStates(document.getElementById('threeStatesCanvas'));
+drawHeatingCurve(document.getElementById('heatingCurveCanvas'));
+
+// Interactive sim
+const sim = new ParticleSim(document.getElementById('interactiveCanvas'));
+
+const tempSlider = document.getElementById('tempSlider');
+const tempValue = document.getElementById('tempValue');
+const stateLabel = document.getElementById('stateLabel');
+
+const stateColors = { SOLID: '#4fc3f7', LIQUID: '#81c784', GAS: '#ef5350' };
+
+tempSlider.addEventListener('input', () => {
+  const v = parseInt(tempSlider.value);
+  sim.temperature = v;
+  tempValue.textContent = v;
+  const s = sim.state;
+  stateLabel.textContent = s;
+  stateLabel.style.color = stateColors[s];
+});
+
+// ============================================================
+// NARRATIVE — Lesson 1.4 Steps
+// ============================================================
+
+const engine = new NarrativeEngine(
+  document.getElementById('lessonContainer'),
+  document.getElementById('status')
+);
+
+const transcript = document.getElementById('transcript');
+// Show narration text in transcript
+const origPlayAudio = engine._playAudio.bind(engine);
+engine._playAudio = function(stepIndex, fallbackText, suffix) {
+  transcript.textContent = fallbackText;
+  return origPlayAudio(stepIndex, fallbackText, suffix);
+};
+
+// Sections
+const sections = ['sec-recap','sec-three-states','sec-interactive','sec-energy','sec-heating-curve','sec-math'];
+function showSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('visible');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Step metadata for the progress bar
+// Each "visible" step gets a dot. Pauses are hidden.
+const stepMeta = [
+  { icon: '📋', label: 'Recap', kind: 'narrate' },
+  null, // pause
+  { icon: '💬', label: 'Big Q', kind: 'narrate' },
+  null, // pause
+  { icon: '👁', label: '3 States', kind: 'narrate' },
+  { icon: '🔑', label: 'Pattern', kind: 'narrate' },
+  null, // pause
+  { icon: '🎮', label: 'Your turn', kind: 'narrate' },
+  { icon: '❄️', label: 'Make Solid', kind: 'checkpoint' },
+  { icon: '💧', label: 'Make Liquid', kind: 'checkpoint' },
+  { icon: '🔥', label: 'Make Gas', kind: 'checkpoint' },
+  { icon: '❓', label: 'Quiz 1', kind: 'quiz' },
+  null, // pause
+  { icon: '⚡', label: 'Energy', kind: 'narrate' },
+  { icon: '🎵', label: 'Analogy', kind: 'narrate' },
+  null, // pause
+  { icon: '📈', label: 'Heat Curve', kind: 'narrate' },
+  { icon: '🤯', label: 'Flat spots!', kind: 'narrate' },
+  null, // pause
+  { icon: '📐', label: 'Math', kind: 'narrate' },
+  { icon: '📝', label: 'q=mcΔT', kind: 'narrate' },
+  { icon: '📝', label: 'q=mL', kind: 'narrate' },
+  { icon: '❓', label: 'Quiz 2', kind: 'quiz' },
+  { icon: '🎉', label: 'Done!', kind: 'narrate' },
+];
+
+// Build progress bar
+const progressBar = document.getElementById('stepProgress');
+const visibleSteps = [];
+stepMeta.forEach((meta, i) => {
+  if (!meta) return;
+  visibleSteps.push({ index: i, meta });
+});
+
+function renderProgress(currentStep, completedUpTo) {
+  progressBar.innerHTML = '';
+  visibleSteps.forEach((vs, vi) => {
+    // Connector before (except first)
+    if (vi > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'step-connector';
+      if (vs.index < completedUpTo) conn.classList.add('completed');
+      progressBar.appendChild(conn);
+    }
+    // Dot
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    if (vs.meta.kind === 'checkpoint') dot.classList.add('checkpoint');
+    if (vs.meta.kind === 'quiz') dot.classList.add('quiz');
+    if (vs.index < completedUpTo) dot.classList.add('completed');
+    if (vs.index === currentStep) dot.classList.add('active');
+
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    if (vs.index < completedUpTo) {
+      icon.textContent = '✓';
+    } else {
+      icon.textContent = vs.meta.icon;
+    }
+
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = vs.meta.label;
+
+    dot.appendChild(icon);
+    dot.appendChild(label);
+    progressBar.appendChild(dot);
+  });
+}
+
+// Initial render — all grayed out
+renderProgress(-1, 0);
+
+const lessonSteps = [
+  // --- Recap ---
+  {
+    type: 'show',
+    action: () => showSection('sec-recap'),
+    text: "Let's start with a quick recap. We've learned that matter is anything with mass and volume. All matter is made of atoms. And a substance made of only one type of atom is called an element. There are 118 elements — the building blocks of everything in the universe."
+  },
+  { type: 'pause', duration: 800 },
+  {
+    type: 'narrate',
+    text: "Now here's the big question. Water can be a solid ice cube, a flowing liquid, or invisible steam. It's the same H2O molecules each time. So what's actually changing? That's what we're about to find out."
+  },
+
+  // --- Three States ---
+  { type: 'pause', duration: 500 },
+  {
+    type: 'show',
+    action: () => showSection('sec-three-states'),
+    text: "Here are the three states of matter, side by side. On the left, a solid — particles locked in a rigid grid, barely moving. In the middle, a liquid — particles sliding around each other, staying close. On the right, a gas — particles flying freely in every direction."
+  },
+  {
+    type: 'narrate',
+    text: "Notice the key pattern. The particles are the same in all three boxes. The only difference is how much energy they have. Less energy, they stay locked. More energy, they start sliding. Even more, they fly apart."
+  },
+
+  // --- Interactive ---
+  { type: 'pause', duration: 500 },
+  {
+    type: 'show',
+    action: () => showSection('sec-interactive'),
+    text: "Now it's your turn. Below is a live simulation. Use the temperature slider to control the particles yourself."
+  },
+  {
+    type: 'checkpoint',
+    instruction: 'Drag the temperature slider to below 20 to see a SOLID',
+    text: "First, make sure the temperature is low — below 20. Watch how the particles vibrate in place but stay locked in their positions. That's a solid.",
+    check: () => parseInt(tempSlider.value) < 20 && sim.state === 'SOLID',
+    confirmText: "Perfect. See how they vibrate but don't go anywhere? The forces between them are too strong for them to escape. That's why solids hold their shape."
+  },
+  {
+    type: 'checkpoint',
+    instruction: 'Now slide the temperature up to around 50 to see a LIQUID',
+    text: "Now slowly increase the temperature. Slide it up to around 50. Watch what happens as the particles gain energy.",
+    check: () => parseInt(tempSlider.value) >= 45 && parseInt(tempSlider.value) <= 60 && sim.state === 'LIQUID',
+    confirmText: "There it is — a liquid! The particles broke free from their grid. They're sliding around each other, but still staying close. They have enough energy to move, but not enough to fly apart. That's why liquids flow but still have a definite volume."
+  },
+  {
+    type: 'checkpoint',
+    instruction: 'Crank the temperature above 80 to see a GAS',
+    text: "Now let's go all the way. Crank the temperature above 80 and watch the particles go wild.",
+    check: () => parseInt(tempSlider.value) > 80 && sim.state === 'GAS',
+    confirmText: "Boom! A gas. The particles have so much energy they've completely overcome the attractive forces. They're flying in every direction, bouncing off the walls, filling the entire container. That's why gases expand to fill any space."
+  },
+  {
+    type: 'quiz',
+    text: "Quick check. Let me test your understanding.",
+    question: "If you cool a gas down, what happens to the particles?",
+    options: [
+      "They speed up",
+      "They slow down and move closer together",
+      "They disappear",
+      "They get heavier"
+    ],
+    correctIndex: 1,
+    correctFeedback: "Exactly! Cooling removes energy → particles slow down → they condense back into a liquid.",
+    wrongFeedback: "Not quite. Think about energy — cooling means removing energy. What happens to particles with less energy?"
+  },
+
+  // --- Energy explanation ---
+  { type: 'pause', duration: 500 },
+  {
+    type: 'show',
+    action: () => showSection('sec-energy'),
+    text: "So why does temperature change the state? Because temperature is really just a measure of kinetic energy — how fast the particles are moving."
+  },
+  {
+    type: 'narrate',
+    text: "At low energy, particles can't escape each other — they're locked in a solid. Add energy, they start sliding — a liquid. Add even more, they fly apart — a gas. It's like people at a concert. Cold audience sits in their seats, locked in rows. Warm them up, they start moving and dancing in place. Really heat things up, and they break free and run around everywhere."
+  },
+
+  // --- Heating Curve ---
+  { type: 'pause', duration: 500 },
+  {
+    type: 'show',
+    action: () => showSection('sec-heating-curve'),
+    text: "Now here's something surprising. Look at this heating curve. It shows what happens when you continuously add heat to ice."
+  },
+  {
+    type: 'narrate',
+    text: "See those flat sections? During melting and boiling, the temperature stops rising — even though you're still adding heat! Where does the energy go? It goes into breaking the bonds between particles. Once all the bonds are broken, the temperature starts rising again. This is called latent heat — hidden heat. You add energy, but it's hidden because the temperature doesn't change."
+  },
+
+  // --- Math ---
+  { type: 'pause', duration: 500 },
+  {
+    type: 'show',
+    action: () => showSection('sec-math'),
+    text: "Now let's compress everything into the math. There are two equations to know."
+  },
+  {
+    type: 'narrate',
+    highlight: '.math-box',
+    text: "First: q equals m times c times delta T. This is for heating within a phase — when temperature IS changing. Q is the heat energy in joules. M is the mass. C is the specific heat capacity — think of it as how stubborn the substance is. Water has a high C, which is why it takes a long time to boil. And delta T is the temperature change."
+  },
+  {
+    type: 'narrate',
+    text: "Second: q equals m times L. This is for phase transitions — the flat parts of the heating curve. L is the latent heat. L sub f for melting, L sub v for boiling. Remember: during phase changes, temperature is flat, so delta T is zero. That first equation would give you zero, which is wrong. That's why you need this second equation."
+  },
+  {
+    type: 'quiz',
+    text: "Final question for this lesson.",
+    question: "During boiling, you add heat but temperature stays at 100°C. Which equation describes the energy being added?",
+    options: [
+      "q = mcΔT (because temperature is changing)",
+      "q = mL (because state is changing, not temperature)",
+      "Neither — no energy is being added",
+      "Both equations at the same time"
+    ],
+    correctIndex: 1,
+    correctFeedback: "Correct! During a phase change, ΔT = 0, so we use q = mL. The energy breaks bonds instead of raising temperature.",
+    wrongFeedback: "Think about it: is the temperature changing during boiling? No — it stays flat. So ΔT = 0..."
+  },
+
+  // --- Wrap up ---
+  {
+    type: 'narrate',
+    text: "Excellent work! You've completed lesson 1 point 4: States of Matter. You now understand that the same particles can be solid, liquid, or gas depending on their energy. You know about the heating curve and why temperature stays flat during phase changes. And you've got two equations: q equals m c delta T for heating within a phase, and q equals m L for changing between phases. Next up: pure substances versus mixtures. See you there!"
+  }
+];
+
+engine.load(lessonSteps, 'lesson_1_4');
+
+// Wire up progress bar
+engine.onStepChange = (stepIndex) => {
+  renderProgress(stepIndex, stepIndex);
+};
+engine.onStepComplete = (stepIndex) => {
+  renderProgress(stepIndex, stepIndex + 1);
+};
+
+// --- Controls ---
+const btnStart = document.getElementById('btnStart');
+const btnPause = document.getElementById('btnPause');
+
+btnStart.addEventListener('click', () => {
+  engine.start();
+  btnStart.textContent = 'Playing...';
+  btnStart.disabled = true;
+  btnPause.style.display = '';
+});
+
+btnPause.addEventListener('click', () => {
+  const isPaused = engine.togglePause();
+  btnPause.textContent = isPaused ? 'Resume' : 'Pause';
+  btnPause.style.borderColor = isPaused ? '#ff9800' : '#444';
+  document.getElementById('status').textContent = isPaused ? 'Paused' : '';
+});
+
+document.getElementById('btnSkip').addEventListener('click', () => engine.skip());
+
+document.getElementById('btnRestart').addEventListener('click', () => {
+  engine.stop();
+  location.reload();
+});
+
+// --- TOC lesson navigation ---
+// Lesson registry: maps lesson IDs to their setup functions
+const lessonRegistry = {
+  '1.4': {
+    lessonId: 'lesson_1_4',
+    sections: sections,
+    steps: lessonSteps,
+    stepMeta: stepMeta,
+    setup: null, // already in DOM
+  },
+  '2.1': {
+    lessonId: 'lesson_2_1',
+    htmlFile: 'lessons/lesson_2_1.html',
+    sections: ['sec-2-recap','sec-2-structure','sec-2-scale','sec-2-particles','sec-2-builder','sec-2-math','sec-2-summary'],
+    stepMeta: [
+      { icon: '📋', label: 'Recap', kind: 'narrate' },
+      null,
+      { icon: '🔬', label: 'Structure', kind: 'narrate' },
+      null,
+      { icon: '🏟', label: 'Nucleus', kind: 'narrate' },
+      { icon: '🤯', label: 'Scale', kind: 'narrate' },
+      null,
+      { icon: '📊', label: 'Particles', kind: 'narrate' },
+      { icon: '🔴', label: '6 Protons', kind: 'checkpoint' },
+      { icon: '⚪', label: '6 Neutrons', kind: 'checkpoint' },
+      { icon: '🔵', label: '6 Electrons', kind: 'checkpoint' },
+      { icon: '❓', label: 'Quiz 1', kind: 'quiz' },
+      null,
+      { icon: '📐', label: 'Z = ?', kind: 'narrate' },
+      { icon: '📐', label: 'A = Z+N', kind: 'narrate' },
+      { icon: '📐', label: 'N = A-Z', kind: 'narrate' },
+      { icon: '📐', label: 'Isotopes', kind: 'narrate' },
+      { icon: '❓', label: 'Quiz 2', kind: 'quiz' },
+      { icon: '🎉', label: 'Done!', kind: 'narrate' },
+    ],
+    buildSteps: function(showSec) {
+      return [
+        // Recap
+        { type: 'show', action: () => showSec('sec-2-recap'),
+          text: "Welcome to Module 2. Let's recap what we know. Everything is made of matter. Matter is made of atoms. We learned about the three states of matter, and how temperature controls which state particles are in. But we've been treating atoms like tiny solid balls. Now let's crack one open and see what's inside." },
+        { type: 'pause' },
+        // Structure
+        { type: 'show', action: () => showSec('sec-2-structure'),
+          text: "An atom is NOT a solid ball. It has internal structure. Think of it like a tiny solar system. At the center, there's a dense core called the nucleus. And orbiting around it, far away, are electrons. Let's zoom in." },
+        { type: 'pause' },
+        { type: 'show', action: () => showSec('sec-2-scale'),
+          text: "Here's the structure. The nucleus sits at the very center and contains two types of particles: protons, which carry a positive charge, and neutrons, which carry no charge at all. Orbiting far outside the nucleus are electrons, which carry a negative charge." },
+        { type: 'narrate',
+          text: "Here's the mind-blowing part about scale. The nucleus is incredibly tiny compared to the atom. If the whole atom were the size of a football stadium, the nucleus would be a marble sitting at the center of the field. All those electrons would be buzzing around in the upper seats. Most of the atom is empty space!" },
+        { type: 'pause' },
+        // Particles table
+        { type: 'show', action: () => showSec('sec-2-particles'),
+          text: "Let's look at the three subatomic particles side by side. Protons have a positive charge of plus 1, a relative mass of 1, and live in the nucleus. Neutrons have zero charge, also a relative mass of 1, and live in the nucleus too. Electrons have a negative charge of minus 1, a tiny mass of about 1 over 1836, and orbit outside the nucleus." },
+        // Builder checkpoints
+        { type: 'checkpoint', action: () => showSec('sec-2-builder'),
+          instruction: 'Set the Protons slider to 6',
+          text: "Now your turn. I've placed an interactive atom builder below. Use the controls to add exactly 6 protons to the nucleus. 6 protons is what makes an atom carbon.",
+          check: () => window.atomBuilder && window.atomBuilder.getValues().p === 6,
+          confirmText: "That's carbon! The number of protons is what defines which element an atom is. 6 protons always means carbon. Always. This number is called the atomic number, and it's the single most important number in chemistry." },
+        { type: 'checkpoint',
+          instruction: 'Set the Neutrons slider to 6',
+          text: "Now add 6 neutrons to the nucleus alongside the protons. Neutrons add mass but don't change the element.",
+          check: () => window.atomBuilder && window.atomBuilder.getValues().n === 6,
+          confirmText: "Good. The nucleus now has 6 protons and 6 neutrons, giving it a mass number of 12. That's carbon-12, the most common form of carbon." },
+        { type: 'checkpoint',
+          instruction: 'Set the Electrons slider to 6',
+          text: "Finally, add 6 electrons orbiting around the nucleus. In a neutral atom, the number of electrons equals the number of protons.",
+          check: () => window.atomBuilder && window.atomBuilder.getValues().e === 6,
+          confirmText: "Perfect. You've built a complete carbon atom! 6 protons define it as carbon. 6 neutrons give it stability. 6 electrons make it electrically neutral, because the 6 positive charges from protons are balanced by 6 negative charges from electrons." },
+        // Quiz
+        { type: 'quiz',
+          text: "Let me check your understanding.",
+          question: "An atom has 8 protons. What element is it?",
+          options: ["Carbon (C)", "Nitrogen (N)", "Oxygen (O)", "It depends on the neutrons"],
+          correctIndex: 2,
+          correctFeedback: "Correct! 8 protons = Oxygen. Always. The number of protons (Z) defines the element.",
+          wrongFeedback: "Remember: the number of PROTONS defines the element. Look up Z=8 on the periodic table." },
+        { type: 'pause' },
+        // Math
+        { type: 'show', action: () => showSec('sec-2-math'),
+          text: "Let's distill this into the math. There are two key numbers for any atom." },
+        { type: 'narrate',
+          text: "First, the atomic number, written as Z. Z equals the number of protons. This is the identity of the element. Z equals 1 is hydrogen. Z equals 6 is carbon. Z equals 79 is gold. Change the number of protons, and you change the element entirely." },
+        { type: 'narrate',
+          text: "Second, the mass number, written as A. A equals the number of protons plus the number of neutrons. Since protons and neutrons both have a mass of about 1 atomic mass unit, A tells you roughly how heavy the nucleus is. Electrons are so light we ignore them for mass calculations." },
+        { type: 'narrate',
+          text: "Here's how you figure out the number of neutrons: N equals A minus Z. Mass number minus atomic number gives you neutrons. For carbon-12: A is 12, Z is 6, so N equals 12 minus 6 equals 6 neutrons. For carbon-14: A is 14, Z is still 6, so N equals 14 minus 6 equals 8 neutrons. Same element, different mass. These are called isotopes, and we'll explore those next." },
+        { type: 'quiz',
+          text: "One more question before we wrap up.",
+          question: "Carbon-14 has Z=6, A=14. How many neutrons?",
+          options: ["6", "8", "14", "20"],
+          correctIndex: 1,
+          correctFeedback: "Right! N = A - Z = 14 - 6 = 8 neutrons.",
+          wrongFeedback: "Use the formula: N = A - Z. So N = 14 - 6 = ?" },
+        // Summary
+        { type: 'show', action: () => showSec('sec-2-summary'),
+          text: "Great work! You've learned what's inside an atom: protons and neutrons in the nucleus, electrons orbiting outside. You know that the atomic number Z, the number of protons, defines which element it is. And the mass number A is protons plus neutrons. Next, we'll look at isotopes, which are atoms of the same element with different numbers of neutrons, and ions, which are atoms that have gained or lost electrons. See you in lesson 2.2!" },
+      ];
+    },
+  },
+};
+
+async function loadLesson(lessonKey) {
+  const config = lessonRegistry[lessonKey];
+  if (!config) return;
+
+  engine.stop();
+  btnStart.textContent = 'Start Lesson';
+  btnStart.disabled = false;
+  btnPause.textContent = 'Pause';
+
+  const container = document.getElementById('lessonContainer');
+
+  // Remove any previously loaded lesson content
+  const oldWrapper = document.getElementById('lesson-content');
+  if (oldWrapper) oldWrapper.remove();
+
+  // Also hide any lesson 1.4 sections still in DOM
+  container.querySelectorAll('.lesson-section').forEach(el => el.classList.remove('visible'));
+
+  // If lesson has an HTML file to load, fetch and inject it
+  if (config.htmlFile) {
+    // Load new content
+    const resp = await fetch(config.htmlFile);
+    const html = await resp.text();
+
+    // Insert before question bar
+    const questionBar = document.getElementById('questionBar');
+    const wrapper = document.createElement('div');
+    wrapper.id = 'lesson-content';
+    wrapper.innerHTML = html;
+    container.insertBefore(wrapper, questionBar);
+
+    // Execute any scripts in loaded HTML
+    wrapper.querySelectorAll('script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      document.body.appendChild(newScript);
+      oldScript.remove();
+    });
+  }
+
+  // Build steps and progress bar
+  const showSec = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('visible');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const steps = config.buildSteps ? config.buildSteps(showSec) : config.steps;
+  const meta = config.stepMeta;
+
+  // Rebuild progress bar
+  visibleSteps.length = 0;
+  meta.forEach((m, i) => {
+    if (m) visibleSteps.push({ index: i, meta: m });
+  });
+  renderProgress(-1, 0);
+
+  engine.load(steps, config.lessonId);
+
+  // Update active TOC
+  document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active'));
+  document.querySelector(`.toc-item[data-lesson="${lessonKey}"]`)?.classList.add('active');
+}
+
+document.querySelectorAll('.toc-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const lesson = item.dataset.lesson;
+    if (lessonRegistry[lesson]) {
+      loadLesson(lesson);
+    } else {
+      document.getElementById('status').textContent = `Lesson ${lesson} not built yet`;
+    }
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Ignore if user is typing in an input/textarea
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    // Focus the question input
+    questionInput.focus();
+  }
+});
+
+// ============================================================
+// QUESTION BOX — pause lesson, ask Claude, narrator speaks answer
+// ============================================================
+const questionInput = document.getElementById('questionInput');
+const questionSend = document.getElementById('questionSend');
+const qStatus = document.getElementById('qStatus');
+const answerBubble = document.getElementById('answerBubble');
+
+let qWs = null;
+let qConnected = false;
+
+function connectQuestion() {
+  if (qWs && qWs.readyState <= 1) return; // already connected/connecting
+  try {
+    qWs = new WebSocket('ws://localhost:8081');
+    qWs.onopen = () => { qConnected = true; qStatus.textContent = ''; };
+    qWs.onclose = () => { qConnected = false; };
+    qWs.onerror = () => { qConnected = false; };
+    qWs.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+
+      if (msg.type === 'answer_text') {
+        // Show the text answer
+        answerBubble.textContent = msg.text;
+        answerBubble.classList.add('visible');
+        answerBubble.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        transcript.textContent = msg.text;
+        qStatus.textContent = 'generating voice...';
+      }
+
+      if (msg.type === 'answer_audio') {
+        // Play the answer in the narrator voice
+        qStatus.textContent = '';
+        const audio = new Audio(msg.url);
+        audio.onended = () => {
+          // Resume lesson after answer finishes speaking
+          questionSend.disabled = false;
+          questionInput.disabled = false;
+          questionInput.value = '';
+          questionInput.focus();
+          // Fade out answer after a moment
+          setTimeout(() => answerBubble.classList.remove('visible'), 3000);
+        };
+        audio.onerror = () => {
+          // Fallback: use browser TTS
+          fallbackSpeak(answerBubble.textContent);
+        };
+        audio.play().catch(() => fallbackSpeak(answerBubble.textContent));
+      }
+
+      if (msg.type === 'answer_done' || msg.type === 'error') {
+        // No audio available, fall back to browser TTS
+        qStatus.textContent = '';
+        if (msg.type === 'error') {
+          answerBubble.textContent = msg.text;
+          answerBubble.classList.add('visible');
+        }
+        if (answerBubble.textContent) {
+          fallbackSpeak(answerBubble.textContent);
+        } else {
+          questionSend.disabled = false;
+          questionInput.disabled = false;
+        }
+      }
+    };
+  } catch(e) {
+    qStatus.textContent = '';
+  }
+}
+
+function fallbackSpeak(text) {
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 1.0;
+  utt.onend = () => {
+    questionSend.disabled = false;
+    questionInput.disabled = false;
+    questionInput.value = '';
+    setTimeout(() => answerBubble.classList.remove('visible'), 3000);
+  };
+  synth.speak(utt);
+}
+
+function askQuestion() {
+  const text = questionInput.value.trim();
+  if (!text) return;
+
+  // Try to connect if not connected
+  if (!qConnected) {
+    connectQuestion();
+    // Wait a bit for connection
+    setTimeout(() => {
+      if (qConnected) askQuestion();
+      else {
+        qStatus.textContent = 'Not connected. Run: node chat-server.mjs';
+        setTimeout(() => qStatus.textContent = '', 4000);
+      }
+    }, 1000);
+    return;
+  }
+
+  // Pause the lesson
+  if (engine.running && !engine.paused) {
+    engine.togglePause();
+    btnPause.textContent = 'Resume';
+  }
+
+  // Gather context
+  const lessonContext = transcript.textContent || 'General chemistry lesson';
+
+  questionSend.disabled = true;
+  questionInput.disabled = true;
+  qStatus.textContent = 'thinking...';
+
+  qWs.send(JSON.stringify({
+    type: 'question',
+    text,
+    lessonContext: `Current narrator text: "${lessonContext}"`,
+  }));
+}
+
+questionSend.addEventListener('click', askQuestion);
+questionInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') askQuestion();
+});
+
+// Try connecting on load
+connectQuestion();
+</script>
+</body>
+</html>

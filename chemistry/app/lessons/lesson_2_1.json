@@ -1,0 +1,73 @@
+{
+  "id": "lesson_2_1",
+  "title": "2.1 Inside the Atom — Subatomic Particles",
+  "steps": [
+    {
+      "type": "show",
+      "text": "Welcome to Module 2. Let's recap what we know. Everything is made of matter. Matter is made of atoms. We learned about the three states of matter, and how temperature controls which state particles are in. But we've been treating atoms like tiny solid balls. Now let's crack one open and see what's inside."
+    },
+    { "type": "pause" },
+    {
+      "type": "narrate",
+      "text": "An atom is NOT a solid ball. It has internal structure. Think of it like a tiny solar system. At the center, there's a dense core called the nucleus. And orbiting around it, far away, are electrons. Let's zoom in."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Here's the structure. The nucleus sits at the very center and contains two types of particles: protons, which carry a positive charge, and neutrons, which carry no charge at all. Orbiting far outside the nucleus are electrons, which carry a negative charge."
+    },
+    {
+      "type": "narrate",
+      "text": "Here's the mind-blowing part about scale. The nucleus is incredibly tiny compared to the atom. If the whole atom were the size of a football stadium, the nucleus would be a marble sitting at the center of the field. All those electrons would be buzzing around in the upper seats. Most of the atom is empty space!"
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Let's look at the three subatomic particles side by side. Protons have a positive charge of plus 1, a relative mass of 1, and live in the nucleus. Neutrons have zero charge, also a relative mass of 1, and live in the nucleus too. Electrons have a negative charge of minus 1, a tiny mass of about 1 over 1836, and orbit outside the nucleus."
+    },
+    {
+      "type": "checkpoint",
+      "text": "Now your turn. I've placed an interactive atom builder below. Use the controls to add exactly 6 protons to the nucleus. 6 protons is what makes an atom carbon.",
+      "confirmText": "That's carbon! The number of protons is what defines which element an atom is. 6 protons always means carbon. Always. This number is called the atomic number, and it's the single most important number in chemistry."
+    },
+    {
+      "type": "checkpoint",
+      "text": "Now add 6 neutrons to the nucleus alongside the protons. Neutrons add mass but don't change the element.",
+      "confirmText": "Good. The nucleus now has 6 protons and 6 neutrons, giving it a mass number of 12. That's carbon-12, the most common form of carbon."
+    },
+    {
+      "type": "checkpoint",
+      "text": "Finally, add 6 electrons orbiting around the nucleus. In a neutral atom, the number of electrons equals the number of protons.",
+      "confirmText": "Perfect. You've built a complete carbon atom! 6 protons define it as carbon. 6 neutrons give it stability. 6 electrons make it electrically neutral, because the 6 positive charges from protons are balanced by 6 negative charges from electrons."
+    },
+    {
+      "type": "quiz",
+      "text": "Let me check your understanding."
+    },
+    { "type": "pause" },
+    {
+      "type": "show",
+      "text": "Let's distill this into the math. There are two key numbers for any atom."
+    },
+    {
+      "type": "narrate",
+      "text": "First, the atomic number, written as Z. Z equals the number of protons. This is the identity of the element. Z equals 1 is hydrogen. Z equals 6 is carbon. Z equals 79 is gold. Change the number of protons, and you change the element entirely."
+    },
+    {
+      "type": "narrate",
+      "text": "Second, the mass number, written as A. A equals the number of protons plus the number of neutrons. Since protons and neutrons both have a mass of about 1 atomic mass unit, A tells you roughly how heavy the nucleus is. Electrons are so light we ignore them for mass calculations."
+    },
+    {
+      "type": "narrate",
+      "text": "Here's how you figure out the number of neutrons: N equals A minus Z. Mass number minus atomic number gives you neutrons. For carbon-12: A is 12, Z is 6, so N equals 12 minus 6 equals 6 neutrons. For carbon-14: A is 14, Z is still 6, so N equals 14 minus 6 equals 8 neutrons. Same element, different mass. These are called isotopes, and we'll explore those next."
+    },
+    {
+      "type": "quiz",
+      "text": "One more question before we wrap up."
+    },
+    {
+      "type": "narrate",
+      "text": "Great work! You've learned what's inside an atom: protons and neutrons in the nucleus, electrons orbiting outside. You know that the atomic number Z, the number of protons, defines which element it is. And the mass number A is protons plus neutrons. Next, we'll look at isotopes, which are atoms of the same element with different numbers of neutrons, and ions, which are atoms that have gained or lost electrons. See you in lesson 2.2!"
+    }
+  ]
+}
