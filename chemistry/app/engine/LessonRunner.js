@@ -84,13 +84,19 @@ export class LessonRunner {
         return;
       }
 
-      // Space anywhere else: pause audio + focus question bar
+      // Space anywhere else: pause audio + copy context + focus question bar
       e.preventDefault();
       if (this.engine.running && !this.engine.paused) {
         this.engine.togglePause();
         this.btnPause.textContent = 'Resume';
         this.btnPause.style.borderColor = '#ff9800';
         this.statusEl.textContent = 'Paused';
+      }
+      // Copy recent narrator text to clipboard
+      const narratorText = this.transcript?.textContent;
+      if (narratorText && narratorText !== 'Waiting to start...') {
+        navigator.clipboard.writeText(narratorText).catch(() => {});
+        this.statusEl.textContent = 'Paused — context copied to clipboard';
       }
       if (qInput) qInput.focus();
     });
@@ -150,9 +156,10 @@ export class LessonRunner {
         block.render(sectionEl);
         this.blockInstances.push(block);
 
-        // Start simulations
+        // Start simulations (with error handling so one bad sim doesn't kill the lesson)
         if (block.simKey && block.canvas) {
-          block.start(registry);
+          try { block.start(registry); }
+          catch (err) { console.warn(`Sim '${block.simKey}' failed to start:`, err); }
         }
       }
     }

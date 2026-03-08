@@ -9,6 +9,7 @@ import { lesson_2_4 } from './lessons/lesson_2_4.js';
 import { lesson_3_1 } from './lessons/lesson_3_1.js';
 import { lesson_3_2 } from './lessons/lesson_3_2.js';
 import { lesson_4_1 } from './lessons/lesson_4_1.js';
+import { lesson_4_2 } from './lessons/lesson_4_2.js';
 
 // Lesson registry
 const lessons = {
@@ -18,6 +19,7 @@ const lessons = {
   '3.1': lesson_3_1,
   '3.2': lesson_3_2,
   '4.1': lesson_4_1,
+  '4.2': lesson_4_2,
 };
 
 // Init runner
@@ -25,8 +27,15 @@ const container = document.getElementById('lessonContainer');
 const toolbar = document.querySelector('.toolbar');
 const runner = new LessonRunner(container, toolbar);
 
-// Load default lesson
-runner.loadLesson(lessons['1.4']);
+// Load the active lesson from TOC (or fall back to 1.4)
+const activeItem = document.querySelector('.toc-item.active');
+const defaultKey = activeItem?.dataset?.lesson || '1.4';
+try {
+  runner.loadLesson(lessons[defaultKey] || lessons['1.4']);
+} catch (err) {
+  console.error('Failed to load default lesson:', err);
+  document.querySelector('.status').textContent = 'Error loading lesson — check console';
+}
 
 // TOC navigation
 document.querySelectorAll('.toc-item').forEach(item => {

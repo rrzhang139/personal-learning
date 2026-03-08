@@ -231,12 +231,19 @@ export class NarrativeEngine {
       const optionsEl = card.querySelector('.quiz-options');
       const feedbackEl = card.querySelector('.quiz-feedback');
 
-      step.options.forEach((opt, i) => {
+      // Shuffle options while tracking the correct answer
+      const indexed = step.options.map((opt, i) => ({ opt, isCorrect: i === step.correctIndex }));
+      for (let i = indexed.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+      }
+
+      indexed.forEach(({ opt, isCorrect }) => {
         const btn = document.createElement('button');
         btn.className = 'quiz-option';
         btn.textContent = opt;
         btn.onclick = () => {
-          if (i === step.correctIndex) {
+          if (isCorrect) {
             feedbackEl.style.color = 'var(--green)';
             feedbackEl.textContent = step.correctFeedback || 'Correct!';
             btn.classList.add('correct');
