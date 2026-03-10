@@ -10,7 +10,7 @@ cd ~/projects/personal/personal-learning
 python3 -m http.server 8080
 
 # 2. Open in browser
-open http://localhost:8080/chemistry/app/index.html
+open http://localhost:8080/chemistry/app/index_v2.html
 ```
 
 That's it for the lessons. Click "Start Lesson", use the sidebar to switch between modules.
@@ -82,7 +82,7 @@ cd ~/projects/personal/personal-learning && python3 -m http.server 8080
 cd ~/projects/personal/personal-learning && node chemistry/app/chat-server.mjs
 
 # Terminal 3: Open browser
-open http://localhost:8080/chemistry/app/index.html
+open http://localhost:8080/chemistry/app/index_v2.html
 ```
 
 ## Generating Audio for New Lessons
