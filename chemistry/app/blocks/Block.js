@@ -231,12 +231,20 @@ export class QuizBlock extends Block {
 
       const card = document.createElement('div');
       card.className = 'quiz-card';
-      card.innerHTML = `<h3>${this.question}</h3><div class="quiz-options"></div><div class="quiz-feedback"></div>`;
+      card.innerHTML = `<h3>${this.question}</h3><div class="quiz-options"></div><div class="quiz-feedback"></div><div class="quiz-actions"></div>`;
       overlay.appendChild(card);
       document.body.appendChild(overlay);
 
       const optionsEl = card.querySelector('.quiz-options');
       const feedbackEl = card.querySelector('.quiz-feedback');
+      const actionsEl = card.querySelector('.quiz-actions');
+
+      // Skip button
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'quiz-skip';
+      skipBtn.textContent = 'Skip';
+      skipBtn.onclick = () => { overlay.remove(); resolve(); };
+      actionsEl.appendChild(skipBtn);
 
       this.options.forEach((opt, i) => {
         const btn = document.createElement('button');
@@ -247,7 +255,13 @@ export class QuizBlock extends Block {
             feedbackEl.style.color = 'var(--green)';
             feedbackEl.textContent = this.correctFeedback;
             btn.classList.add('correct');
-            setTimeout(() => { overlay.remove(); resolve(); }, 1500);
+            optionsEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+            actionsEl.innerHTML = '';
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'quiz-continue';
+            continueBtn.textContent = 'Continue';
+            continueBtn.onclick = () => { overlay.remove(); resolve(); };
+            actionsEl.appendChild(continueBtn);
           } else {
             feedbackEl.style.color = 'var(--red)';
             feedbackEl.textContent = this.wrongFeedback;

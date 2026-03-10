@@ -277,6 +277,17 @@ class NarrativeEngine {
       const optionsEl = card.querySelector('#quiz-options');
       const feedbackEl = card.querySelector('#quiz-feedback');
 
+      // Actions row (skip / continue)
+      const actionsEl = document.createElement('div');
+      actionsEl.style.cssText = 'margin-top:18px;display:flex;justify-content:flex-end;gap:10px';
+      card.appendChild(actionsEl);
+
+      const skipBtn = document.createElement('button');
+      skipBtn.textContent = 'Skip';
+      skipBtn.style.cssText = 'padding:8px 20px;background:transparent;color:#888;border:1px solid #444;border-radius:8px;font-size:14px;cursor:pointer';
+      skipBtn.onclick = () => { document.body.removeChild(overlay); resolve(); };
+      actionsEl.appendChild(skipBtn);
+
       step.options.forEach((opt, i) => {
         const btn = document.createElement('button');
         btn.textContent = opt;
@@ -294,10 +305,13 @@ class NarrativeEngine {
             feedbackEl.textContent = step.correctFeedback || 'Correct!';
             btn.style.background = '#1b5e20';
             btn.style.borderColor = '#81c784';
-            setTimeout(() => {
-              document.body.removeChild(overlay);
-              resolve();
-            }, 1500);
+            optionsEl.querySelectorAll('button').forEach(b => b.disabled = true);
+            actionsEl.innerHTML = '';
+            const contBtn = document.createElement('button');
+            contBtn.textContent = 'Continue';
+            contBtn.style.cssText = 'padding:10px 28px;background:#81c784;color:#000;border:none;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer';
+            contBtn.onclick = () => { document.body.removeChild(overlay); resolve(); };
+            actionsEl.appendChild(contBtn);
           } else {
             feedbackEl.style.color = '#ef5350';
             feedbackEl.textContent = step.wrongFeedback || 'Not quite — try again!';

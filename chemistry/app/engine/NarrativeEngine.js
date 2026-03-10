@@ -224,12 +224,20 @@ export class NarrativeEngine {
       overlay.className = 'quiz-overlay';
       const card = document.createElement('div');
       card.className = 'quiz-card';
-      card.innerHTML = `<h3>${step.question}</h3><div class="quiz-options"></div><div class="quiz-feedback"></div>`;
+      card.innerHTML = `<h3>${step.question}</h3><div class="quiz-options"></div><div class="quiz-feedback"></div><div class="quiz-actions"></div>`;
       overlay.appendChild(card);
       document.body.appendChild(overlay);
 
       const optionsEl = card.querySelector('.quiz-options');
       const feedbackEl = card.querySelector('.quiz-feedback');
+      const actionsEl = card.querySelector('.quiz-actions');
+
+      // Skip button — always visible
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'quiz-skip';
+      skipBtn.textContent = 'Skip';
+      skipBtn.onclick = () => { overlay.remove(); resolve(); };
+      actionsEl.appendChild(skipBtn);
 
       // Shuffle options while tracking the correct answer
       const indexed = step.options.map((opt, i) => ({ opt, isCorrect: i === step.correctIndex }));
@@ -247,7 +255,15 @@ export class NarrativeEngine {
             feedbackEl.style.color = 'var(--green)';
             feedbackEl.textContent = step.correctFeedback || 'Correct!';
             btn.classList.add('correct');
-            setTimeout(() => { overlay.remove(); resolve(); }, 1500);
+            // Disable all option buttons
+            optionsEl.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+            // Replace skip with continue button
+            actionsEl.innerHTML = '';
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'quiz-continue';
+            continueBtn.textContent = 'Continue';
+            continueBtn.onclick = () => { overlay.remove(); resolve(); };
+            actionsEl.appendChild(continueBtn);
           } else {
             feedbackEl.style.color = 'var(--red)';
             feedbackEl.textContent = step.wrongFeedback || 'Not quite — try again!';
