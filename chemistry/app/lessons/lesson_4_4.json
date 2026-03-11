@@ -1,0 +1,89 @@
+{
+  "id": "lesson_4_4",
+  "steps": [
+    {
+      "text": "Welcome to lesson 4.4. In the last lesson, you learned to write and balance chemical equations. You know that 2 H 2 plus O 2 yields 2 H 2 O, and you know the coefficients represent the ratio. But there's a problem. Equations talk about molecules — but you can't count individual molecules. They're way too small. In the real world, you measure things by mass — grams on a scale. So how do you go from a balanced equation to an actual amount you can weigh? You need a bridge between the molecular world and the macroscopic world. That bridge is called the mole."
+    },
+    { "type": "pause" },
+    {
+      "text": "Let's understand why we need a special counting unit. Atoms and molecules are absurdly small. A single drop of water — just one drop from an eyedropper — contains roughly 1.5 sextillion molecules. That's a 1 followed by 21 zeros. If you tried to count them one per second, it would take 50 trillion years. The universe is only 13.8 billion years old. Clearly, counting individual molecules is not going to work."
+    },
+    {
+      "text": "But we already solve this kind of problem in everyday life. We use counting units. A dozen equals 12 — you don't say 12 eggs, you say a dozen eggs. A ream of paper is 500 sheets. A gross is 144. Chemistry needs the same trick, but for a number so incredibly large that it bridges the gap between single atoms and grams you can hold in your hand."
+    },
+    { "type": "pause" },
+    {
+      "text": "Here it is: one mole equals 6.022 times 10 to the 23rd particles. That number is called Avogadro's number, named after the Italian scientist Amedeo Avogadro. Written out, it's approximately 602 sextillion. A mole is just a counting unit — like a dozen, but instead of 12, it's 6.022 times 10 to the 23rd. And it works for anything: one mole of carbon atoms is 6.022 times 10 to the 23rd carbon atoms. One mole of water molecules is 6.022 times 10 to the 23rd water molecules. One mole of basketballs would fill the entire solar system."
+    },
+    {
+      "text": "Why this specific number and not some rounder number? Because of a beautiful design choice: Avogadro's number was chosen so that one mole of any element weighs exactly its atomic mass in grams. Carbon's atomic mass is 12.01 A M U. One mole of carbon weighs 12.01 grams. Oxygen is 16.00 A M U. One mole of oxygen atoms weighs 16.00 grams. The number connects the atomic scale to the human scale. This is the bridge we've been looking for."
+    },
+    {
+      "text": "Quick check on the mole concept."
+    },
+    { "type": "pause" },
+    {
+      "text": "Now for the bridge itself: molar mass. The molar mass of a substance is the mass of one mole of that substance, measured in grams per mole. And here's the beautiful part: for any element, the molar mass in grams per mole equals its atomic mass in A M U — the number you find on the periodic table. Carbon: 12.01 A M U on the table, so 12.01 grams per mole. Iron: 55.85 A M U, so 55.85 grams per mole. For molecules, just add up the atoms. H 2 O: 2 times 1.01 for hydrogen plus 16.00 for oxygen equals 18.02 grams per mole."
+    },
+    {
+      "text": "This is the conversion that makes all of chemistry quantitative. You weigh something on a scale — that gives you grams. You divide by the molar mass — that gives you moles. And moles is a count of particles — so now you know exactly how many molecules you have. The formula is simple: moles equals mass divided by molar mass. Or rearranged: mass equals moles times molar mass. These two conversions let you move freely between the world of grams and the world of molecules."
+    },
+    { "type": "pause" },
+    {
+      "text": "Here's the mole map — your conversion toolkit. You can convert between grams, moles, and particles. Click on any box and type a number to see the other values update instantly. Start by clicking the grams box and typing 18.02. Since the molar mass of water is 18.02 grams per mole, you should see exactly 1 mole and 6.022 times 10 to the 23rd particles. Then try switching substances and exploring."
+    },
+    {
+      "text": "Go ahead and explore the converter. Try entering different values — start with grams and see the moles and particles. Then click a different substance like C O 2 or iron. Notice how the molar mass changes the conversion. 18 grams of water is 1 mole, but 18 grams of iron is only about 0.32 moles because iron is heavier per atom.",
+      "confirmText": "Great! You can see how grams, moles, and particles are all connected through molar mass. This three-way conversion is the foundation of every calculation in chemistry."
+    },
+    {
+      "text": "Let's check your molar mass understanding."
+    },
+    { "type": "pause" },
+    {
+      "text": "Now for the payoff: stoichiometry. Pronounced stoy-kee-AH-meh-tree. It comes from Greek words meaning measuring elements. A balanced equation is a recipe, and the coefficients are mole ratios. Look at 2 H 2 plus O 2 yields 2 H 2 O. This says: 2 moles of hydrogen gas react with 1 mole of oxygen gas to produce 2 moles of water. The ratio is always 2 to 1 to 2. Not 2 grams! Not 2 liters! 2 moles. This is critical: coefficients give you mole ratios."
+    },
+    {
+      "text": "Let's be really precise about what the equation tells us. 2 moles of H 2 weigh 4.03 grams — that's 2 times 2.016. 1 mole of O 2 weighs 32.00 grams. 2 moles of H 2 O weigh 36.04 grams — that's 2 times 18.02. So you need only 4 grams of hydrogen but 32 grams of oxygen to make 36 grams of water. The gram amounts are very different even though the mole ratio is simple. That's why you must always work in moles first, then convert to grams."
+    },
+    { "type": "pause" },
+    {
+      "text": "Here's stoichiometry in action with a classic problem: how many grams of water can you make from a given mass of hydrogen gas? Watch the four-step chain: grams of H 2, divide by molar mass to get moles of H 2, apply the mole ratio to get moles of H 2 O, then multiply by the molar mass of water to get grams of H 2 O. Drag the slider to change the starting amount and watch every step update live."
+    },
+    {
+      "text": "Try it out. Drag the slider to about 10 grams of hydrogen. You should see: 10 grams divided by 2.016 gives about 4.96 moles of H 2. The mole ratio is 1 to 1 since both coefficients are 2. So 4.96 moles of H 2 O, times 18.02 grams per mole, gives about 89.4 grams of water. From just 10 grams of hydrogen! That's because water is mostly oxygen by mass.",
+      "confirmText": "Excellent! See how the four steps work like a chain? Grams to moles, mole ratio, moles to grams. This same pattern works for every stoichiometry problem you'll ever encounter."
+    },
+    {
+      "text": "Let me give you the universal recipe. Every stoichiometry problem follows these four steps. Step 1: start with grams of your known substance. Step 2: convert to moles by dividing by its molar mass. Step 3: apply the mole ratio from the balanced equation. Step 4: convert to grams of the desired substance by multiplying by its molar mass. Grams known, moles known, moles wanted, grams wanted. Learn this pattern once, use it forever."
+    },
+    {
+      "text": "Test your stoichiometry skills."
+    },
+    { "type": "pause" },
+    {
+      "text": "Now, what happens when your reactants aren't in the perfect ratio? One reactant will run out first — that's the limiting reagent. Think of making sandwiches. If you have 10 slices of bread and 8 slices of cheese, and each sandwich needs 2 bread plus 1 cheese, you can only make 5 sandwiches. You run out of bread first. Bread is the limiting reagent. The leftover cheese is in excess. Same thing in chemistry: the reactant that runs out first determines how much product you can make."
+    },
+    {
+      "text": "Try the explorer. Set H 2 to 6 moles and O 2 to 2 moles. The reaction needs 2 H 2 for every 1 O 2. So 6 moles of H 2 would need 3 moles of O 2, but you only have 2. O 2 is limiting! You can only make 4 moles of water, and 2 moles of H 2 are left over. Try different combinations and watch which one limits.",
+      "confirmText": "You can see it: whichever reactant runs out first is the limiting reagent. The faded molecules are consumed and the bright ones are leftover excess. The limiting reagent controls the maximum product."
+    },
+    {
+      "text": "Check your understanding of limiting reagent."
+    },
+    { "type": "pause" },
+    {
+      "text": "One more concept: percent yield. Stoichiometry tells you the theoretical yield — the maximum product you'd get if everything reacted perfectly. But real labs aren't perfect. Some product spills. Side reactions produce unwanted byproducts. The reaction might not go to completion. So the actual yield — what you actually collect — is almost always less than the theoretical yield."
+    },
+    {
+      "text": "The formula is simple: percent yield equals actual yield divided by theoretical yield, times 100 percent. If stoichiometry predicts 90 grams but you collect 72 grams, your percent yield is 72 over 90 times 100, which is 80 percent. That's actually pretty good for most lab reactions. Pharmaceutical companies spend years optimizing synthesis routes to push yields above 90 percent, because even a small improvement means millions of dollars in savings when you're making tons of a drug."
+    },
+    { "type": "pause" },
+    {
+      "text": "Let's zoom out. Look at what you can do now. From lesson 4.3 you can write and balance chemical equations. Now from 4.4 you can convert grams to moles using molar mass, use mole ratios from the balanced equation to connect reactants to products, identify which reagent is limiting, and calculate theoretical and percent yield. This is the quantitative backbone of chemistry. This is how chemists plan experiments, how pharmaceutical companies manufacture drugs, and how rocket engineers calculate fuel loads. You've just unlocked the ability to make real predictions from equations."
+    },
+    {
+      "text": "Outstanding work! You've completed lesson 4.4 on the mole and stoichiometry. You understand Avogadro's number, molar mass, the mole map, stoichiometry calculations, limiting reagents, and percent yield. Chemistry is now fully quantitative. Coming up: solutions and concentration — what happens when substances dissolve in water, and how concentration affects reactions and biological processes. See you there!"
+    }
+  ]
+}

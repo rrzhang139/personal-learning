@@ -11,6 +11,7 @@ import { lesson_3_2 } from './lessons/lesson_3_2.js';
 import { lesson_4_1 } from './lessons/lesson_4_1.js';
 import { lesson_4_2 } from './lessons/lesson_4_2.js';
 import { lesson_4_3 } from './lessons/lesson_4_3.js';
+import { lesson_4_4 } from './lessons/lesson_4_4.js';
 
 // Lesson registry
 const lessons = {
@@ -22,6 +23,7 @@ const lessons = {
   '4.1': lesson_4_1,
   '4.2': lesson_4_2,
   '4.3': lesson_4_3,
+  '4.4': lesson_4_4,
 };
 
 // --- localStorage persistence ---

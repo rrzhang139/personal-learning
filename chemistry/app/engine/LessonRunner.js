@@ -17,7 +17,9 @@ export class LessonRunner {
     this.statusEl = toolbarEl.querySelector('.status');
     this.btnStart = toolbarEl.querySelector('#btnStart');
     this.btnPause = toolbarEl.querySelector('#btnPause');
+    this.btnPrev = toolbarEl.querySelector('#btnPrev');
     this.btnSkip = toolbarEl.querySelector('#btnSkip');
+    this.btnNext = toolbarEl.querySelector('#btnNext');
     this.btnRestart = toolbarEl.querySelector('#btnRestart');
 
     // Engine
@@ -55,7 +57,33 @@ export class LessonRunner {
       this.statusEl.textContent = isPaused ? 'Paused' : '';
     });
 
+    this.btnPrev.addEventListener('click', () => {
+      if (!this.engine.steps.length) return;
+      const cur = this.engine.currentStep;
+      let target = cur - 1;
+      while (target > 0 && this.engine.steps[target]?.type === 'pause') target--;
+      if (target >= 0) {
+        this.btnStart.textContent = 'Playing...';
+        this.btnStart.disabled = true;
+        this.btnPause.style.display = '';
+        this.engine.skipToStep(target);
+      }
+    });
+
     this.btnSkip.addEventListener('click', () => this.engine.skip());
+
+    this.btnNext.addEventListener('click', () => {
+      if (!this.engine.steps.length) return;
+      const cur = this.engine.currentStep;
+      let target = cur + 1;
+      while (target < this.engine.steps.length && this.engine.steps[target]?.type === 'pause') target++;
+      if (target < this.engine.steps.length) {
+        this.btnStart.textContent = 'Playing...';
+        this.btnStart.disabled = true;
+        this.btnPause.style.display = '';
+        this.engine.skipToStep(target);
+      }
+    });
 
     this.btnRestart.addEventListener('click', () => {
       this.engine.stop();
@@ -99,6 +127,18 @@ export class LessonRunner {
         this.statusEl.textContent = 'Paused — context copied to clipboard';
       }
       if (qInput) qInput.focus();
+    });
+
+    // Left/Right arrow keys for prev/next step
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        this.btnPrev.click();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        this.btnNext.click();
+      }
     });
 
     // Escape from question bar: blur + resume audio

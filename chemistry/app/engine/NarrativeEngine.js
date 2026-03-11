@@ -63,6 +63,11 @@ export class NarrativeEngine {
   async skipToStep(stepIndex) {
     this.stop();
     await this._sleep(100);
+    // Execute all prior 'show' actions silently so sections are visible
+    for (let i = 0; i < stepIndex; i++) {
+      const s = this.steps[i];
+      if (s.type === 'show' && s.action) s.action();
+    }
     this.start(stepIndex);
   }
 
