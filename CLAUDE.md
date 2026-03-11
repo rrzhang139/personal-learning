@@ -30,13 +30,49 @@ Qianjing can type these shortcuts to quickly trigger common actions:
 - `/next` — Preview what's coming next and why it matters
 
 ## Teaching Protocol
-1. **Before each new topic**: List the prerequisite concepts we've already covered and briefly recap them
-2. **Introduce the new concept**: Start with an analogy or visual, then get precise
-3. **Show, don't just tell**: Provide simulations, diagrams, or interactive code whenever possible
-4. **Distill into math**: After explaining the *why* and building intuition, compress the concept into its formal math/symbol representation. Always define every symbol. Explain *why* the equation has that form — what each term means physically and why the relationship exists. The math is for memorization; the explanation is for understanding. Format as: intuition first → equation → symbol definitions → "why it looks like this"
-5. **Reinforce**: End each lesson with a quick check — a question or mini-exercise
-5. **Connect forward**: Tease how this concept will be used in upcoming topics
-6. **Log progress**: After each lesson or session, update `chemistry/progress_log.md` with date, topics covered, struggle points, and breakthroughs
+
+### Lesson Design Philosophy (Math Academy-inspired)
+
+Lessons should be **bite-sized and atomic** — one core concept per lesson (~10-15 min, 15-20 steps max). Keep the storytelling and narration, but structure around a tight teach→practice→build loop.
+
+**Core principles:**
+
+1. **Atomic topics**: Each lesson teaches ONE concept. Not "Chemical Reactions" (too big) — instead: "Conservation of Mass", "Balancing Equations", "Reaction Types", "Exo vs Endo". Small enough to master in one sitting.
+
+2. **Recall before new**: Every lesson opens by actively recalling tools and concepts from earlier lessons — not just mentioning them, but using them. "Remember how we calculated molar mass? We're going to need that right now because..." The prior concept becomes a tool you wield, not just context you remember.
+
+3. **Scaffolded frontier**: When introducing something unknown, never leave the learner stranded. Provide scaffolding:
+   - First, a worked example narrated step-by-step ("watch me do this")
+   - Then, a similar problem with hints ("now you try — I'll guide you")
+   - Then, a variation without hints ("on your own")
+   - Then, a twist that combines with an earlier concept ("now mix it with what you learned before")
+
+4. **More problems, more often**: Target ~40-50% of lesson steps being quizzes or interactive checkpoints (not just 10-15%). After every new idea, immediately test it. Problems should escalate:
+   - Level 1: Direct application (did you understand the definition?)
+   - Level 2: Requires one step of reasoning
+   - Level 3: Combines this concept with a previous one (interleaving)
+
+5. **Interleaving**: Don't just test the current topic. Mix in problems from 2-3 lessons ago. "Before we continue, quick check: what type of bond has ΔEN > 1.7?" This forces retrieval and strengthens long-term retention.
+
+6. **Layered building**: Each lesson's concept should visibly stack on previous ones. Make the dependency chain explicit: "In lesson 2.4 you learned electron shells → in 4.1 you learned bonding uses those electrons → today you'll see that bond energy determines reaction energy." The learner should feel the tower growing.
+
+7. **Concrete before abstract**: Always start with a specific, tangible example before generalizing. Don't say "q = mcΔT" then explain it. Instead: "You heat 100g of water by 10°C. That takes 4,180 joules. Now you heat 100g of iron by 10°C. That takes only 449 joules. Why the difference? Because..." THEN show the formula.
+
+### Step-by-step protocol for each lesson:
+
+1. **Recall hook** (1-2 steps): Actively use a concept from a recent lesson as the entry point. Frame it as: "You already know X. But X leads to a question: ___?"
+2. **Introduce with story** (2-3 steps): Analogy, real-world example, or historical narrative. Make it vivid.
+3. **Concrete example** (1-2 steps): Show a specific worked example before any formula.
+4. **Formalize** (1-2 steps): Now show the math/formula. Define every symbol. Explain why it has that form.
+5. **Practice immediately** (1-2 quiz steps): Direct application of what was just taught.
+6. **Deepen** (2-3 steps): Add nuance, edge cases, or a second example.
+7. **Interleaved problem** (1 quiz step): A problem that requires combining today's concept with something from an earlier lesson.
+8. **Connect forward** (1 step): Tease how this concept feeds into the next lesson.
+
+### Lesson sizing guideline:
+- Old style: ~33 steps covering multiple concepts (too long)
+- New style: ~15-20 steps covering ONE concept with ~6-8 quiz/checkpoint steps
+- A "module" that was previously one lesson should become 3-5 micro-lessons
 
 ## Memorization Items
 - When Qianjing flags something to memorize, save it to memory files or update this file
@@ -80,7 +116,7 @@ chemistry/app/
 
 ### Step 1: Plan the lesson content
 
-Decide on sections, narration text, quizzes, and interactive checkpoints. Follow the teaching protocol: recap → introduce → show → math → quiz → tease next.
+Each lesson covers ONE atomic concept (~15-20 steps, ~6-8 quizzes/checkpoints). Follow the teaching protocol: recall hook → story → concrete example → formalize → practice → deepen → interleaved problem → tease next. Target 40-50% of steps being quizzes or checkpoints.
 
 ### Step 2: Create the lesson JS file
 
