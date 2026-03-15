@@ -1,0 +1,32 @@
+{
+  "id": "lesson_6_2",
+  "steps": [
+    { "text": "In Lesson 6.1, you learned that gas pressure comes from particle collisions — and that three knobs control it: temperature, number of particles, and volume. Today we're going to do something specific: lock temperature and amount of gas in place, and see what happens when we change only the volume. This is one of the oldest and most elegant laws in chemistry." },
+    { "text": "Let's make sure the foundation is rock solid. This connects Lesson 5.1 and Lesson 6.1." },
+    { "type": "pause" },
+    { "text": "Here's a concrete experiment. Take a plastic syringe — the kind you'd find in a science lab. Cap the end so no air can escape. Pull the plunger out to the 10 milliliter mark. You've just trapped a fixed amount of air at atmospheric pressure — 1 atm. Now push the plunger in to 5 milliliters. You've halved the volume. And the pressure? It doubles to 2 atm. You can feel the air pushing back against your thumb." },
+    { "text": "Push further to 2.5 milliliters? Pressure quadruples to 4 atm. One-quarter the volume, four times the pressure. See the pattern? Every time you halve the volume, the pressure doubles. It's an exact, inverse relationship." },
+    { "text": "Use the pattern from the syringe." },
+    { "type": "pause" },
+    { "text": "Robert Boyle figured this out in 1662. At constant temperature and constant amount of gas, pressure times volume equals a constant. We write it as P₁V₁ equals P₂V₂. This means whatever the pressure and volume are before a change, their product equals the pressure and volume after the change." },
+    { "text": "Why does this work at the particle level? Same number of particles, same speed — because temperature hasn't changed. But now they're in a smaller box. Each particle has to travel less distance before hitting a wall, so it hits walls more frequently. More hits per second equals more pressure. The total collision budget stays the same — you're just packing the same collisions into a smaller space, so each unit of wall area gets hammered more." },
+    { "text": "Time to use the formula." },
+    { "type": "pause" },
+    { "text": "Let's walk through a real-world problem. A scuba tank holds 12 liters of air compressed to 200 atmospheres. That's an enormous squeeze. If the diver opens the tank at the surface where pressure is 1 atmosphere, what volume does that air expand to? P₁V₁ = P₂V₂. V₂ = 200 times 12 divided by 1. That's 2,400 liters. Enough air to fill a small room — all crammed into a backpack-sized tank by extreme compression." },
+    { "text": "Now you try one. This mixes Boyle's Law with the unit conversions from Lesson 6.1." },
+    { "type": "pause" },
+    { "text": "Now let's see Boyle's Law come alive. Below is a container with a movable piston on the right side. Drag the piston left to compress the gas, right to expand it. Watch three things: the pressure readout, the volume readout, and — critically — the P times V product. It should stay approximately constant no matter where you drag the piston. The graph on the right traces your path on a P-versus-V curve." },
+    { "text": "Go ahead — grab the piston and squeeze the gas. Compress it down to less than half the original volume.", "confirmText": "Beautiful. Did you see the pressure climb as the volume shrank — while P times V barely budged? That's Boyle's Law: the inverse relationship between P and V, keeping their product constant." },
+    { "text": "Here's a conceptual question that connects Boyle's Law to what you learned about moles in Lesson 4.4." },
+    { "type": "pause" },
+    { "text": "Now, a reality check. Boyle's Law is beautifully simple but it assumes an ideal gas — particles with no size and no attraction to each other. Real molecules have both. At very high pressures, particles are crammed so close that their own physical volume matters — you can't compress a gas to zero volume. And at very low temperatures, particles slow down enough that those intermolecular forces from Lesson 4.2 start to matter." },
+    { "text": "This question threads together bonding, molecular shape and intermolecular forces, and gas behavior." },
+    { "type": "pause" },
+    { "text": "Here's something that connects Boyle's Law back to Module 5. When you push the piston inward, you're doing work on the gas. Your hand exerts a force over a distance — that's the physics definition of work. Where does that energy go? Into the gas particles. They bounce off the moving piston faster than they arrived — like a tennis ball hitting a racket that's swinging forward. If the container is insulated, that extra kinetic energy raises the temperature." },
+    { "text": "This one combines compression with the First Law of Thermodynamics and reaction energy." },
+    { "text": "Here's a multi-chapter synthesis: stoichiometry from Lesson 4.4 meets gas behavior." },
+    { "type": "pause" },
+    { "text": "Final challenge. This pulls from five different lessons: specific heat, calorimetry, moles, pressure, and Boyle's Law." },
+    { "text": "That last problem was a monster — you just chained specific heat, calorimetry, moles, pressure, and gas laws all in one problem. That's real chemistry. In Lesson 6.3, we'll explore Charles's Law — what happens when you hold pressure constant and change the temperature. It leads to one of the most profound ideas in science: absolute zero, the temperature where particle motion stops. See you there!" }
+  ]
+}
