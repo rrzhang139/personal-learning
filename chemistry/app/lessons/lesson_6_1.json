@@ -1,0 +1,32 @@
+{
+  "id": "lesson_6_1",
+  "steps": [
+    { "text": "Let's start with something you already know. In Lesson 5.1, you learned that temperature measures the average kinetic energy of particles. The higher the temperature, the faster particles move. Now, gas particles are special — they're not locked in place like in a solid. They fly freely in all directions, bouncing off each other and off the walls of whatever container they're in. So here's the question: what happens when all those fast-moving particles keep slamming into the walls?" },
+    { "text": "Quick recall check from Lesson 5.1." },
+    { "type": "pause" },
+    { "text": "Let me paint a picture. Imagine holding an inflated balloon. It feels firm and pushes back when you squeeze it. Something inside is pushing outward. That something is gas — billions of nitrogen and oxygen molecules rocketing around at hundreds of meters per second, slamming into the rubber wall from the inside." },
+    { "text": "Each individual collision is incredibly tiny — far too small to feel. But here's the thing: there are billions of these collisions happening every single microsecond. All those tiny pushes add up to one steady, measurable force pushing outward on every part of the balloon's surface. That combined push is what we call pressure." },
+    { "text": "Let's make sure the core idea is solid." },
+    { "type": "pause" },
+    { "text": "Now let's make this precise. Pressure is defined as force divided by area. P equals F over A. The total force from all those particle collisions, spread over the area of the surface they're hitting." },
+    { "text": "Here's an intuition builder: same force, smaller area, higher pressure. Push your finger against a wall — nothing happens. Now push a needle with the same force — it pokes right through. The force is identical, but the needle concentrates it onto a tiny area, so the pressure is enormous. That's why pressure is force per unit area, not just force." },
+    { "text": "Let's do a quick calculation." },
+    { "type": "pause" },
+    { "text": "Time to see this in action. Below is a container filled with gas particles. Watch them bounce around — every time a particle hits a wall, the wall flashes cyan. The gauge on the right shows the pressure, calculated from how frequently particles are hitting the walls." },
+    { "text": "You've got two controls: you can change the temperature, which changes how fast the particles move. And you can add or remove particles. Try heating the gas first — click the Heat button a few times and watch what happens to the pressure gauge." },
+    { "text": "Go ahead — heat the gas and watch the pressure respond.", "confirmText": "See that? Higher temperature — faster particles — more frequent and harder wall collisions — higher pressure. Temperature and pressure are directly connected." },
+    { "type": "pause" },
+    { "text": "Let's talk about units. The SI unit of pressure is the pascal, abbreviated P-a. One pascal equals one newton per square meter. But one pascal is tiny — atmospheric pressure is about 101,325 pascals. So in chemistry, we usually use kilopascals or atmospheres." },
+    { "text": "Time for a conversion check." },
+    { "type": "pause" },
+    { "text": "Here's something wild: you're sitting at the bottom of an ocean right now. Not water — air. There's a column of air stretching from your head about 100 kilometers up to the edge of space. All that air has weight, and it's pressing down on you. That's atmospheric pressure." },
+    { "text": "At sea level, atmospheric pressure is about 1 atmosphere — 101.325 kilopascals. You don't feel it because the pressure inside your body pushes back equally. But go up a mountain or ride in a plane, and there's less air above you, so the pressure drops. The air inside your ears is still at the old, higher pressure — that mismatch is what makes your ears pop." },
+    { "text": "Think about what you just learned." },
+    { "type": "pause" },
+    { "text": "Now let's connect everything. Since pressure comes from particle collisions, there are three knobs you can turn to change it. One: temperature — hotter particles move faster and hit harder. Two: number of particles — more particles means more collisions. Three: volume — squeeze the container smaller and particles hit the walls more often because they have less space to travel between hits." },
+    { "text": "Here's one that connects back to Lesson 4.4 on moles." },
+    { "text": "Try it out — add more particles and see the pressure increase in real time.", "confirmText": "More particles, more collisions, higher pressure. You've now seen both temperature and particle count affect pressure with your own eyes." },
+    { "type": "pause" },
+    { "text": "Excellent work. You now understand what gas pressure is — the result of countless particle collisions — and the three factors that control it: temperature, number of particles, and volume. In Lesson 6.2, we'll zoom in on the relationship between pressure and volume. It's called Boyle's Law, and it's one of the most elegant patterns in chemistry. See you there!" }
+  ]
+}
