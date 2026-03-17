@@ -1,0 +1,32 @@
+{
+  "id": "lesson_6_3",
+  "steps": [
+    { "text": "In Lesson 6.2, you mastered Boyle's Law: at constant temperature, squeezing a gas into less volume increases its pressure. P₁V₁ equals P₂V₂. But what if we don't hold temperature constant? What if instead, we hold pressure constant — let the container expand freely — and crank up the heat? That's exactly what Jacques Charles investigated in the 1780s." },
+    { "text": "Before we move on, let's connect Boyle's Law with the three pressure knobs from Lesson 6.1." },
+    { "type": "pause" },
+    { "text": "In 1783, the Montgolfier brothers lit a fire under a giant silk bag in Paris and it rose into the sky — the first hot air balloon flight. Why did it float? Heating the air inside made it expand. The bag's volume grew, but the mass of air inside barely changed. Same mass in a bigger volume means lower density. And when something is less dense than the fluid around it, it floats — just like a cork in water." },
+    { "text": "Jacques Charles, who made the first hydrogen balloon flight later that year, measured the expansion precisely. He found that for every 1 degree Celsius of heating, a gas expands by one two-hundred-and-seventy-third of its volume at zero degrees Celsius. That fraction — 1 over 273 — is a profound clue. If a gas shrinks by 1/273 for each degree cooled, then at negative 273 degrees Celsius, the volume would theoretically hit zero. That temperature is absolute zero." },
+    { "text": "This connects gas expansion to a physical consequence." },
+    { "type": "pause" },
+    { "text": "Let's see the numbers. A balloon holds 3.0 liters of air at 300 Kelvin — that's about 27 degrees Celsius, roughly room temperature. Heat it to 600 Kelvin — double the Kelvin temperature. The volume doubles to 6.0 liters. Cool it instead to 150 Kelvin — half the Kelvin temperature — and the volume halves to 1.5 liters. The relationship is perfectly linear and perfectly proportional." },
+    { "text": "But here's the critical trap. This ONLY works with Kelvin temperatures. If you try it with Celsius, you'll get wrong answers. Why? Because zero degrees Celsius is not zero energy — it's just the freezing point of water, an arbitrary reference. A gas at 10°C heated to 20°C does NOT double in volume. But 200 K heated to 400 K does. Kelvin starts at true zero — where particles stop moving — so doubling Kelvin means doubling kinetic energy, which doubles the expansion force." },
+    { "text": "This is the most common mistake in gas law problems." },
+    { "type": "pause" },
+    { "text": "Charles's Law: V₁ divided by T₁ equals V₂ divided by T₂. Or equivalently, V₁ times T₂ equals V₂ times T₁. Either form works. The key: temperature must be in Kelvin. Always. No exceptions." },
+    { "text": "Why does this work at the particle level? Remember from Lesson 5.1: higher temperature means higher average kinetic energy. The particles slam into the piston harder and more frequently. Since the piston is free to move — constant pressure — it slides outward. It keeps sliding until the particles spread out enough that the collision rate per unit area matches the external pressure again. A new equilibrium: higher temperature, larger volume, same pressure." },
+    { "text": "Your turn to calculate." },
+    { "type": "pause" },
+    { "text": "Now for the profound part. If volume is directly proportional to Kelvin temperature, what happens at 0 Kelvin? Theoretically, volume goes to zero. Particles have zero kinetic energy — they stop moving entirely. This temperature, negative 273.15 degrees Celsius, is absolute zero. It's the coldest anything can possibly be. It defines the bottom of the Kelvin scale and explains why Kelvin is the natural unit for gas laws." },
+    { "text": "This question bridges Charles's Law with intermolecular forces from Lesson 4.2." },
+    { "type": "pause" },
+    { "text": "Time to see Charles's Law in action. This container has a free-sliding piston — it maintains constant pressure. When you heat the gas, particles speed up and push the piston outward, increasing the volume. Cool the gas and the piston slides back. Watch the V/T ratio — it should stay approximately constant no matter the temperature. Try heating above 500 K and cooling below 150 K." },
+    { "text": "Explore both extremes — crank the temperature way up, then way down. Watch the piston move and V/T stay constant.", "confirmText": "See it? Hot gas — fast particles — piston pushed out — big volume. Cold gas — slow particles — piston slides in — small volume. But V divided by T barely changed. That's Charles's Law: the ratio is locked." },
+    { "type": "pause" },
+    { "text": "Let's put Boyle's and Charles's Laws side by side. Boyle: pressure and volume are inversely proportional at constant T. Charles: volume and temperature are directly proportional at constant P. One is a hyperbola, the other is a straight line. Both come from the same physics — particle collisions — just with different variables held constant." },
+    { "text": "Can you identify which law governs each scenario?" },
+    { "text": "Multi-chapter synthesis: calorimetry, specific heat, and Charles's Law." },
+    { "type": "pause" },
+    { "text": "Final challenge. This threads together Hess's Law, reaction energy, specific heat, and both gas laws." },
+    { "text": "Incredible work. You've now mastered two gas laws: Boyle's — pressure times volume is constant at fixed temperature — and Charles's — volume over temperature is constant at fixed pressure. In Lesson 6.4, we'll unite them into a single, elegant equation: PV equals nRT. The ideal gas law. It combines Boyle's, Charles's, and Avogadro's principle into one formula that handles any combination of changes. See you there!" }
+  ]
+}
