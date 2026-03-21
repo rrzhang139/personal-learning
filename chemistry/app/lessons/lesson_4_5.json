@@ -1,0 +1,32 @@
+{
+  "id": "lesson_4_5",
+  "steps": [
+    { "text": "In Lesson 4.1, you learned that atoms bond to fill their outer shells — the octet rule. In 4.2, you used VSEPR to predict molecular shapes. But there's a gap: how do you figure out exactly where every electron goes? How many bonds does an atom make? How many lone pairs does it have? That's what Lewis structures answer. They're the blueprint of molecular architecture — and once you can draw them, you can predict shape, polarity, reactivity, and more." },
+    { "text": "Let's start with the foundation. This connects electron shells from Lesson 2.4 to the periodic table from Lesson 3.1." },
+    { "type": "pause" },
+    { "text": "Step one of any Lewis structure: count your valence electron budget. The periodic table makes this trivial. Group 1? One valence electron. Group 14? Four. Group 17? Seven. For a molecule, just add them all up. Water — H₂O: oxygen has 6, each hydrogen has 1, total is 8. That's your electron budget. Every single electron must be accounted for in the final structure." },
+    { "text": "Count the total valence electrons." },
+    { "type": "pause" },
+    { "text": "Here's the five-step recipe. Step 1: count total valence electrons. Step 2: pick the central atom — it's the least electronegative one, and it's never hydrogen. Step 3: draw single bonds from the central atom to each outer atom — each bond uses 2 electrons. Step 4: distribute the remaining electrons as lone pairs, starting with outer atoms. Step 5: check octets — if the central atom is short, convert lone pairs from outer atoms into double or triple bonds." },
+    { "text": "The central atom rule deserves emphasis. Why least electronegative? Because the central atom has to share electrons with the most neighbors. Less electronegative atoms are more generous with their electrons — from Lesson 3.1, electronegativity increases up and to the right. So carbon is almost always central. Hydrogen is NEVER central because it can only form one bond. And if you see a formula like HCN, the H is on the outside, C is central, and N is on the other side." },
+    { "text": "Apply the central atom rule. Use electronegativity from Lesson 3.1." },
+    { "type": "pause" },
+    { "text": "Let's watch the recipe in action. Below is an interactive Lewis structure builder. Select a molecule and click Next to walk through each step. Start with H₂ to see the simplest case, then try H₂O. Once you're comfortable, try CO₂ — it needs double bonds. Step through at least 3 different molecules." },
+    { "text": "Explore the builder. Make sure to try CO₂ or HCN — they show why multiple bonds are sometimes necessary.", "confirmText": "See the pattern? Single bonds first, distribute lone pairs, check octets, and if the central atom is short — promote lone pairs to bonds. For CO₂, carbon needed two double bonds. For HCN, carbon needed a triple bond to nitrogen. The recipe handles all of these." },
+    { "type": "pause" },
+    { "text": "Let's formalize what you just saw. After placing single bonds and distributing lone pairs, sometimes the central atom still doesn't have 8 electrons. The fix: take a lone pair from a neighboring atom and convert it into an additional bond. One lone pair becomes one bond — that's a double bond. Need two more? Convert two lone pairs — that's a triple bond. This is why N₂ has a triple bond and is incredibly unreactive. Three shared pairs, 945 kilojoules per mole to break." },
+    { "text": "Think about when the recipe requires multiple bonds." },
+    { "text": "Now connect Lewis structures to bond strength from Lesson 4.1." },
+    { "type": "pause" },
+    { "text": "The octet rule works beautifully most of the time, but there are exceptions. Some atoms, like boron in BF₃, are stable with fewer than 8 — an incomplete octet. Others, like phosphorus in PCl₅ or sulfur in SF₆, hold MORE than 8 electrons — an expanded octet. The key from Lesson 2.4: only atoms in Period 3 and beyond can expand, because they have d-orbitals available. Period 2 atoms like C, N, O, and F never exceed 8." },
+    { "text": "This connects Lewis structures to orbital theory from Lesson 2.4." },
+    { "type": "pause" },
+    { "text": "Now here's the payoff. Lewis structures aren't just electron bookkeeping — they're the input to everything you learned in Lesson 4.2. Count the bonding pairs and lone pairs around the central atom in your Lewis structure. Feed that into VSEPR. Out comes the molecular shape. From shape you get polarity. From polarity you get IMF type. From IMFs you get boiling point, state of matter, solubility. The whole chain starts here." },
+    { "text": "Trace the complete chain from Lewis structure to physical properties." },
+    { "text": "Use Lewis structures to explain a physical property difference. This connects Lessons 4.2 and 5.1." },
+    { "type": "pause" },
+    { "text": "Final synthesis: Lewis structures meet gas laws. This connects Lessons 4.2, 4.5, 6.1, and 6.4." },
+    { "type": "pause" },
+    { "text": "You now have the most important skill in molecular chemistry: drawing Lewis structures. From valence electron count to bonds, lone pairs, and octets — you can figure out how any molecule is wired. In Lesson 4.6, we'll refine this further with formal charge — a way to determine which Lewis structure is best when multiple are possible — and resonance, where the real molecule is a blend of structures. This explains molecules like ozone and benzene, which no single Lewis structure can capture." }
+  ]
+}

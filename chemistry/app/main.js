@@ -12,6 +12,7 @@ import { lesson_4_1 } from './lessons/lesson_4_1.js';
 import { lesson_4_2 } from './lessons/lesson_4_2.js';
 import { lesson_4_3 } from './lessons/lesson_4_3.js';
 import { lesson_4_4 } from './lessons/lesson_4_4.js';
+import { lesson_4_5 } from './lessons/lesson_4_5.js';
 import { lesson_5_1 } from './lessons/lesson_5_1.js';
 import { lesson_5_2 } from './lessons/lesson_5_2.js';
 import { lesson_5_3 } from './lessons/lesson_5_3.js';
@@ -32,6 +33,7 @@ const lessons = {
   '4.2': lesson_4_2,
   '4.3': lesson_4_3,
   '4.4': lesson_4_4,
+  '4.5': lesson_4_5,
   '5.1': lesson_5_1,
   '5.2': lesson_5_2,
   '5.3': lesson_5_3,
