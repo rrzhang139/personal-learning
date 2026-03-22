@@ -1,0 +1,32 @@
+{
+  "id": "lesson_4_6",
+  "steps": [
+    { "text": "In Lesson 4.5, you learned the 5-step recipe for Lewis structures. But here's a problem the recipe doesn't solve: sometimes you can draw more than one valid Lewis structure for the same molecule. Ozone — O₃ — is a perfect example. You can place the double bond on the left side or the right side. Both structures have correct octets. Both use all 18 valence electrons. So which one is the real molecule?" },
+    { "text": "Apply the 4.5 recipe and see if you get multiple valid answers." },
+    { "type": "pause" },
+    { "text": "Before we tackle resonance, we need a tool for comparing Lewis structures. It's called formal charge. The formula is simple: FC equals V minus L minus half B. V is the number of valence electrons the atom normally has — from the group number in Lesson 3.1. L is the number of lone pair electrons on that atom. B is the total number of bonding electrons, and you take half because each bond is shared equally between two atoms." },
+    { "text": "The rules for using formal charge: First, minimize formal charges — structures where atoms are closest to zero are best. Second, if you must have charges, put negative formal charge on the more electronegative atom — from Lesson 3.1's electronegativity trends. Third, avoid putting the same sign charge on adjacent atoms. And fourth, the sum of all formal charges must equal the overall charge of the molecule or ion. For a neutral molecule, they must sum to zero." },
+    { "text": "Calculate formal charge. Use V from Group number, count L and B from the Lewis structure." },
+    { "type": "pause" },
+    { "text": "Let's compare two Lewis structures for CO₂. Structure 1: O=C=O with two double bonds. Every atom has FC = 0. Structure 2: O≡C—O with a triple bond on the left and single on the right. Here, left O gets +1 and right O gets −1. Which is better? Structure 1 wins — all zeros. Structure 2 puts positive charge on oxygen, the most electronegative atom, which violates rule 2. The symmetric structure is the better representation." },
+    { "text": "Use formal charge rules to pick the best structure. This requires electronegativity from Lesson 3.1." },
+    { "type": "pause" },
+    { "text": "Now for the big idea. Sometimes multiple Lewis structures have equally good formal charges — like ozone's two structures. When that happens, no single structure is the real molecule. Instead, the real molecule is a resonance hybrid — a blend of all the valid structures. In ozone, the double bond isn't on the left or right. It's delocalized — spread evenly across both positions. Each O—O bond is 1.5 bonds." },
+    { "text": "This is the most common misconception in all of chemistry: resonance does NOT mean the molecule flips back and forth between structures. The real molecule isn't switching. Think of it like a mule — a blend of a horse and a donkey. A mule isn't a horse half the time and a donkey the other half. It's always a mule. Similarly, ozone is always the hybrid — with 1.5-order bonds everywhere — not sometimes structure A and sometimes structure B." },
+    { "text": "Test whether the resonance concept is clear." },
+    { "type": "pause" },
+    { "text": "Let's see resonance in action. Below you can explore three molecules: ozone, carbonate, and nitrite. Switch between individual Lewis structures to see the double bond move. Then click Hybrid to see the real molecule — with delocalized electron clouds shown in purple. Toggle formal charges on and off. Try all three molecules and view at least one hybrid." },
+    { "text": "Switch between structures, then click Hybrid to see the blend. Try at least two different molecules.", "confirmText": "See the purple electron cloud in the hybrid? Those delocalized electrons don't belong to any single bond — they're smeared across the entire molecule. This is what makes resonance structures powerful: they reveal that the real molecule has properties no single Lewis structure can represent." },
+    { "type": "pause" },
+    { "text": "Resonance has real, measurable consequences. First: equal bond lengths. In carbonate, all three C—O bonds are exactly 1.29 angstroms — between a single bond at 1.43 and a double bond at 1.23. From Lesson 4.1: bond order determines length, and 1.33 order gives an intermediate length. Second: extra stability. Delocalized electrons lower the energy of the molecule. Third — and this is the materials science connection — delocalization is the key to electrical conductivity." },
+    { "text": "Connect resonance to bond properties from Lesson 4.1." },
+    { "text": "This bridges molecular resonance to the electron sea model from Lesson 3.2." },
+    { "type": "pause" },
+    { "text": "Apply formal charge rules to a trickier molecule." },
+    { "text": "Scale up resonance from a molecule to a material. This threads the electron sea from 3.2, bond strength from 4.1, and intermolecular forces from 4.2." },
+    { "type": "pause" },
+    { "text": "Final synthesis. Threads formal charge, resonance, stoichiometry, and gas laws." },
+    { "type": "pause" },
+    { "text": "You now have two powerful tools: formal charge for ranking Lewis structures, and resonance for understanding delocalized electrons. In Lesson 4.7, we'll flip the bookkeeping method: instead of splitting bonds 50/50, we'll give ALL the electrons to the more electronegative atom. That's oxidation state — and it's the key to understanding electron transfer, redox reactions, batteries, and corrosion. The chemistry of materials depends on it." }
+  ]
+}
