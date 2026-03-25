@@ -63,10 +63,10 @@ export class NarrativeEngine {
   async skipToStep(stepIndex) {
     this.stop();
     await this._sleep(100);
-    // Execute all prior 'show' actions silently so sections are visible
+    // Execute all prior actions silently so sections/visuals are in correct state
     for (let i = 0; i < stepIndex; i++) {
       const s = this.steps[i];
-      if (s.type === 'show' && s.action) s.action();
+      if (s.action) s.action();
     }
     this.start(stepIndex);
   }
@@ -102,6 +102,7 @@ export class NarrativeEngine {
     switch (step.type) {
       case 'narrate':
         this._setStatus('Listening...');
+        if (step.action) step.action();
         if (step.highlight) this._highlight(step.highlight);
         await this._playAudio(index, step.text);
         break;
