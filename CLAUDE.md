@@ -17,6 +17,40 @@
 - **Intuitive progression** — concepts should flow naturally from one to the next. Always explain *why* something matters before diving into *what* it is
 - **Conversational & live** — Qianjing learns by chatting back and forth, not by reading pre-written docs. Keep it engaging, real-time, and dialogue-driven. Teach *in the conversation*, not just by generating files. Ask questions, react to answers, adapt pace on the fly. Written lesson files are reference material — the real teaching happens live.
 
+## ⚠️ CRITICAL: Lesson Presentation Rules (READ THIS FIRST)
+
+These rules override everything else about lesson design. They are the #1 priority.
+
+### 1. ALL VISUALS, NO TEXT
+- Lessons must be **100% animation/simulation-based**. The screen should show a full-screen canvas sim — NOT text paragraphs, tables, callout boxes, or math blocks.
+- The ONLY text allowed is a single `<h2>` title. Everything else is canvas-rendered visuals.
+- No `TextBlock`, `CalloutBlock`, `TableBlock`, `MathBlock` — only `SimBlock`.
+- If you need to show a formula, table, or diagram, **draw it on the canvas** inside the sim.
+
+### 2. STORYTELLING NARRATION (the audio IS the lesson)
+- The audio narration must be written like a **storyteller explaining to a friend who knows nothing**. Not academic. Not textbook. Conversational, vivid, intuitive.
+- Build from the ground up every time: "Everything starts with one insight: atoms don't want to be alone. They're more stable — lower energy, happier — when they share electrons. But why? Think of each atom as having a set of parking spots..."
+- Use **analogies and metaphors** liberally: parking spots for electron shells, lonely atoms wanting friends, tug-of-war for electronegativity.
+- The narration should feel like someone sitting next to you, walking you through a whiteboard sketch step by step.
+
+### 3. VISUALS SYNC WITH NARRATION (event-driven animation)
+- The sim's visuals must **change in response to what the audio is saying**. When the narration mentions "now look at the oxygen atom", the oxygen should highlight or animate at that moment.
+- Use step-based visual states: each narration step should trigger a different visual configuration in the sim (new atoms appear, bonds form, electrons move, labels fade in).
+- The sim should feel like a **living whiteboard** that draws itself as the teacher talks.
+- Do NOT show everything at once. Reveal elements progressively as the narration introduces them.
+
+### 4. ONE ANCHOR MOLECULE PER LESSON
+- Each lesson should revolve around **ONE molecule** that serves as the anchor for the entire concept. Build the whole lesson around that molecule's story.
+- Choose a molecule with **many teaching angles** — one that can demonstrate the concept from multiple perspectives and has real-world applications.
+- You can mention other molecules for comparison, but the core narrative follows ONE molecule from start to finish. The learner should feel the molecule "evolving" as they learn more about it.
+- Example: Use SO₂ to teach resonance — start with its atoms, build up the octet, show why single bonds aren't enough, reveal the two structures, then show the hybrid. One molecule, complete journey.
+
+### 5. QUIZZES SHOULD BE AUDIO+VISUAL, NOT TEXT WALLS
+- Quiz questions should be **narrated aloud** (audio) with visual support on the canvas, not dense text paragraphs.
+- Keep quiz option text **short** (1 line max per option when possible).
+- The quiz question should reference what's visible on screen: "Looking at the simulation, which arrangement gives oxygen a full octet?"
+- Feedback should also be concise — the narration explains, not a text wall.
+
 ## Slash Commands
 Qianjing can type these shortcuts to quickly trigger common actions:
 
@@ -120,10 +154,10 @@ Each lesson covers ONE atomic concept (~15-20 steps, ~6-8 quizzes/checkpoints). 
 
 ### Step 2: Create the lesson JS file
 
-Create `chemistry/app/lessons/lesson_X_Y.js`. The export must be an object with this shape:
+Create `chemistry/app/lessons/lesson_X_Y.js`. **Animation-first**: only a title + SimBlock.
 
 ```js
-import { TextBlock, CalloutBlock, MathBlock, TableBlock, SimBlock } from '../blocks/Block.js';
+import { TextBlock, SimBlock } from '../blocks/Block.js';
 import '../sims/mySim.js'; // self-registers
 
 export const lesson_X_Y = {
@@ -133,18 +167,12 @@ export const lesson_X_Y = {
 
   sections: [
     {
-      id: 'sec-XY-intro',
+      id: 'sec-XY-main',
       blocks: [
-        new TextBlock({ id: 'XY-intro-title', tag: 'h2', html: 'Section Title' }),
-        new TextBlock({ id: 'XY-intro-text', tag: 'p', html: 'Paragraph text...' }),
-        new CalloutBlock({ id: 'XY-intro-callout', html: '<strong>Key point</strong>...' }),
-        new MathBlock({ id: 'XY-intro-math', label: 'Formula:', equation: 'E = mc²', symbols: [
-          { symbol: 'E', name: 'Energy', meaning: '...' },
-        ]}),
-        new SimBlock({ id: 'XY-sim', sim: 'mySimName', width: 900, height: 420, simOptions: { mode: 'default' } }),
+        new TextBlock({ id: 'XY-title', tag: 'h2', html: 'Lesson Title' }),
+        new SimBlock({ id: 'XY-sim', sim: 'mySimName', width: 900, height: 420, simOptions: {} }),
       ]
     },
-    // ... more sections
   ],
 
   // CRITICAL: stepMeta array length MUST exactly equal the array length returned by buildSteps().
@@ -268,6 +296,23 @@ Key sim conventions:
 - Canvas default: 900×420
 - Must have a `stop()` method to clean up animation frames
 - Import sim file in the lesson JS: `import '../sims/mySimViz.js';`
+
+### Sim design: event-driven visuals
+
+**The sim IS the lesson.** It must be a rich, step-driven visual that changes as the narration progresses.
+
+**Step-synced visuals:** The sim should expose a `setStep(n)` method or track the current step via the lesson runner. Each narration step triggers a different visual state:
+- Step 0: Show a lone atom with empty parking spots
+- Step 1: A second atom floats in — they're both "lonely"
+- Step 2: Electrons start sharing — a bond forms
+- Step 3: The bond is labeled, octet check highlights light up
+- etc.
+
+**Progressive reveal:** Don't dump everything on screen at once. Start with a blank or simple state and BUILD UP the visual as the narration introduces each piece. Elements should fade in, animate in, or draw themselves.
+
+**One anchor molecule:** The sim should primarily animate ONE molecule being built up through the lesson. The whole visual journey follows that molecule.
+
+**Canvas-rendered everything:** Formulas, tables, labels, diagrams — all drawn on canvas. No HTML text blocks outside the sim.
 
 ### Step 6: Register the lesson
 
