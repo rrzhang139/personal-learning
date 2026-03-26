@@ -1,5 +1,12 @@
 # Personal Learning Project
 
+## Feature Specs & Stop Hook
+- **FEATURE_SPECS.md** tracks all requested features and their status.
+- A **stop hook** (`.claude/hooks/on-stop.sh`) fires after every response.
+- When the hook fires: if you discussed new features or made changes this turn, append a brief summary to the Conversation Log section at the bottom of `FEATURE_SPECS.md` (below the `STOP_HOOK_MARKER`).
+- Format: `### YYYY-MM-DD — Brief title` followed by 1-3 bullet points.
+- Always run tests (`tests/test.html`) before and after changes. If tests fail, fix before stopping.
+
 ## Learner: Qianjing
 
 ## Learning Style & Preferences

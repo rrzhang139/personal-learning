@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on-stop.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
