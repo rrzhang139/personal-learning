@@ -7,36 +7,32 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #0a0a1a; color: #fff; font-family: monospace; overflow: hidden; }
-
   .toolbar {
     position: fixed; top: 0; left: 0; right: 0; height: 50px; z-index: 10;
     background: #111; border-bottom: 1px solid #333; display: flex; align-items: center;
-    padding: 0 16px; gap: 6px; overflow-x: auto;
+    padding: 0 12px; gap: 5px; overflow-x: auto;
   }
   .toolbar button {
-    background: #1a1a2e; border: 1px solid #444; color: #ccc; padding: 6px 12px;
-    border-radius: 4px; cursor: pointer; font: 12px monospace; white-space: nowrap;
+    background: #1a1a2e; border: 1px solid #444; color: #ccc; padding: 5px 10px;
+    border-radius: 4px; cursor: pointer; font: 11px monospace; white-space: nowrap;
     transition: border-color 0.2s, color 0.2s;
   }
   .toolbar button:hover { border-color: #00e5ff; color: #fff; }
   .toolbar button.active { border-color: #4caf50; color: #4caf50; }
+  .toolbar button.filter-s.active { border-color: #00e5ff; color: #00e5ff; }
+  .toolbar button.filter-p.active { border-color: #ff9800; color: #ff9800; }
+  .toolbar button.filter-d.active { border-color: #4caf50; color: #4caf50; }
+  .toolbar button.filter-f.active { border-color: #bb86fc; color: #bb86fc; }
   .toolbar .sep { width: 1px; height: 28px; background: #333; flex-shrink: 0; }
-  .toolbar .label { color: #888; font-size: 11px; white-space: nowrap; }
-
-  .canvas-wrap {
-    position: fixed; top: 50px; left: 0; right: 0; bottom: 0;
-  }
-  .canvas-wrap canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  .toolbar .label { color: #888; font-size: 10px; white-space: nowrap; }
+  .canvas-wrap { position: fixed; top: 50px; left: 0; right: 0; bottom: 0; }
+  .canvas-wrap canvas { display: block; width: 100%; height: 100%; }
 </style>
 </head>
 <body>
 
 <div class="toolbar">
-  <span class="label">Add atoms:</span>
+  <span class="label">Atoms:</span>
   <button data-action="add-H">H</button>
   <button data-action="add-C">C</button>
   <button data-action="add-N">N</button>
@@ -52,14 +48,19 @@
   <button data-action="mol-NH3">NH₃</button>
   <button data-action="mol-O3">O₃</button>
   <button data-action="mol-N2">N₂</button>
-  <button data-action="mol-BF3">BF₃</button>
   <button data-action="mol-HCl">HCl</button>
   <div class="sep"></div>
+  <span class="label">View:</span>
   <button data-action="toggle-cloud" class="active">Cloud</button>
-  <button data-action="toggle-electrons" class="active">Electrons</button>
-  <button data-action="toggle-float">Float</button>
+  <button data-action="toggle-electrons" class="active">e⁻</button>
+  <button data-action="toggle-orbitals">Orbitals</button>
   <div class="sep"></div>
-  <button data-action="tween-demo">Tween Demo</button>
+  <span class="label">Filter:</span>
+  <button data-action="filter-s" class="filter-s active">s</button>
+  <button data-action="filter-p" class="filter-p active">p</button>
+  <button data-action="filter-d" class="filter-d active">d</button>
+  <button data-action="filter-f" class="filter-f active">f</button>
+  <div class="sep"></div>
   <button data-action="clear" style="border-color:#ef5350;color:#ef5350">Clear</button>
 </div>
 

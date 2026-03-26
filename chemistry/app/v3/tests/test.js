@@ -434,6 +434,57 @@ async function runTests() {
     ne2p.orbitals.every(o => o.spinUp && o.spinDown));
 
   // ===========================================
+  section('18. Atom Orbital Rendering');
+  // ===========================================
+  const orbAtom = new Atom(Element.get('O'), 450, 250);
+  assert('Atom has _electronConfig', orbAtom._electronConfig.length > 0);
+  assert('O config: 3 subshells (1s, 2s, 2p)', orbAtom._electronConfig.length === 3);
+  assert('Atom orbitalsVisible default false', orbAtom.orbitalsVisible === false);
+  orbAtom.orbitalsVisible = true;
+  assert('Can enable orbitalsVisible', orbAtom.orbitalsVisible === true);
+
+  // Filter
+  const filter = { s: true, p: true, d: true, f: true };
+  orbAtom.orbitalFilter = filter;
+  assert('orbitalFilter assigned', orbAtom.orbitalFilter === filter);
+  filter.p = false;
+  assert('Filter mutation propagates (shared ref)', orbAtom.orbitalFilter.p === false);
+  filter.p = true;
+
+  // Render doesn't throw
+  const testCanvas = document.getElementById('testCanvas');
+  const testCtx = testCanvas.getContext('2d');
+  assert('Atom.render with orbitals does not throw', () => {
+    orbAtom.render(testCtx, 1.0);
+    return true;
+  });
+  orbAtom.orbitalsVisible = false;
+  assert('Atom.render without orbitals does not throw', () => {
+    orbAtom.render(testCtx, 1.0);
+    return true;
+  });
+
+  // Iron has d orbitals in config
+  const feAtom = new Atom(Element.get('Fe'), 450, 250);
+  feAtom.orbitalsVisible = true;
+  feAtom.orbitalFilter = { s: false, p: false, d: true, f: false };
+  assert('Fe has 3d in config', feAtom._electronConfig.some(s => s.label === '3d'));
+  assert('Fe render with d-only filter does not throw', () => {
+    feAtom.render(testCtx, 1.0);
+    return true;
+  });
+
+  // H only has 1s — no p/d/f
+  const hAtomOrb = new Atom(Element.get('H'), 100, 100);
+  assert('H config: 1 subshell (1s)', hAtomOrb._electronConfig.length === 1);
+  hAtomOrb.orbitalsVisible = true;
+  hAtomOrb.orbitalFilter = { s: true, p: true, d: true, f: true };
+  assert('H render with all filters does not throw', () => {
+    hAtomOrb.render(testCtx, 1.0);
+    return true;
+  });
+
+  // ===========================================
   // Summary
   // ===========================================
   const total = passed + failed + errors;
