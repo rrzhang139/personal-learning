@@ -24,6 +24,9 @@ export class DragController {
     this.draggables = [];  // sphere meshes to raycast against
 
     this.onDragEnd = null;  // callback(atom3D)
+    this.onClick = null;    // callback(atom3D) — fires on click (not drag)
+    this._downNDC = null;   // track mouse position at pointerdown
+    this._downAtom = null;  // track which atom was under cursor at pointerdown
 
     domElement.addEventListener('pointerdown', (e) => this._onDown(e));
     domElement.addEventListener('pointermove', (e) => this._onMove(e));
@@ -77,6 +80,8 @@ export class DragController {
       this.dragOffset.subVectors(hit.atom3d.group.position, this.intersection);
       this._prevDragPos = hit.atom3d.group.position.clone();
     }
+    this._downNDC = this.mouse.clone();
+    this._downAtom = hit?.atom3d || null;
   }
 
   _onMove(event) {
@@ -100,7 +105,17 @@ export class DragController {
     }
   }
 
-  _onUp() {
+  _onUp(event) {
+    // Detect click: minimal movement between down and up
+    if (this._downNDC && this._downAtom && !this.dragTarget) {
+      this._toNDC(event);
+      const dx = this.mouse.x - this._downNDC.x;
+      const dy = this.mouse.y - this._downNDC.y;
+      if (dx * dx + dy * dy < 0.001) { // very small movement in NDC space
+        if (this.onClick) this.onClick(this._downAtom);
+      }
+    }
+
     if (this.dragTarget) {
       const atom = this.dragTarget;
       this.dragTarget = null;
@@ -109,6 +124,9 @@ export class DragController {
       if (this.onDragEnd) this.onDragEnd(atom);
       this._prevDragPos = null;
     }
+
+    this._downNDC = null;
+    this._downAtom = null;
   }
 
   /** Get the delta the dragged atom moved since last call (for rigid-body) */

@@ -11,6 +11,7 @@
  * - Orbit camera (drag background), zoom (scroll)
  */
 import { Element } from './core/Element.js';
+import { ElectronConfig } from './orbitals/ElectronConfig.js';
 import { SceneManager } from './three/SceneManager.js';
 import { Atom3D } from './three/Atom3D.js';
 import { Molecule3D } from './three/Molecule3D.js';
@@ -26,10 +27,38 @@ async function init() {
   const container = document.getElementById('container');
   const sm = new SceneManager(container);
 
+  let selectedAtom = null;
+
   const drag = new DragController(sm.camera, sm.renderer.domElement, sm.controls);
   const bonder = new ProximityBonder3D(sm.scene, drag, (bond) => {
     info.textContent = `Bonded! ${bond.atomA.element.symbol}—${bond.atomB.element.symbol}`;
   });
+
+  // Click to select/inspect an atom
+  drag.onClick = (atom3d) => {
+    if (selectedAtom === atom3d) {
+      // Deselect
+      deselectAll();
+      info.textContent = 'Deselected. Drag atoms to bond.';
+    } else {
+      deselectAll();
+      selectedAtom = atom3d;
+      atom3d.setSelected(true);
+      // Dim all other atoms
+      for (const a of bonder.atoms) {
+        if (a !== atom3d) a.setDimmed(true);
+      }
+      const el = atom3d.element;
+      const config = ElectronConfig.notation(el.Z);
+      info.textContent = `${el.name} (Z=${el.Z}) — EN: ${el.EN} — ${config}. Click again to deselect.`;
+    }
+  };
+
+  function deselectAll() {
+    if (selectedAtom) selectedAtom.setSelected(false);
+    selectedAtom = null;
+    for (const a of bonder.atoms) a.setDimmed(false);
+  }
 
   // Update loop
   sm.onUpdate((time) => {

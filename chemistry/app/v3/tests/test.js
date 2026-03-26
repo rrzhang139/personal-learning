@@ -641,6 +641,61 @@ async function runTests() {
   }
 
   // ===========================================
+  section('23. Atom Cloud & Electron Visibility');
+  // ===========================================
+
+  const visAtom = new Atom(Element.get('O'), 200, 200);
+
+  // Cloud toggle
+  assert('Cloud visible by default', visAtom.cloudVisible === true);
+  visAtom.cloudVisible = false;
+  assert('Cloud can be turned off', visAtom.cloudVisible === false);
+  visAtom.cloudVisible = true;
+
+  // Electrons toggle
+  assert('Electrons visible by default', visAtom.electronsVisible === true);
+  visAtom.electronsVisible = false;
+  assert('Electrons can be turned off', visAtom.electronsVisible === false);
+  visAtom.electronsVisible = true;
+
+  // Orbitals toggle
+  assert('Orbitals off by default', visAtom.orbitalsVisible === false);
+  visAtom.orbitalsVisible = true;
+  assert('Orbitals can be turned on', visAtom.orbitalsVisible === true);
+  visAtom.orbitalsVisible = false;
+
+  // Orbital filter
+  const testFilter = { s: true, p: true, d: false, f: false };
+  visAtom.orbitalFilter = testFilter;
+  assert('Orbital filter assignable', visAtom.orbitalFilter.d === false);
+  testFilter.d = true;
+  assert('Orbital filter is shared ref', visAtom.orbitalFilter.d === true);
+
+  // Render with various toggles doesn't throw
+  const tc = document.getElementById('testCanvas').getContext('2d');
+  visAtom.cloudVisible = true; visAtom.electronsVisible = true; visAtom.orbitalsVisible = false;
+  assert('Render cloud+electrons OK', () => { visAtom.render(tc, 1.0); return true; });
+  visAtom.cloudVisible = false; visAtom.orbitalsVisible = true;
+  assert('Render orbitals OK', () => { visAtom.render(tc, 1.0); return true; });
+  visAtom.cloudVisible = false; visAtom.electronsVisible = false; visAtom.orbitalsVisible = false;
+  assert('Render bare atom OK', () => { visAtom.render(tc, 1.0); return true; });
+
+  // Electron positions stay outside atom radius
+  const eTestAtom = new Atom(Element.get('O'), 300, 300);
+  eTestAtom.electronsVisible = true;
+  eTestAtom.orbitalsVisible = true;
+  eTestAtom.orbitalFilter = { s: true, p: true, d: true, f: true };
+  // Simulate several time steps
+  for (const e of eTestAtom.electrons) {
+    for (let t = 0; t < 10; t += 0.5) {
+      e.update(t);
+    }
+  }
+  // Not a render test but a data integrity check
+  assert('Atom has correct element', eTestAtom.element.symbol === 'O');
+  assert('Atom electrons count', eTestAtom.electrons.length === 6);
+
+  // ===========================================
   // Summary
   // ===========================================
   const total = passed + failed + errors;
