@@ -279,27 +279,37 @@ export class OrbitalView {
   }
 
   _drawFilterButtons(ctx) {
-    ctx.font = 'bold 14px monospace';
+    // Label
+    ctx.fillStyle = GREY;
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('Filter subshells:', 20, this.H - 58);
+
+    ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
     for (const btn of this._filterButtons) {
       const on = this.filters[btn.type];
-      ctx.fillStyle = on ? btn.color + '33' : '#111';
-      ctx.strokeStyle = on ? btn.color : DIM;
-      ctx.lineWidth = on ? 2 : 1;
-      ctx.beginPath();
-      ctx.roundRect(btn.x, btn.y, btn.w, btn.h, 4);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = on ? btn.color : DIM;
-      ctx.fillText(btn.type, btn.x + btn.w / 2, btn.y + btn.h / 2);
-    }
 
-    // Label
-    ctx.fillStyle = GREY;
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('Filter subshells:', 20, this.H - 55);
+      // Background
+      ctx.fillStyle = on ? '#1a2a1a' : '#111';
+      ctx.fillRect(btn.x, btn.y, btn.w, btn.h);
+
+      // Border
+      ctx.strokeStyle = on ? btn.color : DIM;
+      ctx.lineWidth = on ? 2.5 : 1;
+      ctx.strokeRect(btn.x, btn.y, btn.w, btn.h);
+
+      // Letter
+      ctx.fillStyle = on ? btn.color : '#555';
+      ctx.fillText(btn.type, btn.x + btn.w / 2, btn.y + btn.h / 2);
+
+      // ON/OFF indicator
+      ctx.font = '9px monospace';
+      ctx.fillStyle = on ? '#4caf50' : '#555';
+      ctx.fillText(on ? 'ON' : 'OFF', btn.x + btn.w / 2, btn.y + btn.h + 10);
+      ctx.font = 'bold 16px monospace';
+    }
   }
 }
