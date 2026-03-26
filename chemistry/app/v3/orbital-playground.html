@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbital Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a1a; color: #fff; font-family: monospace; overflow: hidden; }
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 50px; z-index: 10;
+    background: #111; border-bottom: 1px solid #333; display: flex; align-items: center;
+    padding: 0 16px; gap: 6px; overflow-x: auto;
+  }
+  .toolbar button {
+    background: #1a1a2e; border: 1px solid #444; color: #ccc; padding: 6px 12px;
+    border-radius: 4px; cursor: pointer; font: 12px monospace; white-space: nowrap;
+  }
+  .toolbar button:hover { border-color: #00e5ff; color: #fff; }
+  .toolbar button.active { border-color: #4caf50; color: #4caf50; background: #1a2e1a; }
+  .toolbar .sep { width: 1px; height: 28px; background: #333; flex-shrink: 0; }
+  .toolbar .label { color: #888; font-size: 11px; white-space: nowrap; }
+  .canvas-wrap { position: fixed; top: 50px; left: 0; right: 0; bottom: 0; }
+  .canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="label">Element:</span>
+  <button data-z="1">H (1)</button>
+  <button data-z="6">C (6)</button>
+  <button data-z="7">N (7)</button>
+  <button data-z="8" class="active">O (8)</button>
+  <button data-z="9">F (9)</button>
+  <button data-z="11">Na (11)</button>
+  <button data-z="16">S (16)</button>
+  <button data-z="17">Cl (17)</button>
+  <button data-z="26">Fe (26)</button>
+  <div class="sep"></div>
+  <span class="label">Click s/p/d/f buttons at bottom to filter</span>
+</div>
+<div class="canvas-wrap">
+  <canvas id="orbCanvas"></canvas>
+</div>
+<script type="module">
+  import { OrbitalView } from './orbitals/OrbitalView.js';
+
+  const canvas = document.getElementById('orbCanvas');
+  canvas.width = 900;
+  canvas.height = 500;
+
+  const view = new OrbitalView(canvas, { Z: 8 });
+  view.start();
+
+  document.querySelector('.toolbar').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-z]');
+    if (!btn) return;
+    const z = parseInt(btn.dataset.z);
+    view.setElement(z);
+    // Update active state
+    document.querySelectorAll('[data-z]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+</script>
+</body>
+</html>
