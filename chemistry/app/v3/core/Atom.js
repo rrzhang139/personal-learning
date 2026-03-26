@@ -196,10 +196,11 @@ export class Atom extends Renderable {
     const cg = parseInt(c.slice(3, 5), 16);
     const cb = parseInt(c.slice(5, 7), 16);
 
-    const intensity = 0.06 + ratio * 0.14;
+    const intensity = 0.15 + ratio * 0.25;
     const grad = ctx.createRadialGradient(cx, cy, this.r * 0.3, cx, cy, r);
     grad.addColorStop(0, `rgba(${cr},${cg},${cb},${intensity})`);
-    grad.addColorStop(0.5, `rgba(${cr},${cg},${cb},${intensity * 0.4})`);
+    grad.addColorStop(0.4, `rgba(${cr},${cg},${cb},${intensity * 0.6})`);
+    grad.addColorStop(0.7, `rgba(${cr},${cg},${cb},${intensity * 0.25})`);
     grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
 
     ctx.fillStyle = grad;

@@ -110,9 +110,9 @@ export class Bond extends Renderable {
 
     const grad = ctx.createRadialGradient(0, 0, 5, 0, 0, halfLen);
     const { r, g, b: bl } = CLOUD_COLOR;
-    const intensity = 0.06 + this.order * 0.04;
+    const intensity = 0.12 + this.order * 0.08;
     grad.addColorStop(0, `rgba(${r},${g},${bl},${intensity})`);
-    grad.addColorStop(0.5, `rgba(${r},${g},${bl},${intensity * 0.4})`);
+    grad.addColorStop(0.4, `rgba(${r},${g},${bl},${intensity * 0.5})`);
     grad.addColorStop(1, `rgba(${r},${g},${bl},0)`);
 
     ctx.fillStyle = grad;

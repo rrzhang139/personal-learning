@@ -61,8 +61,8 @@ async function init() {
         stage.sceneGraph.add(atom);
         bonder.addAtom(atom);
       }
-      const ens = mol.atoms.map(a => `${a.element.symbol}(${a.element.EN})`).join(' · ');
-      status.text = `${formula} — EN: ${ens}. Drag an atom — the rest follow!`;
+      const geo = mol.geometry ? ` — Shape: ${mol.geometry.name} (${mol.geometry.bondAngleDeg}°)` : '';
+      status.text = `${formula}${geo}. Drag an atom — molecule follows!`;
     } catch (err) {
       status.text = `Error: ${err.message}`;
       console.error(err);

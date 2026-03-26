@@ -1,53 +1,37 @@
 /**
- * Molecule = collection of Atoms + Bonds.
- * Provides factory methods and layout helpers.
+ * Molecule = Atoms + Bonds, with VSEPR-computed geometry.
  */
 import { Element } from './Element.js';
 import { Atom } from './Atom.js';
 import { Bond } from './Bond.js';
+import { VSEPR } from './VSEPR.js';
 
 export class Molecule {
-  /**
-   * @param {Atom[]} atoms
-   * @param {Bond[]} bonds
-   */
   constructor(atoms = [], bonds = []) {
     this.atoms = atoms;
     this.bonds = bonds;
   }
 
-  /** Add an atom. */
   addAtom(element, x, y) {
     const atom = new Atom(element, x, y);
     this.atoms.push(atom);
     return atom;
   }
 
-  /** Add a bond between two atoms. */
   addBond(atomA, atomB, order = 1) {
     const bond = new Bond(atomA, atomB, order);
     this.bonds.push(bond);
     return bond;
   }
 
-  /** All renderables (bonds first, then atoms on top). */
   get renderables() {
     return [...this.bonds, ...this.atoms];
   }
 
-  /** Reassign electron states on all atoms (call after building). */
   assignElectrons() {
-    for (const atom of this.atoms) {
-      atom.assignElectronStates();
-    }
+    for (const atom of this.atoms) atom.assignElectronStates();
   }
 
-  /**
-   * Spring physics: when one atom is dragged, pull connected atoms toward it.
-   * Call each frame.
-   * @param {Atom|null} draggedAtom — the atom being dragged (skip it)
-   * @param {number} strength — spring constant (0.02 = gentle)
-   */
   applySpringPhysics(draggedAtom = null, strength = 0.03) {
     for (const bond of this.bonds) {
       const a = bond.atomA;
@@ -55,141 +39,89 @@ export class Molecule {
       const dx = b.x - a.x;
       const dy = b.y - a.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const targetDist = (a.r + b.r) + 30; // ideal bond length
-
+      const target = (a.r + b.r) + 30;
       if (dist < 1) continue;
-      const force = (dist - targetDist) * strength;
+      const force = (dist - target) * strength;
       const fx = (dx / dist) * force;
       const fy = (dy / dist) * force;
-
       if (a !== draggedAtom) { a.x += fx; a.y += fy; }
       if (b !== draggedAtom) { b.x -= fx; b.y -= fy; }
     }
   }
 
   /**
-   * Factory: create common molecules by formula.
-   * Returns positioned molecule centered at (cx, cy).
+   * Smart factory: builds common molecules using VSEPR geometry.
    */
   static create(formula, cx = 450, cy = 250) {
-    let mol;
-    switch (formula) {
-      case 'H2': mol = Molecule._H2(cx, cy); break;
-      case 'O2': mol = Molecule._O2(cx, cy); break;
-      case 'N2': mol = Molecule._N2(cx, cy); break;
-      case 'H2O': mol = Molecule._H2O(cx, cy); break;
-      case 'CO2': mol = Molecule._CO2(cx, cy); break;
-      case 'CH4': mol = Molecule._CH4(cx, cy); break;
-      case 'NH3': mol = Molecule._NH3(cx, cy); break;
-      case 'O3': mol = Molecule._O3(cx, cy); break;
-      case 'NaCl': mol = Molecule._NaCl(cx, cy); break;
-      default:
-        throw new Error(`Unknown formula: ${formula}. Add it to Molecule.create().`);
-    }
+    const builders = {
+      'H2': Molecule._diatomic('H', 'H', 1, cx, cy),
+      'O2': Molecule._diatomic('O', 'O', 2, cx, cy),
+      'N2': Molecule._diatomic('N', 'N', 3, cx, cy),
+      'HF': Molecule._diatomic('H', 'F', 1, cx, cy),
+      'HCl': Molecule._diatomic('H', 'Cl', 1, cx, cy),
+      'H2O': Molecule._centralWithTerminals('O', ['H', 'H'], [1, 1], cx, cy),
+      'CO2': Molecule._centralWithTerminals('C', ['O', 'O'], [2, 2], cx, cy),
+      'CH4': Molecule._centralWithTerminals('C', ['H', 'H', 'H', 'H'], [1, 1, 1, 1], cx, cy),
+      'NH3': Molecule._centralWithTerminals('N', ['H', 'H', 'H'], [1, 1, 1], cx, cy),
+      'O3':  Molecule._centralWithTerminals('O', ['O', 'O'], [2, 1], cx, cy),
+      'NaCl': Molecule._diatomic('Na', 'Cl', 1, cx, cy),
+      'BF3': Molecule._centralWithTerminals('B', ['F', 'F', 'F'], [1, 1, 1], cx, cy),
+      'PCl5': Molecule._centralWithTerminals('P', ['Cl', 'Cl', 'Cl', 'Cl', 'Cl'], [1,1,1,1,1], cx, cy),
+      'SF6': Molecule._centralWithTerminals('S', ['F', 'F', 'F', 'F', 'F', 'F'], [1,1,1,1,1,1], cx, cy),
+    };
+    const mol = builders[formula];
+    if (!mol) throw new Error(`Unknown formula: ${formula}`);
     mol.assignElectrons();
     return mol;
   }
 
-  // --- Factory helpers ---
-
-  static _H2(cx, cy) {
+  /**
+   * Build a diatomic molecule (H₂, O₂, N₂, HCl, etc.)
+   */
+  static _diatomic(sym1, sym2, order, cx, cy) {
     const mol = new Molecule();
-    const h1 = mol.addAtom(Element.get('H'), cx - 40, cy);
-    const h2 = mol.addAtom(Element.get('H'), cx + 40, cy);
-    mol.addBond(h1, h2, 1);
+    const bondLen = 55;
+    const a = mol.addAtom(Element.get(sym1), cx - bondLen, cy);
+    const b = mol.addAtom(Element.get(sym2), cx + bondLen, cy);
+    mol.addBond(a, b, order);
     return mol;
   }
 
-  static _O2(cx, cy) {
+  /**
+   * Build a molecule with one central atom and N terminal atoms,
+   * using VSEPR to compute geometry.
+   *
+   * @param {string} centralSym — central atom symbol
+   * @param {string[]} terminalSyms — terminal atom symbols
+   * @param {number[]} bondOrders — bond order for each terminal
+   * @param {number} cx — center x
+   * @param {number} cy — center y
+   */
+  static _centralWithTerminals(centralSym, terminalSyms, bondOrders, cx, cy) {
     const mol = new Molecule();
-    const o1 = mol.addAtom(Element.get('O'), cx - 50, cy);
-    const o2 = mol.addAtom(Element.get('O'), cx + 50, cy);
-    mol.addBond(o1, o2, 2);
-    o1.setLonePairs(2);
-    o2.setLonePairs(2);
-    return mol;
-  }
+    const centralEl = Element.get(centralSym);
+    const central = mol.addAtom(centralEl, cx, cy);
 
-  static _N2(cx, cy) {
-    const mol = new Molecule();
-    const n1 = mol.addAtom(Element.get('N'), cx - 50, cy);
-    const n2 = mol.addAtom(Element.get('N'), cx + 50, cy);
-    mol.addBond(n1, n2, 3);
-    n1.setLonePairs(1);
-    n2.setLonePairs(1);
-    return mol;
-  }
+    // Count electron domains
+    const bondDomains = terminalSyms.length; // each bond = 1 domain (even double/triple)
+    const bondingElectrons = bondOrders.reduce((sum, o) => sum + o, 0);
+    const lonePairCount = VSEPR.lonePairs(centralEl, bondingElectrons);
 
-  static _H2O(cx, cy) {
-    const mol = new Molecule();
-    const o = mol.addAtom(Element.get('O'), cx, cy - 20);
-    const h1 = mol.addAtom(Element.get('H'), cx - 60, cy + 40);
-    const h2 = mol.addAtom(Element.get('H'), cx + 60, cy + 40);
-    mol.addBond(o, h1, 1);
-    mol.addBond(o, h2, 1);
-    o.setLonePairs(2);
-    return mol;
-  }
+    // Get VSEPR positions
+    const bondLength = 65 + (terminalSyms.length > 4 ? 10 : 0);
+    const { positions, layout } = VSEPR.positionAtoms(cx, cy, bondDomains, lonePairCount, bondLength);
 
-  static _CO2(cx, cy) {
-    const mol = new Molecule();
-    const c = mol.addAtom(Element.get('C'), cx, cy);
-    const o1 = mol.addAtom(Element.get('O'), cx - 80, cy);
-    const o2 = mol.addAtom(Element.get('O'), cx + 80, cy);
-    mol.addBond(c, o1, 2);
-    mol.addBond(c, o2, 2);
-    o1.setLonePairs(2);
-    o2.setLonePairs(2);
-    return mol;
-  }
+    // Create terminal atoms at VSEPR positions
+    for (let i = 0; i < terminalSyms.length; i++) {
+      const el = Element.get(terminalSyms[i]);
+      const pos = positions[i];
+      const terminal = mol.addAtom(el, pos.x, pos.y);
+      mol.addBond(central, terminal, bondOrders[i]);
+    }
 
-  static _CH4(cx, cy) {
-    const mol = new Molecule();
-    const c = mol.addAtom(Element.get('C'), cx, cy);
-    const h1 = mol.addAtom(Element.get('H'), cx - 55, cy - 45);
-    const h2 = mol.addAtom(Element.get('H'), cx + 55, cy - 45);
-    const h3 = mol.addAtom(Element.get('H'), cx - 55, cy + 45);
-    const h4 = mol.addAtom(Element.get('H'), cx + 55, cy + 45);
-    mol.addBond(c, h1, 1);
-    mol.addBond(c, h2, 1);
-    mol.addBond(c, h3, 1);
-    mol.addBond(c, h4, 1);
-    return mol;
-  }
+    // Store geometry info on molecule for display
+    mol.geometry = layout;
 
-  static _NH3(cx, cy) {
-    const mol = new Molecule();
-    const n = mol.addAtom(Element.get('N'), cx, cy - 15);
-    const h1 = mol.addAtom(Element.get('H'), cx - 60, cy + 35);
-    const h2 = mol.addAtom(Element.get('H'), cx, cy + 55);
-    const h3 = mol.addAtom(Element.get('H'), cx + 60, cy + 35);
-    mol.addBond(n, h1, 1);
-    mol.addBond(n, h2, 1);
-    mol.addBond(n, h3, 1);
-    n.setLonePairs(1);
-    return mol;
-  }
-
-  static _O3(cx, cy) {
-    const mol = new Molecule();
-    const o1 = mol.addAtom(Element.get('O'), cx - 100, cy);
-    const o2 = mol.addAtom(Element.get('O'), cx, cy);
-    const o3 = mol.addAtom(Element.get('O'), cx + 100, cy);
-    mol.addBond(o1, o2, 2);
-    mol.addBond(o2, o3, 1);
-    o1.setLonePairs(2);
-    o2.setLonePairs(1);
-    o3.setLonePairs(3);
-    return mol;
-  }
-
-  static _NaCl(cx, cy) {
-    const mol = new Molecule();
-    const na = mol.addAtom(Element.get('Na'), cx - 55, cy);
-    const cl = mol.addAtom(Element.get('Cl'), cx + 55, cy);
-    mol.addBond(na, cl, 1);
-    na.charge = +1;
-    cl.charge = -1;
     return mol;
   }
 }
