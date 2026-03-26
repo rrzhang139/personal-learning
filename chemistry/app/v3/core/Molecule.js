@@ -35,24 +35,59 @@ export class Molecule {
     return [...this.bonds, ...this.atoms];
   }
 
+  /** Reassign electron states on all atoms (call after building). */
+  assignElectrons() {
+    for (const atom of this.atoms) {
+      atom._assignElectronStates();
+    }
+  }
+
+  /**
+   * Spring physics: when one atom is dragged, pull connected atoms toward it.
+   * Call each frame.
+   * @param {Atom|null} draggedAtom — the atom being dragged (skip it)
+   * @param {number} strength — spring constant (0.02 = gentle)
+   */
+  applySpringPhysics(draggedAtom = null, strength = 0.03) {
+    for (const bond of this.bonds) {
+      const a = bond.atomA;
+      const b = bond.atomB;
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const targetDist = (a.r + b.r) + 30; // ideal bond length
+
+      if (dist < 1) continue;
+      const force = (dist - targetDist) * strength;
+      const fx = (dx / dist) * force;
+      const fy = (dy / dist) * force;
+
+      if (a !== draggedAtom) { a.x += fx; a.y += fy; }
+      if (b !== draggedAtom) { b.x -= fx; b.y -= fy; }
+    }
+  }
+
   /**
    * Factory: create common molecules by formula.
    * Returns positioned molecule centered at (cx, cy).
    */
   static create(formula, cx = 450, cy = 250) {
+    let mol;
     switch (formula) {
-      case 'H2': return Molecule._H2(cx, cy);
-      case 'O2': return Molecule._O2(cx, cy);
-      case 'N2': return Molecule._N2(cx, cy);
-      case 'H2O': return Molecule._H2O(cx, cy);
-      case 'CO2': return Molecule._CO2(cx, cy);
-      case 'CH4': return Molecule._CH4(cx, cy);
-      case 'NH3': return Molecule._NH3(cx, cy);
-      case 'O3': return Molecule._O3(cx, cy);
-      case 'NaCl': return Molecule._NaCl(cx, cy);
+      case 'H2': mol = Molecule._H2(cx, cy); break;
+      case 'O2': mol = Molecule._O2(cx, cy); break;
+      case 'N2': mol = Molecule._N2(cx, cy); break;
+      case 'H2O': mol = Molecule._H2O(cx, cy); break;
+      case 'CO2': mol = Molecule._CO2(cx, cy); break;
+      case 'CH4': mol = Molecule._CH4(cx, cy); break;
+      case 'NH3': mol = Molecule._NH3(cx, cy); break;
+      case 'O3': mol = Molecule._O3(cx, cy); break;
+      case 'NaCl': mol = Molecule._NaCl(cx, cy); break;
       default:
         throw new Error(`Unknown formula: ${formula}. Add it to Molecule.create().`);
     }
+    mol.assignElectrons();
+    return mol;
   }
 
   // --- Factory helpers ---
