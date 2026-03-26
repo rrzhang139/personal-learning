@@ -8,8 +8,8 @@
  */
 import { Bond } from './Bond.js';
 
-const SNAP_DISTANCE = 80;   // px to trigger glow
-const BOND_DISTANCE = 60;   // px to actually bond on drop
+const SNAP_DISTANCE = 120;  // px to trigger glow
+const BOND_DISTANCE = 100;  // px to actually bond on drop
 
 export class ProximityBonder {
   /**

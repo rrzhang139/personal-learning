@@ -1,6 +1,6 @@
 /**
  * Visual bond between two Atoms. Renders 1–3 lines.
- * Auto-updates position when atoms move (references, not copies).
+ * Auto-updates when atoms move (holds references to atoms).
  */
 import { Renderable } from '../canvas/Renderable.js';
 
@@ -10,11 +10,6 @@ const TRIPLE_COLOR = '#ef5350';
 const DASHED_COLOR = '#bb86fc';
 
 export class Bond extends Renderable {
-  /**
-   * @param {import('./Atom.js').Atom} atomA
-   * @param {import('./Atom.js').Atom} atomB
-   * @param {number} order - 1, 1.5, 2, or 3
-   */
   constructor(atomA, atomB, order = 1) {
     super();
     this.atomA = atomA;
@@ -27,7 +22,6 @@ export class Bond extends Renderable {
     if (!atomB.bonds.includes(this)) atomB.bonds.push(this);
   }
 
-  /** Change bond order and update style */
   setOrder(n) {
     this.order = n;
     this.style = n === 1.5 ? 'dashed' : 'solid';
@@ -40,11 +34,11 @@ export class Bond extends Renderable {
     return SINGLE_COLOR;
   }
 
-  /** Bonds position between their atoms — center for hit testing */
-  get x() { return (this.atomA.x + this.atomB.x) / 2; }
-  get y() { return (this.atomA.y + this.atomB.y) / 2; }
+  /** Midpoint between atoms. */
+  get midX() { return (this.atomA.x + this.atomB.x) / 2; }
+  get midY() { return (this.atomA.y + this.atomB.y) / 2; }
 
-  hitTest() { return false; } // bonds are not directly interactive (yet)
+  hitTest() { return false; }
 
   render(ctx) {
     const a = this.atomA;
@@ -59,7 +53,6 @@ export class Bond extends Renderable {
     const nx = -uy;
     const ny = ux;
 
-    // Shorten to not overlap atom circles
     const rA = a.r + 2;
     const rB = b.r + 2;
     const x1 = a.x + ux * rA;
@@ -73,9 +66,7 @@ export class Bond extends Renderable {
     ctx.strokeStyle = this.color;
     ctx.lineWidth = 3;
 
-    if (this.style === 'dashed') {
-      ctx.setLineDash([6, 4]);
-    }
+    if (this.style === 'dashed') ctx.setLineDash([6, 4]);
 
     for (let i = 0; i < drawOrder; i++) {
       const off = (i - (drawOrder - 1) / 2) * gap * 2;
@@ -87,19 +78,16 @@ export class Bond extends Renderable {
 
     ctx.setLineDash([]);
 
-    // Bond order label for fractional bonds
+    // Fractional bond order label
     if (this.order !== Math.floor(this.order)) {
       ctx.fillStyle = DASHED_COLOR;
       ctx.font = 'bold 13px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.order.toString(), this.x, this.y - 18);
+      ctx.fillText(this.order.toString(), this.midX, this.midY - 18);
     }
   }
 
-  /**
-   * Remove this bond from its atoms' bond lists.
-   */
   destroy() {
     this.atomA.bonds = this.atomA.bonds.filter(b => b !== this);
     this.atomB.bonds = this.atomB.bonds.filter(b => b !== this);
