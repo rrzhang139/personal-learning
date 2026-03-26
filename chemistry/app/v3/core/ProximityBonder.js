@@ -159,6 +159,28 @@ export class ProximityBonder {
   }
 
   /**
+   * Apply spring physics to ALL tracked bonds — so dragging one bonded
+   * atom pulls its neighbors, whether from a Molecule or free-bonded.
+   * @param {object|null} dragTarget — the currently dragged atom (skip it)
+   */
+  applySpringPhysics(dragTarget) {
+    for (const bond of this.bonds) {
+      const a = bond.atomA;
+      const b = bond.atomB;
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const target = (a.r + b.r) + 30;
+      if (dist < 1) continue;
+      const force = (dist - target) * 0.04;
+      const fx = (dx / dist) * force;
+      const fy = (dy / dist) * force;
+      if (a !== dragTarget) { a.x += fx; a.y += fy; }
+      if (b !== dragTarget) { b.x -= fx; b.y -= fy; }
+    }
+  }
+
+  /**
    * Draw the proximity hint (dashed line between near atoms).
    * Call this in the render loop.
    */

@@ -27,15 +27,15 @@ export class Bond extends Renderable {
     if (!atomB.bonds.includes(this)) atomB.bonds.push(this);
 
     // Assign electron states on both atoms
-    atomA._assignElectronStates();
-    atomB._assignElectronStates();
+    atomA.assignElectronStates();
+    atomB.assignElectronStates();
   }
 
   setOrder(n) {
     this.order = n;
     this.style = n === 1.5 ? 'dashed' : 'solid';
-    this.atomA._assignElectronStates();
-    this.atomB._assignElectronStates();
+    this.atomA.assignElectronStates();
+    this.atomB.assignElectronStates();
   }
 
   get color() {
@@ -167,7 +167,7 @@ export class Bond extends Renderable {
   destroy() {
     this.atomA.bonds = this.atomA.bonds.filter(b => b !== this);
     this.atomB.bonds = this.atomB.bonds.filter(b => b !== this);
-    this.atomA._assignElectronStates();
-    this.atomB._assignElectronStates();
+    this.atomA.assignElectronStates();
+    this.atomB.assignElectronStates();
   }
 }

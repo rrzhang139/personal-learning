@@ -38,7 +38,7 @@ export class Molecule {
   /** Reassign electron states on all atoms (call after building). */
   assignElectrons() {
     for (const atom of this.atoms) {
-      atom._assignElectronStates();
+      atom.assignElectronStates();
     }
   }
 

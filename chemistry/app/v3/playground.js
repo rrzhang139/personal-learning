@@ -1,6 +1,5 @@
 /**
  * Playground — interactive test for v3 chemistry primitives.
- * Electrons orbit, clouds merge, spring physics pulls molecules.
  */
 import { Stage } from './canvas/Stage.js';
 import { TextLabel } from './canvas/TextLabel.js';
@@ -9,50 +8,38 @@ import { Atom } from './core/Atom.js';
 import { Molecule } from './core/Molecule.js';
 import { ProximityBonder } from './core/ProximityBonder.js';
 
-/** @type {Molecule|null} */
-let currentMol = null;
-
 async function init() {
   const canvas = document.getElementById('stage');
   const stage = new Stage(canvas);
 
   const status = new TextLabel({
-    text: 'Loading elements...',
-    x: 450, y: 480, font: '13px monospace', color: '#666',
+    text: 'Loading...', x: 450, y: 480, font: '13px monospace', color: '#666',
   });
   stage.sceneGraph.add(status);
   stage.start();
 
   try {
     await Element.load('./data/elements.json');
-    status.text = 'Click a molecule button, or add atoms and drag them together!';
+    status.text = 'Add atoms and drag them together to bond — or click a molecule preset!';
   } catch (err) {
     status.text = 'ERROR: ' + err.message;
     console.error(err);
     return;
   }
 
-  // Proximity bonder for free atoms
   const bonder = new ProximityBonder(stage, (bond) => {
-    // After bond forms, reassign electrons
-    bond.atomA._assignElectronStates();
-    bond.atomB._assignElectronStates();
-    status.text = `Bonded! ${bond.atomA.element.symbol}—${bond.atomB.element.symbol}. Electrons now shared — watch them shuttle!`;
+    status.text = `Bonded! ${bond.atomA.element.symbol}—${bond.atomB.element.symbol}. Watch the electrons shuttle!`;
   });
 
-  // --- Overlays: proximity hints + spring physics ---
-  stage.sceneGraph.overlays.push((ctx, time) => {
+  // Every frame: proximity hints + spring physics for ALL bonds
+  stage.sceneGraph.overlays.push(() => {
     bonder.update();
+    bonder.applySpringPhysics(stage.interaction.dragTarget);
+  });
+  stage.sceneGraph.overlays.push((ctx) => {
     bonder.renderHint(ctx);
-
-    // Spring physics: if a molecule exists, pull connected atoms
-    if (currentMol) {
-      const dragged = stage.interaction.dragTarget;
-      currentMol.applySpringPhysics(dragged, 0.04);
-    }
   });
 
-  // --- Helpers ---
   function addAtom(symbol) {
     const el = Element.get(symbol);
     if (!el) { status.text = `Unknown: ${symbol}`; return; }
@@ -66,7 +53,6 @@ async function init() {
     clearAll();
     try {
       const mol = Molecule.create(formula, 450, 230);
-      currentMol = mol;
       for (const bond of mol.bonds) {
         stage.sceneGraph.add(bond);
         bonder.addBond(bond);
@@ -75,9 +61,8 @@ async function init() {
         stage.sceneGraph.add(atom);
         bonder.addAtom(atom);
       }
-      // Show EN comparison for polar bonds
       const ens = mol.atoms.map(a => `${a.element.symbol}(${a.element.EN})`).join(' · ');
-      status.text = `${formula} — EN: ${ens}. Drag atoms — molecule follows!`;
+      status.text = `${formula} — EN: ${ens}. Drag an atom — the rest follow!`;
     } catch (err) {
       status.text = `Error: ${err.message}`;
       console.error(err);
@@ -87,14 +72,13 @@ async function init() {
   function clearAll() {
     stage.sceneGraph.objects = [status];
     bonder.clear();
-    currentMol = null;
   }
 
   function getAllAtoms() {
     return stage.sceneGraph.objects.filter(o => o instanceof Atom);
   }
 
-  // --- Toolbar ---
+  // Toolbar
   document.querySelector('.toolbar').addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
@@ -105,22 +89,28 @@ async function init() {
     if (action.startsWith('mol-')) loadMolecule(action.slice(4));
 
     if (action === 'toggle-cloud') {
-      const on = !getAllAtoms()[0]?._showCloud;
+      const atoms = getAllAtoms();
+      const on = atoms.length ? !atoms[0].cloudVisible : true;
       btn.classList.toggle('active', on);
-      for (const a of getAllAtoms()) a.showCloud(on);
+      for (const a of atoms) a.cloudVisible = on;
+      // Also toggle bond clouds
       for (const o of stage.sceneGraph.objects) {
-        if (o.showCloud !== undefined) o.showCloud = on;
+        if (o.showCloud !== undefined && typeof o.showCloud !== 'function') {
+          o.showCloud = on;
+        }
       }
     }
     if (action === 'toggle-electrons') {
-      const on = !getAllAtoms()[0]?._showElectrons;
+      const atoms = getAllAtoms();
+      const on = atoms.length ? !atoms[0].electronsVisible : true;
       btn.classList.toggle('active', on);
-      for (const a of getAllAtoms()) a.showElectrons(on);
+      for (const a of atoms) a.electronsVisible = on;
     }
     if (action === 'toggle-float') {
-      const on = !getAllAtoms()[0]?.float;
+      const atoms = getAllAtoms();
+      const on = atoms.length ? !atoms[0].float : true;
       btn.classList.toggle('active', on);
-      for (const a of getAllAtoms()) a.float = on;
+      for (const a of atoms) a.float = on;
     }
     if (action === 'tween-demo') {
       const atoms = getAllAtoms();
