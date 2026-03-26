@@ -7,9 +7,11 @@
  * - Respects valence limits (H can only bond once, etc.)
  */
 import { Bond } from './Bond.js';
+import { VSEPR } from './VSEPR.js';
 
 const SNAP_DISTANCE = 120;  // px to trigger glow
 const BOND_DISTANCE = 100;  // px to actually bond on drop
+const BOND_LENGTH = 65;     // px between bonded atoms
 
 export class ProximityBonder {
   /**
@@ -120,10 +122,9 @@ export class ProximityBonder {
     return this._nearestPair;
   }
 
-  /** Called when a drag ends. Creates bond if close enough. */
+  /** Called when a drag ends. Creates bond if close enough, then rearranges via VSEPR. */
   _onDrop(obj) {
     if (!this._nearestPair || this._nearestPair.dragged !== obj) {
-      // Clear all glows
       for (const a of this.atoms) a._snapGlow = false;
       return;
     }
@@ -131,31 +132,85 @@ export class ProximityBonder {
     const { dragged, target, dist } = this._nearestPair;
 
     if (dist < BOND_DISTANCE) {
-      // Create the bond!
+      // Create the bond
       const bond = new Bond(dragged, target, 1);
       this.bonds.push(bond);
       this.stage.sceneGraph.add(bond);
 
-      // Snap atoms to reasonable distance
-      const midX = (dragged.x + target.x) / 2;
-      const midY = (dragged.y + target.y) / 2;
-      const sepDist = 70; // nice bond length
-      const angle = Math.atan2(target.y - dragged.y, target.x - dragged.x);
-      this.stage.tweener.tween(dragged, {
-        x: midX - Math.cos(angle) * sepDist / 2,
-        y: midY - Math.sin(angle) * sepDist / 2,
-      }, 300, 'easeOutCubic');
-      this.stage.tweener.tween(target, {
-        x: midX + Math.cos(angle) * sepDist / 2,
-        y: midY + Math.sin(angle) * sepDist / 2,
-      }, 300, 'easeOutCubic');
+      // After bond forms, rearrange the entire cluster into correct VSEPR geometry
+      this._arrangeClusterVSEPR(dragged);
 
       if (this.onBondCreated) this.onBondCreated(bond);
     }
 
-    // Clear all glows
     for (const a of this.atoms) a._snapGlow = false;
     this._nearestPair = null;
+  }
+
+  /**
+   * After a bond forms, find the central atom in the cluster and
+   * rearrange all atoms into the correct VSEPR geometry with tweened animation.
+   */
+  _arrangeClusterVSEPR(startAtom) {
+    const cluster = this._findCluster(startAtom);
+    if (cluster.size <= 1) return;
+
+    // Find the central atom: the one with the most bonds
+    let central = null;
+    let maxBonds = 0;
+    for (const atom of cluster) {
+      // Only count bonds within this cluster
+      const clusterBonds = atom.bonds.filter(b => {
+        const other = b.atomA === atom ? b.atomB : b.atomA;
+        return cluster.has(other);
+      });
+      if (clusterBonds.length > maxBonds) {
+        maxBonds = clusterBonds.length;
+        central = atom;
+      }
+    }
+
+    if (!central || maxBonds < 1) return;
+
+    // Get the terminal atoms bonded to central (within cluster)
+    const terminals = [];
+    const bondOrders = [];
+    for (const bond of central.bonds) {
+      const other = bond.atomA === central ? bond.atomB : bond.atomA;
+      if (cluster.has(other)) {
+        terminals.push(other);
+        bondOrders.push(bond.order);
+      }
+    }
+
+    if (terminals.length === 0) return;
+
+    // Count electron domains for VSEPR
+    const bondDomains = terminals.length;
+    const bondingElectrons = bondOrders.reduce((s, o) => s + o, 0);
+    const lonePairCount = VSEPR.lonePairs(central.element, bondingElectrons);
+
+    // Get VSEPR positions
+    const { positions } = VSEPR.positionAtoms(
+      central.x, central.y, bondDomains, lonePairCount, BOND_LENGTH
+    );
+
+    // Tween central atom stays in place, terminals move to VSEPR positions
+    for (let i = 0; i < terminals.length; i++) {
+      const pos = positions[i];
+      if (pos) {
+        this.stage.tweener.tween(terminals[i], {
+          x: pos.x, y: pos.y,
+        }, 500, 'easeOutCubic');
+      }
+    }
+
+    // Reassign electron states after rearrangement
+    setTimeout(() => {
+      for (const atom of cluster) {
+        atom.assignElectronStates();
+      }
+    }, 100);
   }
 
   /**
