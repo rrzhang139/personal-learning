@@ -580,6 +580,67 @@ async function runTests() {
   }
 
   // ===========================================
+  section('21. VSEPR 3D Geometry');
+  // ===========================================
+
+  function dot3(a, b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+  function len3(v) { return Math.sqrt(v[0]**2 + v[1]**2 + v[2]**2); }
+  function angle3(a, b) {
+    return Math.acos(Math.max(-1, Math.min(1, dot3(a,b) / (len3(a) * len3(b))))) * (180 / Math.PI);
+  }
+
+  const lin3D = VSEPR.layout3D(2, 0);
+  assert('3D: 2+0 = linear', lin3D.name === 'linear');
+  assert('3D: linear has 2 bond directions', lin3D.bondDirections.length === 2);
+  const linAngle = angle3(lin3D.bondDirections[0], lin3D.bondDirections[1]);
+  assert(`3D: linear angle ≈ 180° (got ${linAngle.toFixed(1)})`, approx(linAngle, 180, 2));
+
+  const tet3D = VSEPR.layout3D(4, 0);
+  assert('3D: 4+0 = tetrahedral', tet3D.name === 'tetrahedral');
+  assert('3D: tetrahedral has 4 bond directions', tet3D.bondDirections.length === 4);
+  // Check any pair of tetrahedral directions: should be ~109.5°
+  const tetAngle = angle3(tet3D.bondDirections[0], tet3D.bondDirections[1]);
+  assert(`3D: tetrahedral pair angle ≈ 109.5° (got ${tetAngle.toFixed(1)})`, approx(tetAngle, 109.5, 2));
+
+  const trig3D = VSEPR.layout3D(3, 0);
+  assert('3D: 3+0 = trigonal planar', trig3D.name === 'trigonal planar');
+  const trigAngle = angle3(trig3D.bondDirections[0], trig3D.bondDirections[1]);
+  assert(`3D: trig planar pair angle ≈ 120° (got ${trigAngle.toFixed(1)})`, approx(trigAngle, 120, 2));
+
+  // All directions should be unit vectors
+  for (const d of tet3D.bondDirections) {
+    assert(`3D: tetrahedral direction is unit vector (len=${len3(d).toFixed(3)})`, approx(len3(d), 1, 0.01));
+  }
+
+  // Bent (2+2) should have 2 bond dirs
+  const bent3D = VSEPR.layout3D(2, 2);
+  assert('3D: 2+2 = bent', bent3D.name === 'bent');
+  assert('3D: bent has 2 bond + 2 LP directions', bent3D.bondDirections.length === 2 && bent3D.lonePairDirections.length === 2);
+
+  // positionAtoms3D
+  const waterPos3D = VSEPR.positionAtoms3D([0,0,0], 2, 2, 1.5);
+  assert('3D: H2O positions has 2 entries', waterPos3D.positions.length === 2);
+  const wAngle3D = angle3(waterPos3D.positions[0], waterPos3D.positions[1]);
+  assert(`3D: H2O angle ≈ 104.5° (got ${wAngle3D.toFixed(1)})`, approx(wAngle3D, 104.5, 5));
+
+  // ===========================================
+  section('22. VSEPR 2D ↔ 3D Consistency');
+  // ===========================================
+  const geoTests = [
+    { b: 2, lp: 0 }, { b: 3, lp: 0 }, { b: 4, lp: 0 },
+    { b: 3, lp: 1 }, { b: 2, lp: 2 }, { b: 2, lp: 1 },
+  ];
+  for (const g of geoTests) {
+    const l2d = VSEPR.layout(g.b, g.lp);
+    const l3d = VSEPR.layout3D(g.b, g.lp);
+    assert(`${g.b}σ+${g.lp}LP: 2D name="${l2d.name}" = 3D name="${l3d.name}"`, l2d.name === l3d.name);
+    assert(`${g.b}σ+${g.lp}LP: 2D angle=${l2d.bondAngleDeg}° = 3D angle=${l3d.bondAngleDeg}°`,
+      l2d.bondAngleDeg === l3d.bondAngleDeg);
+    assert(`${g.b}σ+${g.lp}LP: 3D has ${g.b} bond dirs`, l3d.bondDirections.length === g.b);
+    assert(`${g.b}σ+${g.lp}LP: 3D has ${g.lp} LP dirs`, l3d.lonePairDirections.length === g.lp);
+  }
+
+  // ===========================================
   // Summary
   // ===========================================
   const total = passed + failed + errors;

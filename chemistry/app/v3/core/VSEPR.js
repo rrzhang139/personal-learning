@@ -175,6 +175,35 @@ const LAYOUTS = {
   },
 };
 
+// 3D direction vectors for each geometry (true 3D, not projected)
+const DIRECTIONS_3D = {
+  2: {
+    0: { bond: [[0,0,1],[0,0,-1]], lone: [] },
+    1: { bond: [[0,0,1]], lone: [[0,0,-1]] },
+  },
+  3: {
+    0: { bond: [[0,0,1],[0.866,0,-0.5],[-0.866,0,-0.5]], lone: [] },
+    1: { bond: [[0.866,0,-0.5],[-0.866,0,-0.5]], lone: [[0,0,1]] },
+    2: { bond: [[0,0,-1]], lone: [[0.866,0,0.5],[-0.866,0,0.5]] },
+  },
+  4: {
+    0: { bond: [[0.577,0.577,0.577],[0.577,-0.577,-0.577],[-0.577,0.577,-0.577],[-0.577,-0.577,0.577]], lone: [] },
+    1: { bond: [[0.577,-0.577,-0.577],[-0.577,-0.577,0.577],[0,-0.333,0.943]], lone: [[0,1,0]] },
+    2: { bond: [[0.577,-0.577,-0.577],[-0.577,-0.577,0.577]], lone: [[0,0.577,0.816],[0,0.577,-0.816]] },
+    3: { bond: [[0,-1,0]], lone: [[0.577,0.577,0.577],[-0.577,0.577,-0.577],[-0.577,-0.577,0.577]] },
+  },
+  5: {
+    0: { bond: [[1,0,0],[-0.5,0,0.866],[-0.5,0,-0.866],[0,1,0],[0,-1,0]], lone: [] },
+    1: { bond: [[1,0,0],[-0.5,0,0.866],[-0.5,0,-0.866],[0,1,0]], lone: [[0,-1,0]] },
+    2: { bond: [[1,0,0],[-0.5,0,0.866],[-0.5,0,-0.866]], lone: [[0,1,0],[0,-1,0]] },
+  },
+  6: {
+    0: { bond: [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]], lone: [] },
+    1: { bond: [[1,0,0],[-1,0,0],[0,0,1],[0,0,-1],[0,1,0]], lone: [[0,-1,0]] },
+    2: { bond: [[1,0,0],[-1,0,0],[0,0,1],[0,0,-1]], lone: [[0,1,0],[0,-1,0]] },
+  },
+};
+
 export class VSEPR {
   /**
    * Compute the VSEPR layout for a central atom.
@@ -231,6 +260,57 @@ export class VSEPR {
    * @param {number} bondElectrons — total electrons used in bonding
    * @returns {number}
    */
+  /**
+   * 3D layout: returns unit direction vectors (as [x,y,z] arrays).
+   */
+  static layout3D(bondCount, lonePairCount) {
+    const total = bondCount + lonePairCount;
+    const group = DIRECTIONS_3D[total];
+    const entry = group?.[lonePairCount];
+    const layout2D = VSEPR.layout(bondCount, lonePairCount);
+
+    if (entry) {
+      return {
+        bondDirections: entry.bond.map(d => [...d]),
+        lonePairDirections: entry.lone.map(d => [...d]),
+        name: layout2D.name,
+        electronGeometry: layout2D.electronGeometry,
+        bondAngleDeg: layout2D.bondAngleDeg,
+      };
+    }
+    // Fallback: distribute evenly in XZ plane
+    const all = [];
+    for (let i = 0; i < total; i++) {
+      const a = (i / total) * Math.PI * 2;
+      all.push([Math.cos(a), 0, Math.sin(a)]);
+    }
+    return {
+      bondDirections: all.slice(0, bondCount),
+      lonePairDirections: all.slice(bondCount),
+      name: layout2D.name,
+      electronGeometry: layout2D.electronGeometry,
+      bondAngleDeg: layout2D.bondAngleDeg,
+    };
+  }
+
+  /**
+   * 3D positioning: place atoms around a center point.
+   * @param {number[]} center — [x, y, z]
+   * @param {number} bondCount
+   * @param {number} lonePairCount
+   * @param {number} bondLength
+   * @returns {{ positions: number[][], lonePairDirections: number[][], layout: object }}
+   */
+  static positionAtoms3D(center, bondCount, lonePairCount, bondLength = 1.5) {
+    const layout = VSEPR.layout3D(bondCount, lonePairCount);
+    const positions = layout.bondDirections.map(d => [
+      center[0] + d[0] * bondLength,
+      center[1] + d[1] * bondLength,
+      center[2] + d[2] * bondLength,
+    ]);
+    return { positions, lonePairDirections: layout.lonePairDirections, layout };
+  }
+
   static lonePairs(element, bondElectrons) {
     return Math.max(0, Math.floor((element.valenceElectrons - bondElectrons) / 2));
   }
