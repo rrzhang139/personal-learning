@@ -1,52 +1,47 @@
 /**
- * The full-screen canvas manager.
- * Owns the RAF loop, DPI scaling, SceneGraph, InteractionManager, Tweener.
+ * Full-screen canvas manager.
+ * Owns RAF loop, SceneGraph, InteractionManager, Tweener.
  */
 import { SceneGraph } from './SceneGraph.js';
 import { InteractionManager } from './InteractionManager.js';
 import { Tweener } from './Tweener.js';
 
 const BG = '#0a0a1a';
+const LOGICAL_W = 900;
+const LOGICAL_H = 500;
 
 export class Stage {
-  /**
-   * @param {HTMLCanvasElement} canvas
-   */
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+
+    // Fixed logical resolution
+    this.canvas.width = LOGICAL_W;
+    this.canvas.height = LOGICAL_H;
+
     this.sceneGraph = new SceneGraph();
     this.tweener = new Tweener();
-    this.interaction = new InteractionManager(canvas, this.sceneGraph);
+    this.interaction = new InteractionManager(this);
 
     this._running = false;
     this._startTime = 0;
     this._lastTime = 0;
-
-    this._resize();
-    window.addEventListener('resize', () => this._resize());
   }
 
-  /** Logical width of the canvas (before DPI scaling) */
-  get W() { return this.canvas.width; }
-  /** Logical height of the canvas (before DPI scaling) */
-  get H() { return this.canvas.height; }
-
-  _resize() {
-    const parent = this.canvas.parentElement;
-    if (!parent) return;
-    const w = parent.clientWidth;
-    const h = parent.clientHeight;
-    // Keep a fixed logical size for consistent rendering
-    this.canvas.width = 900;
-    this.canvas.height = 500;
-    this.canvas.style.width = w + 'px';
-    this.canvas.style.height = h + 'px';
-  }
+  get W() { return LOGICAL_W; }
+  get H() { return LOGICAL_H; }
 
   /**
-   * Start the render loop.
+   * Convert page coordinates to canvas logical coordinates.
    */
+  pageToCanvas(pageX, pageY) {
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      x: ((pageX - rect.left) / rect.width) * LOGICAL_W,
+      y: ((pageY - rect.top) / rect.height) * LOGICAL_H,
+    };
+  }
+
   start() {
     if (this._running) return;
     this._running = true;
@@ -55,28 +50,21 @@ export class Stage {
     this._loop();
   }
 
-  /**
-   * Stop the render loop.
-   */
-  stop() {
-    this._running = false;
-  }
+  stop() { this._running = false; }
 
   _loop() {
     if (!this._running) return;
     const now = performance.now() / 1000;
-    const dt = Math.min(now - this._lastTime, 0.05); // cap at 50ms
+    const dt = Math.min(now - this._lastTime, 0.05);
     const time = now - this._startTime;
     this._lastTime = now;
 
-    // Update tweens
     this.tweener.update(dt);
 
-    // Clear and render
     const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.W, this.H);
+    ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
     ctx.fillStyle = BG;
-    ctx.fillRect(0, 0, this.W, this.H);
+    ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
 
     this.sceneGraph.render(ctx, time);
 

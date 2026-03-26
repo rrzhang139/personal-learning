@@ -1,71 +1,76 @@
 /**
- * Handles mouse/touch input on the canvas.
- * Walks SceneGraph in reverse z-order for hit-testing.
- * Emits hover, click, drag events on Renderables.
+ * Handles mouse/touch → hover, click, drag on Renderables.
+ * Uses Stage.pageToCanvas() for coordinate mapping.
  */
 export class InteractionManager {
   /**
-   * @param {HTMLCanvasElement} canvas
-   * @param {import('./SceneGraph.js').SceneGraph} sceneGraph
+   * @param {import('./Stage.js').Stage} stage
    */
-  constructor(canvas, sceneGraph) {
-    this.canvas = canvas;
-    this.sg = sceneGraph;
+  constructor(stage) {
+    this.stage = stage;
+    this.canvas = stage.canvas;
+    this.sg = stage.sceneGraph;
 
-    this._dragging = null;   // the Renderable being dragged
+    this._dragging = null;
     this._dragOffX = 0;
     this._dragOffY = 0;
     this._hovered = null;
-    this._mouseDown = false;
-    this._lastMouse = { x: 0, y: 0 };
 
-    // Callbacks
-    this.onDragEnd = null; // (renderable) => void
+    /** Called when a drag ends. @type {(renderable) => void} */
+    this.onDragEnd = null;
 
     this._bind();
   }
 
   _bind() {
     const c = this.canvas;
-    c.addEventListener('mousedown', e => this._onDown(this._pos(e)));
-    c.addEventListener('mousemove', e => this._onMove(this._pos(e)));
-    c.addEventListener('mouseup', e => this._onUp(this._pos(e)));
-    c.addEventListener('mouseleave', () => this._onUp(this._lastMouse));
 
-    c.addEventListener('touchstart', e => { e.preventDefault(); this._onDown(this._touchPos(e)); }, { passive: false });
-    c.addEventListener('touchmove', e => { e.preventDefault(); this._onMove(this._touchPos(e)); }, { passive: false });
-    c.addEventListener('touchend', e => this._onUp(this._lastMouse));
+    c.addEventListener('mousedown', e => {
+      const p = this.stage.pageToCanvas(e.clientX, e.clientY);
+      this._onDown(p);
+    });
+
+    c.addEventListener('mousemove', e => {
+      const p = this.stage.pageToCanvas(e.clientX, e.clientY);
+      this._onMove(p);
+    });
+
+    c.addEventListener('mouseup', e => {
+      const p = this.stage.pageToCanvas(e.clientX, e.clientY);
+      this._onUp(p);
+    });
+
+    c.addEventListener('mouseleave', () => {
+      this._onUp({ x: 0, y: 0 });
+    });
+
+    c.addEventListener('touchstart', e => {
+      e.preventDefault();
+      if (e.touches.length) {
+        const p = this.stage.pageToCanvas(e.touches[0].clientX, e.touches[0].clientY);
+        this._onDown(p);
+      }
+    }, { passive: false });
+
+    c.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (e.touches.length) {
+        const p = this.stage.pageToCanvas(e.touches[0].clientX, e.touches[0].clientY);
+        this._onMove(p);
+      }
+    }, { passive: false });
+
+    c.addEventListener('touchend', () => {
+      this._onUp({ x: 0, y: 0 });
+    });
   }
 
-  _pos(e) {
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
-    };
-  }
-
-  _touchPos(e) {
-    if (!e.touches.length) return this._lastMouse;
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
-    return {
-      x: (e.touches[0].clientX - rect.left) * scaleX,
-      y: (e.touches[0].clientY - rect.top) * scaleY,
-    };
-  }
-
-  /**
-   * Hit-test scene graph in reverse order (top-most first).
-   */
+  /** Hit test scene graph top-to-bottom (reverse array = front first). */
   _hitTest(px, py) {
     const objects = this.sg.objects;
     for (let i = objects.length - 1; i >= 0; i--) {
       const obj = objects[i];
-      if (obj.visible && obj.interactive && obj.hitTest(px, py)) {
+      if (obj.visible && obj.interactive && obj.opacity > 0.1 && obj.hitTest(px, py)) {
         return obj;
       }
     }
@@ -73,9 +78,6 @@ export class InteractionManager {
   }
 
   _onDown({ x, y }) {
-    this._mouseDown = true;
-    this._lastMouse = { x, y };
-
     const hit = this._hitTest(x, y);
     if (hit && hit.draggable) {
       this._dragging = hit;
@@ -86,8 +88,6 @@ export class InteractionManager {
   }
 
   _onMove({ x, y }) {
-    this._lastMouse = { x, y };
-
     if (this._dragging) {
       this._dragging.x = x + this._dragOffX;
       this._dragging.y = y + this._dragOffY;
@@ -97,23 +97,22 @@ export class InteractionManager {
     // Hover
     const hit = this._hitTest(x, y);
     if (hit !== this._hovered) {
-      if (this._hovered) { this._hovered.hovered = false; }
+      if (this._hovered) this._hovered.hovered = false;
       this._hovered = hit;
-      if (hit) { hit.hovered = true; }
+      if (hit) hit.hovered = true;
       this.canvas.style.cursor = hit?.draggable ? 'grab' : hit?.interactive ? 'pointer' : 'default';
     }
   }
 
-  _onUp({ x, y }) {
+  _onUp() {
     if (this._dragging) {
       const obj = this._dragging;
       this._dragging = null;
       this.canvas.style.cursor = 'default';
       if (this.onDragEnd) this.onDragEnd(obj);
     }
-    this._mouseDown = false;
   }
 
-  /** True if currently dragging something */
   get isDragging() { return this._dragging !== null; }
+  get dragTarget() { return this._dragging; }
 }

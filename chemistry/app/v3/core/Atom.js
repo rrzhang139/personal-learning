@@ -39,6 +39,9 @@ export class Atom extends Renderable {
     this._floatPhase = Math.random() * Math.PI * 2;
     this._floatSpeed = 0.3 + Math.random() * 0.4;
 
+    // Snap glow (set by ProximityBonder)
+    this._snapGlow = false;
+
     // Bonds connected to this atom (set by Bond constructor)
     /** @type {import('./Bond.js').Bond[]} */
     this.bonds = [];
@@ -109,18 +112,17 @@ export class Atom extends Renderable {
       drawY += Math.cos(time * this._floatSpeed * 0.7 + this._floatPhase * 1.3) * 7;
     }
 
-    // Glow on hover
-    if (this.hovered || this.draggable) {
-      if (this.hovered) {
-        ctx.shadowColor = GLOW_COLOR;
-        ctx.shadowBlur = 20;
-      }
+    // Glow on hover or snap proximity
+    const glowing = this.hovered || this._snapGlow;
+    if (glowing) {
+      ctx.shadowColor = this._snapGlow ? '#4caf50' : GLOW_COLOR;
+      ctx.shadowBlur = this._snapGlow ? 30 : 20;
     }
 
     // Main circle
     ctx.fillStyle = '#0d1b2a';
-    ctx.strokeStyle = this.hovered ? GLOW_COLOR : this.element.color;
-    ctx.lineWidth = this.hovered ? 3 : 2;
+    ctx.strokeStyle = this._snapGlow ? '#4caf50' : this.hovered ? GLOW_COLOR : this.element.color;
+    ctx.lineWidth = glowing ? 3 : 2;
     ctx.beginPath();
     ctx.arc(drawX, drawY, this.r, 0, Math.PI * 2);
     ctx.fill();

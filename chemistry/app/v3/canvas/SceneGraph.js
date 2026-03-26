@@ -5,6 +5,9 @@ export class SceneGraph {
   constructor() {
     /** @type {import('./Renderable.js').Renderable[]} */
     this.objects = [];
+
+    /** @type {Array<(ctx: CanvasRenderingContext2D, time: number) => void>} */
+    this.overlays = [];  // extra render callbacks drawn on top
   }
 
   /**
@@ -63,6 +66,11 @@ export class SceneGraph {
       }
       obj.render(ctx, time);
       ctx.restore();
+    }
+
+    // Overlays (proximity hints, etc.)
+    for (const fn of this.overlays) {
+      fn(ctx, time);
     }
   }
 }
