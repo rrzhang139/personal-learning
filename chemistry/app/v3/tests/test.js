@@ -485,6 +485,101 @@ async function runTests() {
   });
 
   // ===========================================
+  section('19. Hybridization (isolated module)');
+  // ===========================================
+  const { Hybridization } = await import('../orbitals/Hybridization.js');
+
+  // compute() with explicit sigma + lone pair counts
+  const spH = Hybridization.compute(2, 0);
+  assert('2σ + 0 LP = sp', spH.type === 'sp');
+  assert('sp geometry = linear', spH.geometry === 'linear');
+  assert('sp angle = 180°', spH.angleDeg === 180);
+  assert('sp has 2 orbital angles', spH.orbitalAngles.length === 2);
+  assert('sp stericNumber = 2', spH.stericNumber === 2);
+
+  const sp2H = Hybridization.compute(3, 0);
+  assert('3σ + 0 LP = sp2', sp2H.type === 'sp2');
+  assert('sp2 geometry = trigonal planar', sp2H.geometry === 'trigonal planar');
+  assert('sp2 angle = 120°', sp2H.angleDeg === 120);
+  assert('sp2 has 3 orbital angles', sp2H.orbitalAngles.length === 3);
+
+  const sp3H = Hybridization.compute(4, 0);
+  assert('4σ + 0 LP = sp3', sp3H.type === 'sp3');
+  assert('sp3 angle = 109.5°', sp3H.angleDeg === 109.5);
+
+  const sp3_lp = Hybridization.compute(3, 1);
+  assert('3σ + 1 LP = sp3 (steric 4)', sp3_lp.type === 'sp3');
+  assert('NH3 hybridization steric = 4', sp3_lp.stericNumber === 4);
+
+  const sp3_2lp = Hybridization.compute(2, 2);
+  assert('2σ + 2 LP = sp3 (steric 4)', sp3_2lp.type === 'sp3');
+  assert('H2O hybridization steric = 4', sp3_2lp.stericNumber === 4);
+
+  // fromElement() convenience
+  const carbonSp3 = Hybridization.fromElement(4, 4); // C with 4 bonds
+  assert('C with 4 bonds = sp3', carbonSp3.type === 'sp3');
+  assert('C sp3: 0 lone pairs', carbonSp3.lonePairs === 0);
+
+  const oxygenH2O = Hybridization.fromElement(6, 2); // O with 2 bonds
+  assert('O with 2 bonds = sp3', oxygenH2O.type === 'sp3');
+  assert('O sp3: 2 lone pairs', oxygenH2O.lonePairs === 2);
+
+  const carbonSp2 = Hybridization.fromElement(4, 3); // C with 3 σ bonds (e.g., in C=O)
+  assert('C with 3σ = sp2', carbonSp2.type === 'sp2');
+
+  const carbonSp = Hybridization.fromElement(4, 2); // C with 2 σ bonds (e.g., CO2)
+  assert('C with 2σ = sp', carbonSp.type === 'sp');
+
+  const nitrogenNH3 = Hybridization.fromElement(5, 3); // N with 3 bonds
+  assert('N with 3 bonds = sp3', nitrogenNH3.type === 'sp3');
+  assert('N sp3: 1 lone pair', nitrogenNH3.lonePairs === 1);
+
+  // classifyBond()
+  const single = Hybridization.classifyBond(1);
+  assert('Single bond = 1 sigma', single.length === 1 && single[0].type === 'sigma');
+
+  const double = Hybridization.classifyBond(2);
+  assert('Double bond = 1 sigma + 1 pi', double.length === 2 &&
+    double[0].type === 'sigma' && double[1].type === 'pi');
+
+  const triple = Hybridization.classifyBond(3);
+  assert('Triple bond = 1 sigma + 2 pi', triple.length === 3 &&
+    triple[0].type === 'sigma' && triple[1].type === 'pi' && triple[2].type === 'pi');
+
+  // unhybridizedPOrbitals()
+  assert('sp has 2 unhybridized p', Hybridization.unhybridizedPOrbitals('sp') === 2);
+  assert('sp2 has 1 unhybridized p', Hybridization.unhybridizedPOrbitals('sp2') === 1);
+  assert('sp3 has 0 unhybridized p', Hybridization.unhybridizedPOrbitals('sp3') === 0);
+
+  // orbitalShape()
+  assert('sp3 lobe ratio = 0.65', Hybridization.orbitalShape('sp3').lobeRatio === 0.65);
+  assert('sp lobe ratio = 0.75', Hybridization.orbitalShape('sp').lobeRatio === 0.75);
+
+  // --- Hybridization ↔ VSEPR consistency ---
+  section('20. Hybridization ↔ VSEPR Consistency');
+
+  // The key invariant: VSEPR and Hybridization should agree on geometry
+  // for the same steric number. They're different explanations of the same thing.
+  const testCases = [
+    { sigma: 2, lp: 0, vsepName: 'linear', hybType: 'sp' },
+    { sigma: 3, lp: 0, vsepName: 'trigonal planar', hybType: 'sp2' },
+    { sigma: 4, lp: 0, vsepName: 'tetrahedral', hybType: 'sp3' },
+    { sigma: 3, lp: 1, vsepName: 'trigonal pyramidal', hybType: 'sp3' },
+    { sigma: 2, lp: 2, vsepName: 'bent', hybType: 'sp3' },
+    { sigma: 2, lp: 1, vsepName: 'bent', hybType: 'sp2' },
+  ];
+
+  for (const tc of testCases) {
+    const vLayout = VSEPR.layout(tc.sigma, tc.lp);
+    const hResult = Hybridization.compute(tc.sigma, tc.lp);
+    assert(`${tc.sigma}σ+${tc.lp}LP: VSEPR=${vLayout.name}, Hybrid=${hResult.type}`,
+      hResult.type === tc.hybType,
+      `expected ${tc.hybType}, got ${hResult.type}`);
+    assert(`${tc.sigma}σ+${tc.lp}LP: steric numbers match`,
+      hResult.stericNumber === tc.sigma + tc.lp);
+  }
+
+  // ===========================================
   // Summary
   // ===========================================
   const total = passed + failed + errors;
