@@ -64,8 +64,8 @@ async function init() {
   sm.onUpdate((time) => {
     bonder.update();
     bonder.applyRigidBody();
-    // Update all bonds (reposition cylinders)
-    for (const b of bonder.bonds) b.update();
+    // Update all bonds (reposition cylinders + shared electrons + cloud)
+    for (const b of bonder.bonds) b.update(time);
     // Animate electrons on all atoms
     for (const a of bonder.atoms) a.updateElectrons(time);
   });

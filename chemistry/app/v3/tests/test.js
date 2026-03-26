@@ -696,6 +696,53 @@ async function runTests() {
   assert('Atom electrons count', eTestAtom.electrons.length === 6);
 
   // ===========================================
+  section('24. Bond EN Bias & Shared Electrons');
+  // ===========================================
+
+  // HCl bond: Cl (EN 3.16) more EN than H (EN 2.20)
+  const hclMol = Molecule.create('HCl', 400, 300);
+  const hclBond = hclMol.bonds[0];
+  const hAtomHCl = hclMol.atoms.find(a => a.element.symbol === 'H');
+  const clAtomHCl = hclMol.atoms.find(a => a.element.symbol === 'Cl');
+
+  // Effective electrons: Cl should have more
+  assert('HCl: Cl effective e⁻ > H effective e⁻',
+    clAtomHCl.effectiveElectrons > hAtomHCl.effectiveElectrons,
+    `Cl=${clAtomHCl.effectiveElectrons.toFixed(2)}, H=${hAtomHCl.effectiveElectrons.toFixed(2)}`);
+
+  // Symmetric: N₂ should be equal
+  const n2Mol = Molecule.create('N2', 400, 300);
+  assert('N2: symmetric effective electrons',
+    approx(n2Mol.atoms[0].effectiveElectrons, n2Mol.atoms[1].effectiveElectrons, 0.01));
+
+  // H₂O: O should have more effective electrons than each H
+  const h2oMol2 = Molecule.create('H2O', 400, 300);
+  const oAtom2 = h2oMol2.atoms.find(a => a.element.symbol === 'O');
+  const hAtom2 = h2oMol2.atoms.find(a => a.element.symbol === 'H');
+  assert('H2O: O effective e⁻ > H effective e⁻',
+    oAtom2.effectiveElectrons > hAtom2.effectiveElectrons);
+
+  // Bond electron state: shared electrons exist
+  const h2oBonds = h2oMol2.bonds;
+  assert('H2O has 2 bonds', h2oBonds.length === 2);
+  for (const bond of h2oBonds) {
+    const oShared = oAtom2.electrons.filter(e => e.state === 'shared' && e.bond === bond);
+    assert(`Bond has shared electrons from O`, oShared.length >= 1);
+  }
+
+  // Lone pairs on O in H2O
+  const oLone2 = oAtom2.electrons.filter(e => e.state === 'lone');
+  assert('H2O O has 4 lone electrons', oLone2.length === 4);
+
+  // NaCl: extreme EN difference
+  const naclMol = Molecule.create('NaCl', 400, 300);
+  const naAtom = naclMol.atoms.find(a => a.element.symbol === 'Na');
+  const clAtom = naclMol.atoms.find(a => a.element.symbol === 'Cl');
+  assert('NaCl: Cl effective e⁻ >> Na effective e⁻',
+    clAtom.effectiveElectrons > naAtom.effectiveElectrons + 0.3,
+    `Cl=${clAtom.effectiveElectrons.toFixed(2)}, Na=${naAtom.effectiveElectrons.toFixed(2)}`);
+
+  // ===========================================
   // Summary
   // ===========================================
   const total = passed + failed + errors;
