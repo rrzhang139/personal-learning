@@ -31,10 +31,10 @@ async function init() {
     status.text = `Bonded! ${bond.atomA.element.symbol}—${bond.atomB.element.symbol}. Watch the electrons shuttle!`;
   });
 
-  // Every frame: proximity hints + spring physics for ALL bonds
+  // Every frame: proximity hints + rigid-body movement
   stage.sceneGraph.overlays.push(() => {
     bonder.update();
-    bonder.applySpringPhysics(stage.interaction.dragTarget);
+    bonder.applyRigidBody(stage.interaction.dragTarget);
   });
   stage.sceneGraph.overlays.push((ctx) => {
     bonder.renderHint(ctx);

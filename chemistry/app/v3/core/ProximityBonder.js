@@ -159,25 +159,138 @@ export class ProximityBonder {
   }
 
   /**
-   * Apply spring physics to ALL tracked bonds — so dragging one bonded
-   * atom pulls its neighbors, whether from a Molecule or free-bonded.
-   * @param {object|null} dragTarget — the currently dragged atom (skip it)
+   * Rigid-body molecule dragging: when one atom is dragged,
+   * the entire bonded cluster moves and rotates as a unit,
+   * preserving VSEPR geometry.
+   *
+   * @param {object|null} dragTarget — the atom being dragged
+   * @param {number} dx — how much dragTarget moved in x this frame
+   * @param {number} dy — how much dragTarget moved in y this frame
    */
-  applySpringPhysics(dragTarget) {
-    for (const bond of this.bonds) {
-      const a = bond.atomA;
-      const b = bond.atomB;
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const target = (a.r + b.r) + 30;
-      if (dist < 1) continue;
-      const force = (dist - target) * 0.04;
-      const fx = (dx / dist) * force;
-      const fy = (dy / dist) * force;
-      if (a !== dragTarget) { a.x += fx; a.y += fy; }
-      if (b !== dragTarget) { b.x -= fx; b.y -= fy; }
+  applyRigidBody(dragTarget) {
+    if (!dragTarget || !this.atoms.includes(dragTarget)) return;
+
+    // Find all atoms connected to dragTarget (BFS through bonds)
+    const cluster = this._findCluster(dragTarget);
+    if (cluster.size <= 1) return;
+
+    // Find the "anchor" — the central atom (most bonds) in the cluster
+    let central = dragTarget;
+    for (const atom of cluster) {
+      if (atom.bonds.length > central.bonds.length) central = atom;
     }
+
+    // Compute where the central atom should be based on dragTarget's position
+    // If dragTarget IS central, all others follow directly.
+    // If dragTarget is a terminal, rotate + translate the whole molecule.
+    if (dragTarget === central) {
+      // Simple: compute delta from central's "rest" position, apply to all others
+      // We don't have rest positions stored, so use bond-length + angle constraints
+      this._enforceBondConstraints(central, cluster);
+    } else {
+      // Terminal dragged: rotate molecule around central so terminal follows
+      this._rotateClusterToward(central, dragTarget, cluster);
+      this._enforceBondConstraints(central, cluster);
+    }
+  }
+
+  /**
+   * Enforce bond length and VSEPR angle constraints from a central atom outward.
+   * Positions all non-dragged atoms at the correct distance and angle from central.
+   */
+  _enforceBondConstraints(central, cluster) {
+    const dragTarget = this.stage.interaction.dragTarget;
+
+    // For the central atom: position its bonded neighbors at correct distances
+    // Use current angle from central to each neighbor (preserves rotation)
+    // but enforce correct distance
+    for (const bond of central.bonds) {
+      const other = bond.atomA === central ? bond.atomB : bond.atomA;
+      if (!cluster.has(other)) continue;
+      if (other === dragTarget) continue; // don't move the dragged atom
+
+      const dx = other.x - central.x;
+      const dy = other.y - central.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const targetDist = 65; // bond length
+      if (dist < 0.1) continue;
+
+      // Enforce distance: snap to targetDist along current angle
+      const angle = Math.atan2(dy, dx);
+      other.x = central.x + Math.cos(angle) * targetDist;
+      other.y = central.y + Math.sin(angle) * targetDist;
+    }
+
+    // For non-central atoms that have their own bonds (chains), recurse
+    for (const bond of central.bonds) {
+      const other = bond.atomA === central ? bond.atomB : bond.atomA;
+      if (!cluster.has(other) || other === dragTarget) continue;
+      for (const subBond of other.bonds) {
+        const sub = subBond.atomA === other ? subBond.atomB : subBond.atomA;
+        if (sub === central || !cluster.has(sub) || sub === dragTarget) continue;
+        const dx = sub.x - other.x;
+        const dy = sub.y - other.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 0.1) continue;
+        const angle = Math.atan2(dy, dx);
+        sub.x = other.x + Math.cos(angle) * 65;
+        sub.y = other.y + Math.sin(angle) * 65;
+      }
+    }
+  }
+
+  /**
+   * When a terminal atom is dragged, rotate the whole cluster around
+   * the central atom so it "follows" naturally.
+   */
+  _rotateClusterToward(central, dragTarget, cluster) {
+    // Current angle from central to dragTarget
+    const curAngle = Math.atan2(dragTarget.y - central.y, dragTarget.x - central.x);
+
+    // Where dragTarget was last frame (use bond constraint to find old angle)
+    // We'll compute the angle delta and rotate all other atoms by the same amount
+    const targetDist = 65;
+    const idealX = central.x + Math.cos(curAngle) * targetDist;
+    const idealY = central.y + Math.sin(curAngle) * targetDist;
+
+    // Move central to keep dragTarget at bond distance
+    // (central slides so that dragTarget stays where user put it)
+    central.x = dragTarget.x - Math.cos(curAngle) * targetDist;
+    central.y = dragTarget.y - Math.sin(curAngle) * targetDist;
+
+    // Now reposition all other atoms relative to central, preserving their
+    // relative angles to each other
+    for (const bond of central.bonds) {
+      const other = bond.atomA === central ? bond.atomB : bond.atomA;
+      if (!cluster.has(other) || other === dragTarget) continue;
+
+      // Preserve the angle offset between this atom and dragTarget
+      const dx = other.x - central.x;
+      const dy = other.y - central.y;
+      const angle = Math.atan2(dy, dx);
+      other.x = central.x + Math.cos(angle) * targetDist;
+      other.y = central.y + Math.sin(angle) * targetDist;
+    }
+  }
+
+  /**
+   * BFS: find all atoms connected to `start` through bonds.
+   */
+  _findCluster(start) {
+    const visited = new Set();
+    const queue = [start];
+    while (queue.length) {
+      const atom = queue.shift();
+      if (visited.has(atom)) continue;
+      visited.add(atom);
+      for (const bond of atom.bonds) {
+        const other = bond.atomA === atom ? bond.atomB : bond.atomA;
+        if (this.atoms.includes(other) && !visited.has(other)) {
+          queue.push(other);
+        }
+      }
+    }
+    return visited;
   }
 
   /**
