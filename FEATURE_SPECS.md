@@ -86,6 +86,15 @@ This document is auto-updated by a Claude Code stop hook. Each section captures 
 
 <!-- STOP_HOOK_MARKER — new entries appended below this line -->
 
+### 2025-03-25 — Unified 3D Playground
+- Merged all 2D playground features into Three.js 3D scene (playground-3d.html)
+- New three/ module: SceneManager, Atom3D, Bond3D, DragController, ProximityBonder3D, Molecule3D, OrbitalMeshFactory
+- VSEPR.js extended with layout3D() + positionAtoms3D() — true 3D vectors (tetrahedral, trig planar, etc.)
+- Raycasting drag on camera-perpendicular plane, orbit controls auto-disable during drag
+- All bonds render as cylinders, update position dynamically
+- 20+ new tests for VSEPR 3D geometry + 2D↔3D consistency
+- 2D playground fully preserved (no changes to canvas/ or core/)
+
 ### 2025-03-25 — 3D Orbital Viewer + Hybridization Module
 - Built Three.js 3D orbital viewer showing all three p dumbbells (px/py/pz) clearly in 3D space with rotation/zoom
 - Added Hybridization.js (isolated): computes sp/sp2/sp3 from sigma+LP count, classifies sigma vs pi bonds
