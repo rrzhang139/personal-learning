@@ -16,10 +16,10 @@ import { drawS, drawP, drawPz, drawDCloverleaf, drawDz2, drawF } from '../orbita
 const GLOW_COLOR = '#00e5ff';
 const COLORS = ElectronConfig.SUBSHELL_COLORS;
 
-// Orbital sizes scale with principal quantum number
+// Orbital sizes scale with principal quantum number — large enough to see
 function orbSize(n, type) {
-  const base = { s: 22, p: 30, d: 26, f: 22 };
-  return (base[type] || 22) + n * 14;
+  const base = { s: 35, p: 55, d: 50, f: 45 };
+  return (base[type] || 35) + n * 20;
 }
 
 const P_ANGLES = [0, Math.PI / 2, null]; // px, py, pz
@@ -96,7 +96,43 @@ export class Atom extends Renderable {
   assignElectronStates() {
     for (const e of this.electrons) {
       e.state = 'valence'; e.bond = null; e.partnerAtom = null;
+      e.orbitalType = null; e.orbitalN = 0; e.orbitalAngle = null; e.orbitalSize = 0;
     }
+
+    // Map electrons to their orbital types from the config.
+    // Walk the config to assign orbital info to each electron in order.
+    let cfgIdx = 0;
+    const flatOrbitals = [];
+    for (const sub of this._electronConfig) {
+      for (let oi = 0; oi < sub.orbitals.length; oi++) {
+        const orb = sub.orbitals[oi];
+        if (orb.spinUp) flatOrbitals.push({ n: sub.n, type: sub.type, orbIndex: oi });
+        if (orb.spinDown) flatOrbitals.push({ n: sub.n, type: sub.type, orbIndex: oi });
+      }
+    }
+    // Assign orbital info to each electron (valence electrons map 1:1 in order)
+    for (let i = 0; i < this.electrons.length && i < flatOrbitals.length; i++) {
+      // Only assign to valence-shell electrons (last N in flatOrbitals)
+    }
+    // Actually: assign from the END of flatOrbitals (valence electrons are the outermost)
+    const veStart = flatOrbitals.length - this.electrons.length;
+    for (let i = 0; i < this.electrons.length; i++) {
+      const orbInfo = flatOrbitals[veStart + i];
+      if (orbInfo) {
+        const e = this.electrons[i];
+        e.orbitalType = orbInfo.type;
+        e.orbitalN = orbInfo.n;
+        e.orbitalSize = orbSize(orbInfo.n, orbInfo.type);
+        // Orientation for p/d orbitals
+        if (orbInfo.type === 'p') {
+          e.orbitalAngle = P_ANGLES[orbInfo.orbIndex % 3];
+        } else if (orbInfo.type === 'd') {
+          e.orbitalAngle = D_ANGLES[orbInfo.orbIndex % 5];
+        }
+      }
+    }
+
+    // Now assign bond/lone states as before
     let idx = 0;
     for (const bond of this.bonds) {
       const other = bond.atomA === this ? bond.atomB : bond.atomA;
