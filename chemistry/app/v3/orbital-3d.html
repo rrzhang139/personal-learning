@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Orbital Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a1a; color: #fff; font-family: monospace; overflow: hidden; }
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 50px; z-index: 10;
+    background: #111; border-bottom: 1px solid #333; display: flex; align-items: center;
+    padding: 0 12px; gap: 5px; overflow-x: auto;
+  }
+  .toolbar button {
+    background: #1a1a2e; border: 1px solid #444; color: #ccc; padding: 5px 10px;
+    border-radius: 4px; cursor: pointer; font: 11px monospace; white-space: nowrap;
+  }
+  .toolbar button:hover { border-color: #00e5ff; color: #fff; }
+  .toolbar button.active { border-color: #4caf50; color: #4caf50; }
+  .toolbar button.el-active { background: #1a2e1a; border-color: #4caf50; color: #4caf50; }
+  .toolbar button.s-btn.active { border-color: #00e5ff; color: #00e5ff; }
+  .toolbar button.p-btn.active { border-color: #ff9800; color: #ff9800; }
+  .toolbar button.d-btn.active { border-color: #4caf50; color: #4caf50; }
+  .toolbar button.f-btn.active { border-color: #bb86fc; color: #bb86fc; }
+  .toolbar .sep { width: 1px; height: 28px; background: #333; flex-shrink: 0; }
+  .toolbar .label { color: #888; font-size: 10px; white-space: nowrap; }
+  #info {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    color: #666; font: 12px monospace; z-index: 10;
+  }
+  #container { position: fixed; top: 50px; left: 0; right: 0; bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="label">Element:</span>
+  <button data-z="1">H</button>
+  <button data-z="6">C</button>
+  <button data-z="7">N</button>
+  <button data-z="8" class="el-active">O</button>
+  <button data-z="9">F</button>
+  <button data-z="10">Ne</button>
+  <button data-z="16">S</button>
+  <button data-z="17">Cl</button>
+  <button data-z="26">Fe</button>
+  <div class="sep"></div>
+  <span class="label">Filter:</span>
+  <button class="s-btn active" data-filter="s">s</button>
+  <button class="p-btn active" data-filter="p">p</button>
+  <button class="d-btn active" data-filter="d">d</button>
+  <button class="f-btn active" data-filter="f">f</button>
+  <div class="sep"></div>
+  <span class="label">View:</span>
+  <button data-action="toggle-axes" class="active">Axes</button>
+  <button data-action="toggle-shells">Shells</button>
+  <button data-action="toggle-electrons" class="active">e⁻</button>
+  <button data-action="reset-camera">Reset View</button>
+</div>
+
+<div id="container"></div>
+<div id="info">Drag to rotate · Scroll to zoom · Click buttons to filter orbitals</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module" src="orbital-3d.js"></script>
+</body>
+</html>
