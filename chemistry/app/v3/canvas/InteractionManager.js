@@ -15,9 +15,13 @@ export class InteractionManager {
     this._dragOffX = 0;
     this._dragOffY = 0;
     this._hovered = null;
+    this._downPos = null;
+    this._downTarget = null;
 
     /** Called when a drag ends. @type {(renderable) => void} */
     this.onDragEnd = null;
+    /** Called on click (mousedown+up with <5px movement). @type {(renderable) => void} */
+    this.onClick = null;
 
     this._bind();
   }
@@ -78,7 +82,10 @@ export class InteractionManager {
   }
 
   _onDown({ x, y }) {
-    const hit = this._hitTest(x, y);
+    this._downPos = { x, y };
+    this._downTarget = this._hitTest(x, y);
+
+    const hit = this._downTarget;
     if (hit && hit.draggable) {
       this._dragging = hit;
       this._dragOffX = hit.x - x;
@@ -104,13 +111,25 @@ export class InteractionManager {
     }
   }
 
-  _onUp() {
+  _onUp({ x, y } = {}) {
+    // Detect click: same target, minimal movement
+    if (this._downTarget && this._downPos && !this._dragging) {
+      const dx = (x || 0) - this._downPos.x;
+      const dy = (y || 0) - this._downPos.y;
+      if (dx * dx + dy * dy < 25) {
+        if (this.onClick) this.onClick(this._downTarget);
+      }
+    }
+
     if (this._dragging) {
       const obj = this._dragging;
       this._dragging = null;
       this.canvas.style.cursor = 'default';
       if (this.onDragEnd) this.onDragEnd(obj);
     }
+
+    this._downPos = null;
+    this._downTarget = null;
   }
 
   get isDragging() { return this._dragging !== null; }
