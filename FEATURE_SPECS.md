@@ -85,3 +85,12 @@ This document is auto-updated by a Claude Code stop hook. Each section captures 
 ## Conversation Log (auto-appended by stop hook)
 
 <!-- STOP_HOOK_MARKER — new entries appended below this line -->
+
+### 2025-03-25 — 3D Orbital Viewer + Hybridization Module
+- Built Three.js 3D orbital viewer showing all three p dumbbells (px/py/pz) clearly in 3D space with rotation/zoom
+- Added Hybridization.js (isolated): computes sp/sp2/sp3 from sigma+LP count, classifies sigma vs pi bonds
+- Added HybridOrbitalShape.js: drawing for hybrid lobes, sigma sausage, pi lobes
+- Orbital shapes now rendered on atoms in molecule playground with s/p/d/f filter
+- Electrons move within their orbital boundaries (s=sphere wander, p=dumbbell oscillation, d=lobe hopping)
+- 30+ new tests for hybridization + VSEPR consistency
+- Set up FEATURE_SPECS.md + stop hook for auto-tracking feature requests
