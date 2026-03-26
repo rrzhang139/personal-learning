@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry v3 — Playground</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a1a; color: #fff; font-family: monospace; overflow: hidden; }
+
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 50px; z-index: 10;
+    background: #111; border-bottom: 1px solid #333; display: flex; align-items: center;
+    padding: 0 16px; gap: 8px; overflow-x: auto;
+  }
+  .toolbar button {
+    background: #1a1a2e; border: 1px solid #444; color: #ccc; padding: 6px 14px;
+    border-radius: 4px; cursor: pointer; font: 12px monospace; white-space: nowrap;
+  }
+  .toolbar button:hover { border-color: #00e5ff; color: #fff; }
+  .toolbar button.active { border-color: #4caf50; color: #4caf50; }
+  .toolbar .sep { width: 1px; height: 28px; background: #333; flex-shrink: 0; }
+  .toolbar .label { color: #888; font-size: 11px; }
+
+  .canvas-wrap {
+    position: fixed; top: 50px; left: 0; right: 0; bottom: 0;
+  }
+  canvas {
+    width: 100%; height: 100%; display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="label">Atoms:</span>
+  <button data-action="add-H">+ H</button>
+  <button data-action="add-C">+ C</button>
+  <button data-action="add-N">+ N</button>
+  <button data-action="add-O">+ O</button>
+  <button data-action="add-S">+ S</button>
+  <button data-action="add-Cl">+ Cl</button>
+  <div class="sep"></div>
+  <span class="label">Molecules:</span>
+  <button data-action="mol-H2O">H₂O</button>
+  <button data-action="mol-CO2">CO₂</button>
+  <button data-action="mol-CH4">CH₄</button>
+  <button data-action="mol-O3">O₃</button>
+  <button data-action="mol-N2">N₂</button>
+  <button data-action="mol-NH3">NH₃</button>
+  <div class="sep"></div>
+  <span class="label">Display:</span>
+  <button data-action="toggle-dots" id="btnDots">VE Dots: OFF</button>
+  <button data-action="toggle-lp" id="btnLP">Lone Pairs: OFF</button>
+  <button data-action="toggle-float" id="btnFloat">Float: OFF</button>
+  <div class="sep"></div>
+  <button data-action="tween-demo">Tween Demo</button>
+  <button data-action="clear">Clear All</button>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="stage"></canvas>
+</div>
+
+<script type="module" src="playground.js"></script>
+</body>
+</html>
