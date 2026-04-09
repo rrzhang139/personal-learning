@@ -280,10 +280,11 @@
 <!-- ============================================================ -->
 <section id="sec-1" data-a="intro">
 <div class="pb" data-testid="pb">
-<h2><span style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;">I. Introduction</span></h2>
-<p>You may have not experienced this day to day, but many of the problems we want to tackle in this universe are bounded in some way. Resist. Not because we're missing something obvious. Not because there's a clever trick we haven't thought of. But because there seems to be something about the problem itself — something structural, something deep — that makes it stubbornly, irreducibly hard.&nbsp;</p><p><span style="background-color: rgb(11, 11, 20);"><br></span><span style="background-color: rgb(10, 18, 24);">What would it even mean for a problem to be </span><em>inherently</em><span style="background-color: rgb(10, 18, 24);"> hard? We're used to thinking of difficulty as something relative to </span><em>us</em><span style="background-color: rgb(10, 18, 24);">, to our tools, to our level of understanding. A calculus problem is hard for a high schooler and routine for a mathematician. But what if some problems are hard in an </span><em>absolute</em><span style="background-color: rgb(10, 18, 24);"> sense? Hard for everyone, hard for anything that could possibly attempt to solve them? Hard not because the solver is insufficient, but because the </span><em>universe itself</em><span style="background-color: rgb(10, 18, 24);"> imposes limits on how quickly the answer can be found?<br></span><span style="background-color: rgb(10, 18, 24);"><br>Is that even a coherent idea? Can we separate the difficulty of a problem from the cleverness of the solver?<br></span><span style="background-color: rgb(10, 18, 24);"><br>That's the founding question of complexity theory.&nbsp;</span><em>How hard IS this?</em></p></div>
+<h2>I. Introduction</h2>
+<p>You may have not experienced this day to day, but many of the problems we want to tackle in this universe are bounded in some way. Resist. Not because we're missing something obvious. Not because there's a clever trick we haven't thought of. But because there seems to be something about the problem itself — something structural, something deep — that makes it stubbornly, irreducibly hard.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">What would it even mean for a problem to be </span><em>inherently</em><span style="background-color: rgb(10, 18, 24);"> hard? We're used to thinking of difficulty as something relative to </span><em>us</em><span style="background-color: rgb(10, 18, 24);">, to our tools, to our level of understanding. A calculus problem is hard for a high schooler and routine for a mathematician. But what if some problems are hard in an </span><em>absolute</em><span style="background-color: rgb(10, 18, 24);"> sense? Hard for everyone, hard for anything that could possibly attempt to solve them? Hard not because the solver is insufficient, but because the </span><em>universe itself</em><span style="background-color: rgb(10, 18, 24);"> imposes limits on how quickly the answer can be found?<br></span><span style="background-color: rgb(10, 18, 24);"><br>Is that even a coherent idea? Can we separate the difficulty of a problem from the cleverness of the solver?<br></span><span style="background-color: rgb(10, 18, 24);"><br>That's the founding question of complexity theory.&nbsp;</span><em>How hard IS this?</em></p></div>
 
-<p class="pb" data-testid="pb"><span style="background-color: rgb(11, 11, 20);">I will not discount how frustratingly difficult it was to learn this subject. Like it was really pulling my hair out. I think I've "tried" to learn complexity theory 3 times via textbooks and AI, and took 2 classes on more advanced topics (Quantum and Communication), but I still haven't grasped it. As I wrote this guide, I was learning so many connections between so many topics within complexity theory, so I hope you will understand as much as I have from this journey.&nbsp;</span></p>
+<p class="pb" data-testid="pb">
+And why should we care? It's hard to motivate this field because it lives in EVERY domain. I'm particularly motivated to study this field because it's so general: there's a beautiful theory hiding behind the jargon. I have personally taken 3 classes before (Classical, Quantum, Communication). But every time I try to learn it, I run into walls of definitions and proofs that seem to be disconnected from any intuition I can grab onto. This is considered one of the hardest subjects to understand.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">I hope to dispel this fear and approach it head on. We're going to build up complexity theory from the ground, motivated at every step.&nbsp;</span></p>
 </section>
 
 <hr>
@@ -293,7 +294,7 @@
 <div class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;decision&quot;}" data-testid="pb">
 <h2>II. The Brave Assumptions</h2>
 <p>
-Before we can measure the difficulty of a problem, we need to agree on what a "problem" even <em>is</em>.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Complexity theory takes the vast, messy, infinite universe of computational tasks, like finding shortest paths, scheduling jobs, cracking codes, folding proteins, proving theorems, and reduces them all to a single simple format: </span><strong>a yes/no question</strong><span style="background-color: rgb(10, 18, 24);">. "Is there a tour of these cities shorter than 1000 miles?" "Can this Boolean formula be made true?" "Does this graph contain a triangle?".</span></p></div>
+Before we can measure the difficulty of a problem, we need to agree on what a "problem" even <em>is</em>.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Complexity theory takes the vast, messy, infinite universe of computational tasks — finding shortest paths, scheduling jobs, cracking codes, folding proteins, proving theorems — and reduces them all to a single simple format: </span><strong>a yes/no question</strong><span style="background-color: rgb(10, 18, 24);">. "Is there a tour of these cities shorter than 1000 miles?" "Can this Boolean formula be made true?" "Does this graph contain a triangle?".</span></p></div>
 
 <div class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;binarySearch&quot;}" data-testid="pb">
 <p>
@@ -391,7 +392,7 @@ The computational model is the outermost layer. Within that layer, you have reso
 <div class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;bfs&quot;}" data-testid="pb">
 <p>We probably can't move forward without introducing the first complexity class: <strong>P</strong>, the polynomial class. All decision problems solvable in polynomial time. These are the problems that <em>cooperate.&nbsp;</em>Feed them bigger inputs and the work grows manageably.</p>
 <details class="aside-dropdown">
-<summary>Example: BFS, shortest path in a graph (a problem in P)</summary>
+<summary>Example: shortest path in a graph (a problem in P)</summary>
 <div class="aside">
 <p>"Is there a path from A to B with at most k edges?" Start at A, explore all neighbors (distance 1), then their neighbors (distance 2), and so on. Each node is visited at most once. For a graph with n nodes and m edges, this takes O(n + m) steps — solidly polynomial. The animation shows BFS exploring outward layer by layer.</p>
 </div>
@@ -399,7 +400,7 @@ The computational model is the outermost layer. Within that layer, you have reso
 </div>
 
 <div class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;np&quot;}" data-testid="pb">
-<p>NP. A problem is in NP if there exists a short <em>certificate</em> that can check the answer is correct. <br><br>For BFS, it's literally the shortest path!</p>
+<p>Then there's <strong>NP</strong>. Not "Non-Polynomial" — it stands for "Nondeterministic Polynomial." A problem is in NP if, whenever the answer is YES, there exists a short <em>certificate</em> that can be <strong>checked quickly</strong>. For the traveling salesman: the certificate is the tour — add up the distances, done. For Boolean satisfiability: the certificate is the assignment — plug it in, evaluate. Finding the certificate may be astronomically hard. Checking it is fast. That asymmetry is the entire point.</p>
 <details class="aside-dropdown">
 <summary>The rest of the map: PSPACE, EXPTIME, BPP, and what we don't know</summary>
 <div class="aside">
@@ -416,59 +417,153 @@ The computational model is the outermost layer. Within that layer, you have reso
 <div class="pb" data-testid="pb">
 <h2>V. The Great Asymmetry</h2>
 <p>
-Some problems are weird because it's so much easier to <em>recognize</em> a solution than to <em>discover</em> one.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Is this asymmetry just a psychological artifact — a quirk of how human minds work? Or is it something that would be true for </span><em>any</em><span style="background-color: rgb(10, 18, 24);"> computational process, human or otherwise?</span></p></div>
+Have you ever had this experience? You struggle with a problem for an hour. Someone shows you the answer, and you immediately see that it's right. You could never have found it yourself — but the moment it's in front of you, it's obviously correct. What's going on there? Why is it so much easier to <em>recognize</em> a solution than to <em>discover</em> one?
+</p>
+</div>
 
 <p class="pb" data-testid="pb">
-This is the&nbsp;<strong>P versus NP</strong> question. P asks can a computer efficiently <em>find</em> the answer? NP asks can a computer efficiently <em>check</em> a proposed answer? If P = NP, then efficient checking implies efficient finding. Every problem where you can quickly verify a solution is also a problem where you can quickly discover one.
-<br><br>Let's pause for a second to think how crazy it would be if P=NP. every mathematical theorem with a reasonably short proof could be&nbsp;<em>discovered automatically</em>. Protein folding would become trivially solvable. Optimal scheduling, logistics, circuit design will all solved exactly, efficiently, without heuristics or approximations. The very creative act of discovery will become mechanized.&nbsp;<br><br>This has quite a contentious argument in our period of history, where we see LLMs and AI use approximations to solve some of the hardest problems. It makes us wonder if AI can asymptotically approach the statement that P=NP.<br><br><span style="background-color: rgb(10, 18, 24);">But if P ≠ NP, then there is an inherent, inescapable gap between creating and verifying -- searching and recognizing. Kind of like a&nbsp;</span><em>law of nature.</em></p>
+Is this asymmetry just a psychological artifact — a quirk of how human minds work? Or is it something deeper? Something that would be true for <em>any</em> computational process, human or otherwise?
+</p>
+
+<p class="pb" data-testid="pb">
+This everyday experience is, quite precisely, the <strong>P versus NP</strong> question. P asks: can a computer efficiently <em>find</em> the answer? NP asks: can a computer efficiently <em>check</em> a proposed answer? If P = NP, then efficient checking implies efficient finding. Every problem where you can quickly verify a solution is also a problem where you can quickly discover one.
+</p>
+
+<p class="pb" data-testid="pb">
+But if P ≠ NP — and almost everyone who has thought deeply about this believes it's true — then there is an inherent, inescapable gap between creating and verifying. Between searching and recognizing. Between the composer who writes the symphony and the listener who appreciates it. This gap would be a <em>law of nature</em>, a structural feature of computation itself, not a limitation of any specific approach.
+</p>
+
+<p class="pb" data-testid="pb">
+Why is this so hard to prove? Because proving P ≠ NP means proving a <em>negative</em>: that no algorithm, no matter how clever, no matter how unlike anything we've ever seen, could solve NP problems efficiently. You have to rule out every possible approach — not just the ones we know about, but every approach that could ever be conceived. That's qualitatively different from finding an algorithm (where you just have to be clever once). It's the difference between showing that a lock can be picked (find one key) and showing that a lock <em>cannot</em> be picked (rule out every possible key). No wonder it's been open for over fifty years.
+</p>
+
+<p class="pb" data-testid="pb">
+What would the world look like if P <em>did</em> equal NP? It's worth dwelling on this, because the consequences are so staggering that many people take them as evidence that P ≠ NP.
+</p>
+
+<p class="pb" data-testid="pb">
+If P = NP, then every mathematical theorem with a reasonably short proof could be <em>discovered automatically</em>. Protein folding would become trivially solvable. Optimal scheduling, logistics, circuit design — all solved exactly, efficiently, without heuristics or approximations. Cryptography would collapse utterly, because the security of every encryption scheme depends on certain problems being hard. Your bank account, your encrypted messages, your digital identity — all protected by the computational difficulty of factoring, discrete logarithms, and related problems. If finding solutions were as easy as checking them, all of that protection would evaporate.
+</p>
+
+<p class="pb" data-testid="pb">
+The creative act of discovery — in mathematics, in science, in engineering — would become a <em>mechanical computation</em>. Many people find this so deeply implausible that it serves as powerful (though informal) evidence for P ≠ NP.
+</p>
 </section>
 
 <hr>
 
 <!-- ============================================================ -->
 <section id="sec-6">
-<div class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;relations&quot;}" data-testid="pb">
-<h2><span style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;">VI. The Beautiful Bridge</span></h2>
-<p>So back to the great map. So we are finding that nature is build upon this graph of different complexity classes each with different problems assigned to it. If the purpose is to discover how nature structures computation, we should start exploring more connections between these classes.<br><br></p>
-<p>We should start by picking two classes, and conjecturing whether we can connect them. Are they equal? Is A harder than B? These are relative statements, not absolute (because we suck at proving absolute lower bounds).</p></div><div class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;relations&quot;}" data-testid="pb" style="counter-increment: block 1;"><p>There are exactly four possible relationships between two classes A and B:<br><br></p><p><span style="color: rgb(238, 238, 255); font-weight: 600;">A ⊆ B</span>&nbsp;(containment) — every problem in A is also in B. We know P ⊆ NP ⊆ PSPACE ⊆ EXPTIME.<br><span style="color: rgb(238, 238, 255); font-weight: 600;"><br>A ⊊ B</span>&nbsp;(strict) — A is inside B, and B has something A doesn't. We know P ⊊ EXPTIME, but can't prove P ⊊ NP.<br><span style="color: rgb(238, 238, 255); font-weight: 600;"><br>A = B</span>&nbsp;(equality) — they're secretly the same class. The P vs NP question asks exactly this.<br><span style="color: rgb(238, 238, 255); font-weight: 600;"><br>A ⊥ B</span>&nbsp;(incomparable) — neither contains the other. Conjectured for some pairs defined by different resources.</p><p><br>How do computational problems&nbsp;<em>relate</em>&nbsp;to each other? Not in terms of subject matter, but in terms of&nbsp;<em>difficulty</em>. Is there a rigorous way to say "problem A is at least as hard as problem B"? And can we do this&nbsp;<em>without knowing how hard either one actually is</em>?</p></div>
-
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;reduce&quot;}" data-testid="pb"><span style="background-color: rgb(10, 18, 24);">Enter reductions. A reduction from problem A to problem B is like a </span><strong>translation</strong><span style="background-color: rgb(10, 18, 24);">: you take </span><em>any</em><span style="background-color: rgb(10, 18, 24);"> instance of problem A and efficiently convert it into an instance of problem B, in a way that perfectly preserves the answer. And the translation itself must be efficient (polynomial time computable).<br><br></span>When you design a reduction, you are&nbsp;<em>imagining</em>&nbsp;one problem as if it were another. You take the vocabulary of problem A (its variables, its constraints, its entire structure) and you reconstruct all of it using the vocabulary of problem B.&nbsp;Every relationship, every logical dependency, every piece of structure must be faithfully represented.<br><span style="background-color: rgb(10, 18, 24);"></span></p>
-
-<p class="pb" data-testid="pb">
-What does this buy you? If you can solve B, you can solve A. Just translate your A-instance, solve the resulting B-instance, and the answer carries back.&nbsp;If problem A is hard, then problem B must be at least as hard. Why? Because if B were easy, you could solve A easily too (translate, then solve B). But A is hard (contradiction!). So B must be at least as hard as A.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Reductions are the "≤" of computational difficulty. They let us build a hierarchy, a partial ordering of all problems by hardness. And just like ≤ on numbers, this ordering has a rich and beautiful structure.</span></p>
+<div class="pb" data-testid="pb">
+<h2>VI. The Beautiful Bridge</h2>
+<p>
+Here's a question that might not seem connected to anything we've discussed, but turns out to be the <em>most important</em> idea in complexity theory: how do computational problems <em>relate</em> to each other? Not in terms of subject matter — obviously graph coloring and airline scheduling are about different things. But in terms of <em>difficulty</em>. Is there a rigorous way to say "problem A is at least as hard as problem B"? And can we do this <em>without knowing how hard either one actually is</em>?
+</p>
+</div>
 
 <p class="pb" data-testid="pb">
-But what does a reduction actually <em>look like</em> when you build one?&nbsp;<span style="background-color: rgb(10, 18, 24);">You translate an instance of problem A into an instance of problem B by constructing B piece by piece. The key tool is the </span><em>gadget</em><span style="background-color: rgb(10, 18, 24);">: a small, local construction in B's language that encodes one specific constraint from A. Think of it as a translation device for a single unit of meaning built entirely from B's vocabulary (graph edges, Boolean clauses, whatever B speaks), but </span><em>behaving</em><span style="background-color: rgb(10, 18, 24);"> like a piece of A. You wire gadgets together into a scaffold, and the whole structure is a faithful copy of A, written in B's language.</span></p>
-
-<p class="pb" data-testid="pb">
-Ok I may be losing you. Let's do an example. We'll reduce <strong>3-SAT</strong> to <strong>Independent Set</strong>. In 3-SAT, you have a Boolean formula where each clause has 3 literals, and you ask: is there a TRUE/FALSE assignment making every clause true? In Independent Set, you have a graph and a number <em>k</em>, and you ask: is there a set of <em>k</em> vertices with no edges between any pair? One is logic. The other is geometry. Watch the gadgets build a bridge.
+Why would we need to compare difficulties without knowing them absolutely? Because we're terrible at proving absolute lower bounds. We can't even prove P ≠ NP! We can't prove that any specific NP problem requires more than polynomial time. But what we <em>can</em> do — and this is the crucial insight — is prove <em>relative</em> statements. We can say: "Whatever the difficulty of problem A is, problem B is at least as hard." We can chart the relative topography of difficulty even while the absolute elevation remains unknown.
 </p>
 
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;sat2is-setup&quot;}" data-testid="pb">
+<p class="pb" data-testid="pb">
+This is what a <strong>reduction</strong> does. And the idea is so elegant it almost feels like cheating.
+</p>
+
+<p class="pb" data-testid="pb">
+A reduction from problem A to problem B is a <strong>translation</strong>: you take <em>any</em> instance of problem A and efficiently convert it into an instance of problem B, in a way that perfectly preserves the answer. If the original instance of A is a YES, the translated instance of B is a YES. If it's a NO, it maps to a NO. And the translation itself must be efficient — computable in polynomial time.
+</p>
+
+<p class="pb" data-testid="pb">
+What does this buy you? The practical benefit is obvious: if you can solve B, you can solve A. Just translate your A-instance, solve the resulting B-instance, and the answer carries back. But the deep implication is about <em>difficulty</em>. If problem A is hard, then problem B must be at least as hard. Why? Because if B were easy, you could solve A easily too (translate, then solve B). But A is hard — contradiction. So B must be at least as hard as A.
+</p>
+
+<p class="pb" data-testid="pb">
+Reductions are the "≤" of computational difficulty. They let us build a hierarchy, a partial ordering of all problems by hardness. And just like ≤ on numbers, this ordering has a rich and beautiful structure.
+</p>
+
+<p class="pb" data-testid="pb">
+Now — here's where your intuition comes alive. You described something that I want to savor, because it captures the essence of reductions better than most textbooks do.
+</p>
+
+<p class="pb" data-testid="pb">
+You said: <em>"A lot of the time when reasoning through a problem, you kind of hallucinate some scenarios in your head how the problem will be solved in one domain or with one model, and this just so happens to create an isomorphism of every simulation step mapped to another problem domain or model."</em>
+</p>
+
+<p class="pb" data-testid="pb">
+Yes. That's exactly it.
+</p>
+
+<p class="pb" data-testid="pb">
+When you design a reduction, you are <em>imagining</em> one problem as if it were another. You take the vocabulary of problem A — its variables, its constraints, its entire structure — and you reconstruct all of it using the vocabulary of problem B. You're not just mapping inputs to inputs. You're mapping <em>meaning</em> to <em>meaning</em>. Every constraint in A must find an equivalent expression in B's language. Every relationship, every logical dependency, every piece of structure must be faithfully represented.
+</p>
+
+<p class="pb" data-testid="pb">
+And when you succeed, something magical happens. The solution to B, when you "read it back" through the translation, <em>is</em> a solution to A. Every step of solving B corresponds to a step of solving A. The two problems, living in completely different domains, expressed in completely different vocabularies, are <strong>structurally isomorphic</strong>. The answers correspond. The non-answers correspond. The entire solution landscape is preserved.
+</p>
+
+<p class="pb" data-testid="pb">
+That's the "hallucination" you described — the act of mentally simulating one problem inside the world of another, and discovering that the simulation is <em>faithful</em>. That the structure you built in B's world mirrors the structure of A so perfectly that every computational path through B traces a corresponding path through A.
+</p>
+
+<p class="pb" data-testid="pb">
+Why is this so powerful? Because it means we can study the <em>structure</em> of difficulty itself, as something that transcends the specific domain of any one problem. When two problems are connected by a reduction, their difficulty is entangled. They rise and fall together. Solve one, and you solve the other. Prove one is hard, and the other is hard too. The reduction is a bridge — and once you cross it, the two problems are inseparable.
+</p>
+
+<p class="pb" data-testid="pb">
+But what does a reduction actually <em>look like</em> when you build one? It turns out reductions come in two distinct flavors, and seeing them side by side sharpens the whole idea.
+</p>
+
+<p class="pb" data-testid="pb">
+The first flavor is <strong>gadget-based reduction</strong>. You translate an instance of problem A into an instance of problem B by constructing B piece by piece. The key tool is the <em>gadget</em>: a small, local construction in B's language that encodes one specific constraint from A. Think of it as a translation device for a single unit of meaning — built entirely from B's vocabulary (graph edges, Boolean clauses, whatever B speaks), but <em>behaving</em> like a piece of A. You wire gadgets together into a scaffold, and the whole structure is a faithful copy of A, written in B's language.
+</p>
+
+<p class="pb" data-testid="pb">
+Let me show you what this looks like concretely. We'll reduce <strong>3-SAT</strong> to <strong>Independent Set</strong>. In 3-SAT, you have a Boolean formula where each clause has 3 literals, and you ask: is there a TRUE/FALSE assignment making every clause true? In Independent Set, you have a graph and a number <em>k</em>, and you ask: is there a set of <em>k</em> vertices with no edges between any pair? One is logic. The other is geometry. Watch the gadgets build a bridge.
+</p>
+
+<p class="pb" data-testid="pb">
 Take: <strong>φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ ¬x₃)</strong>. Two clauses, three variables. Create one node for every literal in every clause — six nodes total. Set <em>k</em> = 2 (the number of clauses).
 </p>
 
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;sat2is-tri&quot;}" data-testid="pb">
+<p class="pb" data-testid="pb">
 <strong>Gadget 1 — clause triangles:</strong> Within each clause, connect all three nodes to each other. This forms a triangle. In any independent set, you can pick at most one node per triangle — exactly like choosing which literal satisfies each clause.
 </p>
 
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;sat2is-conflict&quot;}" data-testid="pb">
+<p class="pb" data-testid="pb">
 <strong>Gadget 2 — consistency edges:</strong> Between clauses, add an edge wherever two nodes represent contradictory literals. "x₁" in clause 1 connects to "¬x₁" in clause 2. "¬x₂" in clause 1 connects to "x₂" in clause 2. These prevent picking both a variable and its negation — exactly like requiring a consistent assignment.
 </p>
 
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;sat2is-solve&quot;}" data-testid="pb">
-Now watch: x₁ = TRUE, x₂ = TRUE, x₃ = TRUE satisfies φ. In the graph, pick "x₁" from clause 1's triangle and "x₂" from clause 2's. Different triangles (no clause edge), not contradictory (no consistency edge) — it's an independent set of size 2.<br><br><span style="color: rgb(238, 238, 255); font-weight: 600; font-size: 17px;">The Gadgets of SAT domain → Graph domain Reduction</span><br style="color: rgb(154, 154, 184); font-size: 17px;"><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">Variable xᵢ → literal nodes across clauses</span><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">Literal in clause j → node in clause j's triangle</span><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">"At least one true literal per clause" → "Pick one node per triangle" (triangle edges)</span><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">"No contradictions" → "Can't pick contradictory nodes" (consistency edges)</span><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">Satisfying assignment → independent set of size&nbsp;</span><em style="font-size: 17px;">k</em><br style="color: rgb(154, 154, 184); font-size: 17px;"><span style="color: rgb(154, 154, 184); font-size: 17px;">Unsatisfiable → no independent set of size&nbsp;</span><em style="font-size: 17px;">k</em></p>
+<p class="pb" data-testid="pb">
+Now watch: x₁ = TRUE, x₂ = TRUE, x₃ = TRUE satisfies φ. In the graph, pick "x₁" from clause 1's triangle and "x₂" from clause 2's. Different triangles (no clause edge), not contradictory (no consistency edge) — it's an independent set of size 2. The mapping, laid bare:
+</p>
 
-<div class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;hadamard&quot;}" data-testid="pb">
-<p>Another fun example (my personal favorite). proving <strong>BPP ⊆ BQP.</strong> The core operation of a randomized algorithm is a coin flip. In a quantum circuit, you simulate this with a hadamard gate. The gadget translation is from coin flip to hadamard gate. Neat!</p>
-<details class="aside-dropdown">
-<summary>Two formal notes on reductions</summary>
-<div class="aside">
-<p><strong>Karp vs Turing reductions.</strong> What we described is a <em>Karp (many-one) reduction</em>: one input in, one translated input out, answer preserved. A <em>Turing (Cook) reduction</em> is more general — you can call problem B as a subroutine multiple times, adaptively, while solving A. NP-completeness typically uses Karp reductions (more restrictive, so the results are stronger).</p>
-<p><strong>Transitivity.</strong> If A ≤ B and B ≤ C, then A ≤ C. This is why the web of reductions works: you don't need a direct reduction from every problem to SAT — a chain suffices. And if A ≤ B <em>and</em> B ≤ A, the problems are <em>equivalent</em> in hardness. That's what NP-complete problems are: all equivalent to each other under polynomial-time reductions.</p>
+<div class="aside pb" data-testid="pb">
+<p>
+<strong>SAT domain → Graph domain</strong><br><br>
+Variable xᵢ → literal nodes (positive and negative) across clauses<br>
+Literal in clause j → node in clause j's triangle<br>
+"At least one true literal per clause" → "Pick one node per triangle" (triangle edges)<br>
+"No contradictions" → "Can't pick contradictory nodes" (consistency edges)<br>
+Satisfying assignment → independent set of size <em>k</em><br>
+Unsatisfiable → no independent set of size <em>k</em>
+</p>
 </div>
-</details>
-</div>
+
+<p class="pb" data-testid="pb">
+Every constraint in the formula has a structural counterpart in the graph. The "costume" is completely different — logic versus geometry — but the combinatorial structure is identical.
+</p>
+
+<p class="pb" data-testid="pb">
+The second flavor looks completely different: <strong>simulation-based reduction</strong>. Instead of translating <em>instances</em> piece by piece, you show that one computational <em>model</em> can directly simulate another. Every step of computation in Model A has a corresponding step in Model B. The simulation itself is the proof.
+</p>
+
+<p class="pb" data-testid="pb">
+Here's a clean example: proving <strong>BPP ⊆ BQP</strong> — that anything a randomized classical computer can do efficiently, a quantum computer can do too. The core operation of a randomized algorithm is a coin flip: generate 0 or 1, each with probability 1/2. In a quantum circuit, you simulate this with one operation: a Hadamard gate applied to |0⟩, producing (|0⟩ + |1⟩)/√2. Measure, and you get a perfect fair coin. Every classical logic gate (AND, OR, NOT) has a reversible quantum equivalent. So you translate the entire randomized algorithm gate by gate, coin flip by Hadamard, and the quantum circuit produces the same output distribution. The quantum model <em>contains</em> the randomized model. No gadgets, no instance-by-instance translation — just a direct, step-for-step simulation.
+</p>
+
+<p class="pb" data-testid="pb">
+Notice how different the two flavors feel. The 3-SAT → Independent Set reduction translated a specific <em>instance</em> — one formula into one graph. The mapping was between objects. BPP ⊆ BQP translated the entire <em>model of computation</em> — coin flips become Hadamard gates, classical gates become quantum gates. The mapping was between operations. One builds a bridge between problems. The other builds a bridge between worlds. But both are reductions. Both establish "at least as powerful as." The same core idea — faithful translation preserving answers — manifests at different scales.
+</p>
 </section>
 
 <hr>
@@ -476,28 +571,88 @@ Now watch: x₁ = TRUE, x₂ = TRUE, x₃ = TRUE satisfies φ. In the graph, pic
 <!-- ============================================================ -->
 <section id="sec-7">
 <div class="pb" data-testid="pb">
-<h2>VII. The Cook-Levin Theorem</h2>
+<h2>VII. The Rosetta Stone</h2>
 <p>
-Let's take a step back. We have a map of complexity classes like P, NP, PSPACE, and more. We have reductions, the tool that lets us draw edges between problems. We've seen how gadgets translate the constraints of one problem into the language of another.</p><p><br></p>
-<p>But so far, every reduction we've built was handcrafted. 3-SAT to Independent Set. One problem to one problem. What if we could reduce <em>every problem in NP</em>, all at once, to a single target? Not by building a thousand individual reductions, but by finding one problem so expressive that it can simulate any NP computation?</p>
+Is there a single problem so expressive, so versatile, that <em>every other</em> problem in NP can be translated into it? A universal language of difficulty — a Rosetta Stone that can speak for any NP problem?
+</p>
 </div>
 
 <p class="pb" data-testid="pb">
-That target is <strong>SAT</strong> — Boolean satisfiability. Given a Boolean formula, is there an assignment of TRUE/FALSE to each variable that makes it evaluate to TRUE? It looks like just another NP problem. <br><br>But in 1971, Stephen Cook and Leonid Levin proved&nbsp;<strong>every problem in NP can be reduced to SAT in polynomial time</strong>. And it spread like wildfire.<span style="background-color: rgb(11, 11, 20);"><br></span></p>
-
-<p class="pb" data-testid="pb">The trick is that Cook and Levin didn't reduce specific problems to SAT. They reduced the&nbsp;<em style="background-color: rgb(11, 11, 20);">definition of NP itself</em>.<br><br>Remember that a problem is in NP if it has a polynomial-time verifier, or more specifically, a Turing machine V that takes an input x and a certificate c and checks whether c is valid. That machine's computation is a physical process: tape, head, states, transitions. It unfolds step by step according to the transition function δ we defined earlier. And here's Cook's move: <em>encode that entire computation as a Boolean formula</em>.
+The answer is yes. And it's called <strong>SAT</strong> — Boolean satisfiability. Given a Boolean formula (a logical expression with variables, ANDs, ORs, and NOTs), is there an assignment of TRUE/FALSE to each variable that makes the whole formula evaluate to TRUE?
 </p>
 
-<p class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;tableau&quot;}" data-testid="pb">
-Look at the animation — that grid is the <strong>computation tableau</strong>. Each row is one timestep. Each column is one tape position. The cyan cell is where the head is; the state label on the right (q₀, q₁...) tracks the machine's state. Every cell becomes a Boolean variable in the SAT formula. The grid fills row by row — each new row follows from the previous via the transition function δ (the small δ arrows on the left between rows).
+<p class="pb" data-testid="pb">
+In 1971, Stephen Cook (and independently, Leonid Levin) proved something astounding: <strong>every problem in NP can be reduced to SAT in polynomial time</strong>. Every single one. Scheduling, graph coloring, protein folding, cryptanalysis, theorem proving — if it's in NP, it can be translated into a SAT instance. This means SAT is at least as hard as everything in NP. If you could solve SAT efficiently, you could solve <em>all</em> of NP efficiently.
 </p>
 
-<p class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;tableau&quot;}" data-testid="pb">
-Three kinds of gadgets, each color-coded. The <strong style="color:#ff9800;">input gadget</strong> (orange, top row): clauses forcing row 1 to match the input x. The <strong style="color:#00e5ff;">transition gadgets</strong> (cyan δ arrows, middle rows): for each adjacent pair of rows, clauses enforcing "this row follows from the previous via δ." The <strong style="color:#4caf50;">accept gadget</strong> (green, bottom row): clauses requiring q<sub>accept</sub> to appear. When q_a lights up green — all three gadget types are satisfied. Formula satisfiable ⟺ valid computation exists ⟺ certificate exists ⟺ YES.
+<p class="pb" data-testid="pb">
+How is this possible? How can one specific problem, about Boolean formulas, capture the difficulty of <em>every</em> NP problem?
 </p>
 
-<p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;domino&quot;}" data-testid="pb">
-This is not a reduction from one specific problem to SAT. It's a reduction from the <em>act of verification itself</em> to SAT. Any NP problem, any verifier, any Turing machine — the construction works the same way. That's why it captures all of NP in one sweep.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Once SAT was NP-complete, you didn't need to simulate Turing machines to prove other problems NP-complete. You just needed a gadget reduction from SAT. Karp (1972) did exactly this — reducing SAT to 21 other problems in one paper. Each new NP-complete problem became a launchpad for more reductions. The web exploded. Today, thousands of problems are known to be NP-complete, all connected by chains of reductions that trace back to Cook-Levin's original insight: computation itself can be written as a formula.</span></p><p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;landscape&quot;}" data-testid="pb">This is, I think, one of the most profound discoveries of 20th-century science: that difficulty has a&nbsp;<em>universal structure</em>. That the computational landscape is not a formless wilderness of unrelated challenges, but a highly organized space with deep, surprising connections. And these connections are revealed not by studying the problems individually, but by studying the&nbsp;<em>translations between them</em>.</p></section>
+<p class="pb" data-testid="pb">
+The answer is one of the most breathtaking constructions in all of computer science.
+</p>
+
+<p class="pb" data-testid="pb">
+Remember: every NP problem, by definition, has a polynomial-time verifier — a Turing machine that takes an input and a certificate and checks whether the certificate is valid. That Turing machine's computation is a physical process that unfolds step by step. At each moment, the machine has a configuration: the contents of its tape, the position of its head, the state of its control. And each configuration follows from the previous one according to a fixed set of rules — the machine's transition function.
+</p>
+
+<p class="pb" data-testid="pb">
+Now here's the move that makes the reduction work: <em>encode the entire computation as a Boolean formula</em>.
+</p>
+
+<p class="pb" data-testid="pb">
+Picture a grid — a <strong>computation tableau</strong>. Time runs downward. Tape position runs across. Each cell of the grid represents one bit of the machine's tape at one moment in time. Each cell becomes a Boolean variable. And the transition rules — the rules that say how one configuration follows from the previous one — become <strong>clauses</strong>. Small, local constraints that say: "if these three cells in row <em>t</em> look like this, then these three cells in row <em>t+1</em> must look like that."
+</p>
+
+<p class="pb" data-testid="pb">
+Can you see the skeleton and gadgets here? The skeleton is the tableau — the grid of time × tape. The gadgets are the clause patterns. One set of gadgets ensures the first row correctly encodes the input. Another set ensures each row follows from the previous one according to the transition rules. A third set ensures that somewhere in the final rows, an accepting state appears. And the whole formula is satisfiable if and only if there exists a valid, accepting computation — which is true if and only if a valid certificate exists — which is true if and only if the answer to the original problem is YES.
+</p>
+
+<p class="pb" data-testid="pb">
+Can you feel the isomorphism? Every step of the Turing machine's computation corresponds to a row in the tableau, which corresponds to a set of Boolean variables and constraints. The <em>satisfying assignment</em> of the formula literally <em>is</em> the valid computation. The simulation of the verifier is the assignment. They are the same thing viewed from two different angles.
+</p>
+
+<p class="pb" data-testid="pb">
+This is Cook-Levin's proof that SAT is <strong>NP-complete</strong>: it is both in NP (you can check an assignment quickly) and at least as hard as everything in NP (because everything reduces to it). It sits at the summit of NP — the hardest of the hard.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-8">
+<div class="pb" data-testid="pb">
+<h2>VIII. The Web</h2>
+<p>
+Once Cook and Levin established that SAT is NP-complete — one problem that captures the difficulty of <em>all</em> of NP — something remarkable happened. A chain reaction.
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Researchers started showing that other problems were <em>also</em> NP-complete, by constructing reductions from SAT (or from any already-known NP-complete problem) to the new target. And then from those problems to still others. The chain spread rapidly.
+</p>
+
+<p class="pb" data-testid="pb">
+SAT reduces to 3-SAT (break long clauses into triples using auxiliary variables — the logical content is preserved). 3-SAT reduces to 3-Coloring (variable gadgets force nodes into TRUE/FALSE colors; clause gadgets enforce that at least one literal is true). 3-SAT reduces to Clique. Clique is equivalent to Independent Set (just take the complement graph). Independent Set reduces to Vertex Cover (take the complement vertex set). Vertex Cover reduces to Hamiltonian Path. And onward: Subset Sum, Knapsack, Bin Packing, Traveling Salesman, Integer Programming, Job-Shop Scheduling, Graph Isomorphism's complement, Protein Folding…
+</p>
+
+<p class="pb" data-testid="pb">
+How many problems are NP-complete? Thousands. <em>Literally thousands.</em> From every corner of computer science, mathematics, biology, economics, operations research, physics, and engineering. Problems that were studied independently for decades, by researchers who had no idea they were working on the same thing, turned out to be computationally equivalent.
+</p>
+
+<p class="pb" data-testid="pb">
+What does it mean for them to be "equivalent"? It means: solving any one of them efficiently solves <em>all</em> of them. A fast algorithm for graph coloring would give you a fast algorithm for scheduling, and for SAT, and for protein folding, and for the traveling salesman problem, and for everything else in NP. They rise and fall as one.
+</p>
+
+<p class="pb" data-testid="pb">
+Isn't that astonishing? Graph coloring, on its surface, has nothing to do with Boolean formulas. Airline scheduling looks nothing like finding Hamiltonian paths in a graph. Protein folding seems like a completely different kind of problem from subset sum. And yet the reductions reveal hidden structural parallels connecting all of them. The gadgets that translate between these worlds expose deep, non-obvious equivalences. Each NP-complete problem is the <em>same problem</em> wearing a different costume.
+</p>
+
+<p class="pb" data-testid="pb">
+This is, I think, one of the most profound discoveries of 20th-century science: that difficulty has a <em>universal structure</em>. That the computational landscape is not a formless wilderness of unrelated challenges, but a highly organized space with deep, surprising connections. And these connections are revealed not by studying the problems individually, but by studying the <em>translations between them</em>.
+</p>
+</section>
 
 <hr>
 
@@ -1129,7 +1284,6 @@ class TuringAnim {
     if (this.mode === 'decision') this._drawDecision();
     else if (this.mode === 'binarySearch') this._drawBinarySearch();
     else if (this.mode === 'formal') this._drawFormal();
-    else if (this.mode === 'tableau') this._drawTableau();
     else this._drawDefault();
   }
 
@@ -1233,98 +1387,6 @@ class TuringAnim {
     ctx.fillStyle='#4caf50'; ctx.fillText('accept', qgap*4, qy+R+14);
     ctx.fillStyle='#ff5252'; ctx.fillText('reject', qgap*5, qy+R+14);
     ctx.fillStyle='#00e5ff'; ctx.fillText('start', qgap*1, qy+R+14);
-  }
-
-  // --- Tableau: computation grid (time × tape) for Cook-Levin ---
-  _drawTableau() {
-    const {ctx,w,h,t} = this;
-    const S = ANIM_SCALE;
-    const cols = 8, rows = 6;
-    const cs = Math.min(48*S, (w*0.7)/cols, (h*0.65)/rows);
-    const gx = w/2 - cols*cs/2, gy = h*0.15;
-    const cycle = 18;
-    const phase = (t % cycle) / cycle;
-    const activeRow = Math.min(Math.floor(phase * (rows+2)), rows);
-    const done = activeRow >= rows;
-    const headPos = [3, 3, 4, 4, 5, 5];
-    // Tape symbols per row (simulate a simple computation)
-    const tapes = [
-      ['⊔','0','1','1','0','⊔','⊔','⊔'],
-      ['⊔','0','1','1','0','⊔','⊔','⊔'],
-      ['⊔','0','1','1','1','⊔','⊔','⊔'],
-      ['⊔','0','1','1','1','⊔','⊔','⊔'],
-      ['⊔','0','1','1','1','1','⊔','⊔'],
-      ['⊔','0','1','1','1','1','⊔','⊔'],
-    ];
-    const states = ['q₀','q₀','q₁','q₁','q₂','q_a'];
-
-    // Axis labels
-    // Axis labels
-    ctx.fillStyle='#3a4a6a'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('tape position →', gx+cols*cs/2, gy-16);
-    ctx.save(); ctx.translate(gx-28, gy+rows*cs/2); ctx.rotate(-Math.PI/2);
-    ctx.fillText('time ↓', 0, 0); ctx.restore();
-
-    // Draw grid — color-coded by gadget type
-    for (let r=0; r<rows; r++) {
-      const reached = r < activeRow;
-      const isFirst = r===0 && reached;
-      const isAccept = reached && states[r]==='q_a';
-      for (let c=0; c<cols; c++) {
-        const x=gx+c*cs, y=gy+r*cs;
-        const isHead = reached && c === headPos[r];
-        // Color: row 0 = orange tint, accept row = green tint, head = cyan
-        ctx.fillStyle = isAccept ? '#0a1e0a' : isFirst ? '#1a1200' : isHead ? '#0a2a3a' : reached ? '#0a0e1a' : '#060610';
-        ctx.fillRect(x,y,cs,cs);
-        ctx.strokeStyle = isAccept ? '#4caf5033' : isFirst ? '#ff980033' : reached ? (isHead ? '#00e5ff44' : '#1a2a3a') : '#0e0e1a';
-        ctx.lineWidth=1; ctx.strokeRect(x,y,cs,cs);
-        if (reached) {
-          ctx.fillStyle = isHead ? '#00e5ff' : isFirst ? '#ff9800' : isAccept ? '#4caf50' : '#4a5a6a';
-          ctx.font=`bold ${12*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.fillText(tapes[r][c], x+cs/2, y+cs/2);
-        }
-      }
-      // State label
-      if (reached) {
-        ctx.fillStyle = isAccept ? '#4caf50' : '#5a6a8a';
-        ctx.font=`bold ${11*S}px monospace`; ctx.textAlign='left'; ctx.textBaseline='middle';
-        ctx.fillText(states[r], gx+cols*cs+10, gy+r*cs+cs/2);
-      }
-      // δ arrows between rows
-      if (reached && r > 0) {
-        ctx.strokeStyle='#00e5ff33'; ctx.lineWidth=1.5;
-        ctx.beginPath(); ctx.moveTo(gx-12, gy+r*cs-2); ctx.lineTo(gx-12, gy+(r-1)*cs+cs+2); ctx.stroke();
-        ctx.fillStyle='#00e5ff33';
-        ctx.beginPath(); ctx.moveTo(gx-16,gy+r*cs-2); ctx.lineTo(gx-8,gy+r*cs-2); ctx.lineTo(gx-12,gy+r*cs+4); ctx.fill();
-        ctx.fillStyle='#00e5ff55'; ctx.font=`bold ${9*S}px sans-serif`; ctx.textAlign='right';
-        ctx.fillText('δ', gx-18, gy+r*cs-cs/2);
-      }
-      // Gadget labels
-      if (isFirst) {
-        ctx.fillStyle='#ff9800'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='left';
-        ctx.fillText('← input gadget', gx+cols*cs+10, gy+r*cs+cs/2+14);
-      }
-      if (isAccept) {
-        ctx.fillStyle='#4caf50'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='left';
-        ctx.fillText('← accept gadget', gx+cols*cs+10, gy+r*cs+cs/2+14);
-      }
-    }
-    // Transition gadget label
-    if (activeRow >= 3) {
-      ctx.fillStyle='#00e5ff55'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='right';
-      ctx.fillText('transition', gx-20, gy+2*cs+cs/2-6);
-      ctx.fillText('gadgets', gx-20, gy+2*cs+cs/2+8);
-    }
-
-    // Bottom
-    ctx.textAlign='center';
-    if (done) {
-      ctx.fillStyle='#4caf50'; ctx.font=`bold ${12*S}px sans-serif`;
-      ctx.fillText('✓ q_a reached → formula satisfiable', w/2, gy+rows*cs+24);
-    } else {
-      ctx.fillStyle='#5a6a8a'; ctx.font=`${10*S}px sans-serif`;
-      ctx.fillText('each cell = boolean variable  •  each δ = clauses', w/2, gy+rows*cs+24);
-    }
   }
 
   // --- Default: tape + head ---
@@ -1490,11 +1552,6 @@ class CircuitAnim {
     else if (this.mode === 'growth') this._drawGrowth();
     else if (this.mode === 'layers') this._drawLayers();
     else if (this.mode === 'map') this._drawMap();
-    else if (this.mode === 'relations') this._drawRelations();
-    else if (this.mode === 'domino') this._drawDomino();
-    else if (this.mode === 'landscape') this._drawLandscape();
-    else if (this.mode === 'reduce') this._drawReduce();
-    else if (this.mode?.startsWith('sat2is')) this._drawSat2IS();
     else if (this.mode === 'bfs') this._drawBfs();
     else if (this.mode === 'np') this._drawNp();
     else this._drawDefault();
@@ -1598,72 +1655,91 @@ class CircuitAnim {
   _drawNp() {
     const {ctx,w,h,t} = this;
     const S = ANIM_SCALE;
-    // Same graph as BFS — but NP question: "is there a path A→B with ≤ 5 edges?"
-    const nodes = [
-      {x:0.12,y:0.35},{x:0.28,y:0.18},{x:0.30,y:0.52},{x:0.48,y:0.30},
-      {x:0.45,y:0.62},{x:0.62,y:0.15},{x:0.65,y:0.48},{x:0.78,y:0.30},
-      {x:0.80,y:0.65},{x:0.92,y:0.45},
-    ];
-    const edges = [[0,1],[0,2],[1,3],[2,3],[2,4],[3,5],[3,6],[4,6],[5,7],[6,7],[6,8],[7,9],[8,9]];
-    const certPath = [0,1,3,5,7,9]; // certificate: A→1→3→5→7→B
-    const cycle = 18;
+    const cycle = 16;
     const phase = (t % cycle) / cycle;
-    const showCert = phase > 0.4;
-    const verifyStep = phase > 0.55 ? Math.min(Math.floor((phase-0.55)/0.07), certPath.length-1) : -1;
-    const allVerified = verifyStep >= certPath.length - 1;
+    // Two halves: left = FINDING (search tree explodes), right = CHECKING (instant)
+    const mid = w * 0.5;
 
-    // Phase 1: random paths flicker red — searching blindly
-    if (!showCert) {
-      const rps = [[0,2,4,6,8,9],[0,1,3,6,7,9],[0,2,3,5,7,9],[0,1,3,6,8,9],[0,2,3,6,7,9]];
-      const rp = rps[Math.floor(t*3) % rps.length];
-      for (let i=0;i<rp.length-1;i++) {
-        const a=nodes[rp[i]], b=nodes[rp[i+1]];
-        ctx.strokeStyle='#ff525044'; ctx.lineWidth=3;
-        ctx.beginPath(); ctx.moveTo(a.x*w,a.y*h); ctx.lineTo(b.x*w,b.y*h); ctx.stroke();
+    // --- Left: FINDING (exponential search) ---
+    ctx.fillStyle='#ff525288'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
+    ctx.fillText('FINDING', mid*0.5, 24);
+
+    // Binary search tree growing — more nodes each frame
+    const maxDepth = 5;
+    const searchDepth = Math.min(Math.floor(phase * 8), maxDepth);
+    const drawTree = (x, y, depth, spread) => {
+      if (depth > searchDepth) return;
+      const R = 6*S;
+      // Node
+      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2);
+      const isLeaf = depth === searchDepth;
+      ctx.fillStyle = isLeaf ? '#ff525033' : '#1a0a0a';
+      ctx.fill();
+      ctx.strokeStyle = isLeaf ? '#ff5252' : '#3a1a1a';
+      ctx.lineWidth = 1.5; ctx.stroke();
+      // Children
+      if (depth < maxDepth) {
+        const ny = y + 50*S, ns = spread*0.48;
+        ctx.strokeStyle='#2a1a1a'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(x,y+R); ctx.lineTo(x-ns,ny-R); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x,y+R); ctx.lineTo(x+ns,ny-R); ctx.stroke();
+        drawTree(x-ns, ny, depth+1, ns);
+        drawTree(x+ns, ny, depth+1, ns);
       }
+    };
+    drawTree(mid*0.5, 50, 0, mid*0.35);
+
+    // Exponential count
+    if (searchDepth > 1) {
+      const count = Math.pow(2, searchDepth);
+      ctx.fillStyle='#ff5252'; ctx.font=`${11*S}px monospace`; ctx.textAlign='center';
+      ctx.fillText(count+' possibilities...', mid*0.5, h*0.82);
     }
-    // All edges dim
-    for (const [a,b] of edges) {
-      const na=nodes[a], nb=nodes[b];
-      ctx.strokeStyle='#1a2a3a'; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.moveTo(na.x*w,na.y*h); ctx.lineTo(nb.x*w,nb.y*h); ctx.stroke();
-    }
-    // Certificate path highlighted
-    if (showCert) {
-      for (let i=0;i<certPath.length-1;i++) {
-        const a=nodes[certPath[i]], b=nodes[certPath[i+1]];
-        const v = i<=verifyStep;
-        ctx.strokeStyle = v ? '#4caf50' : '#00e5ff55'; ctx.lineWidth = v ? 4 : 3;
-        ctx.beginPath(); ctx.moveTo(a.x*w,a.y*h); ctx.lineTo(b.x*w,b.y*h); ctx.stroke();
-        if (v) {
-          ctx.fillStyle='#4caf50'; ctx.font=`bold ${14*S}px sans-serif`;
-          ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.fillText('✓',(a.x+b.x)/2*w,(a.y+b.y)/2*h);
-        }
+
+    // --- Divider ---
+    ctx.strokeStyle='#2a2a4a'; ctx.lineWidth=1; ctx.setLineDash([4,6]);
+    ctx.beginPath(); ctx.moveTo(mid, 16); ctx.lineTo(mid, h-16); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // --- Right: CHECKING (instant) ---
+    ctx.fillStyle='#4caf5088'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
+    ctx.fillText('CHECKING', mid + (w-mid)*0.5, 24);
+
+    // Certificate appears
+    const certPhase = Math.max(0, (phase - 0.3) / 0.7);
+    if (certPhase > 0) {
+      const cx = mid + (w-mid)*0.5, cy = h*0.35;
+      // Certificate box
+      const bw=120*S, bh=40*S;
+      ctx.globalAlpha = Math.min(1, certPhase*2);
+      ctx.fillStyle='#0a1e0a'; ctx.fillRect(cx-bw/2, cy-bh/2, bw, bh);
+      ctx.strokeStyle='#4caf50'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2, cy-bh/2, bw, bh);
+      ctx.fillStyle='#4caf50'; ctx.font=`bold ${14*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('x₁=T x₂=F x₃=T', cx, cy);
+      ctx.font=`${10*S}px sans-serif`;
+      ctx.fillText('certificate', cx, cy-bh/2-10);
+
+      // Check arrow
+      if (certPhase > 0.3) {
+        const ay = cy + bh/2 + 16;
+        ctx.strokeStyle='#4caf50'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(cx, cy+bh/2+4); ctx.lineTo(cx, ay+20); ctx.stroke();
+        ctx.fillStyle='#4caf50';
+        ctx.beginPath(); ctx.moveTo(cx-6,ay+20); ctx.lineTo(cx+6,ay+20); ctx.lineTo(cx,ay+30); ctx.fill();
       }
-    }
-    // Nodes
-    const R=18*S;
-    for (let i=0;i<nodes.length;i++) {
-      const n=nodes[i], x=n.x*w, y=n.y*h;
-      const onC = showCert && certPath.includes(i);
-      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2);
-      ctx.fillStyle = allVerified&&onC ? '#0a1e0a' : onC ? '#0a1a2a' : '#0a0e14'; ctx.fill();
-      ctx.strokeStyle = allVerified&&onC ? '#4caf50' : onC ? '#00e5ff' : '#2a3a4a';
-      ctx.lineWidth = onC ? 2.5 : 1.5; ctx.stroke();
-      ctx.fillStyle = allVerified&&onC ? '#4caf50' : onC ? '#00e5ff' : '#4a5a6a';
-      ctx.font=`bold ${13*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(i===0?'A':i===9?'B':String(i), x, y);
-    }
-    // Status
-    ctx.font=`${12*S}px sans-serif`; ctx.textAlign='center';
-    if (!showCert) {
-      ctx.fillStyle='#ff525088'; ctx.fillText('searching all possible paths...', w/2, h-16);
-    } else if (!allVerified) {
-      ctx.fillStyle='#00e5ff'; ctx.fillText('certificate: A→1→3→5→7→B', w/2, h-16);
-    } else {
-      ctx.fillStyle='#4caf50'; ctx.shadowBlur=12; ctx.shadowColor='#4caf50';
-      ctx.fillText('✓ Path verified in O(n) steps', w/2, h-16); ctx.shadowBlur=0;
+
+      // Big checkmark
+      if (certPhase > 0.5) {
+        const alpha = Math.min(1, (certPhase-0.5)*3);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle='#4caf50'; ctx.font=`bold ${60*S}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.shadowBlur=20; ctx.shadowColor='#4caf50';
+        ctx.fillText('✓', cx, h*0.65);
+        ctx.shadowBlur=0;
+        ctx.font=`${12*S}px monospace`;
+        ctx.fillText('O(n) steps', cx, h*0.78);
+      }
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -1737,472 +1813,6 @@ class CircuitAnim {
       ctx.fillText('BFS exploring layer '+wavefront+'...', w/2, h-16);
     } else {
       ctx.fillStyle='#4caf50'; ctx.fillText('✓ Found A→B: distance = 5   (O(n+m) steps)', w/2, h-16);
-    }
-  }
-
-  // Reduction: same graph (left) → translated into adjacency matrix (right)
-  // Shows structure is preserved: graph edges map to 1s in matrix
-  _drawReduce() {
-    const {ctx,w,h,t} = this;
-    const S = ANIM_SCALE;
-    // Smaller version of the BFS graph (6 nodes for clarity)
-    const nodes = [
-      {x:0.10,y:0.25},{x:0.22,y:0.12},{x:0.22,y:0.40},
-      {x:0.34,y:0.25},{x:0.34,y:0.48},{x:0.46,y:0.30},
-    ];
-    const edges = [[0,1],[0,2],[1,3],[2,3],[2,4],[3,5],[4,5]];
-    const n = nodes.length;
-
-    const cycle = 14;
-    const phase = (t % cycle) / cycle;
-    // Phase 1 (0-0.3): graph appears
-    // Phase 2 (0.3-0.8): edges light up one by one and corresponding matrix cell fills
-    // Phase 3 (0.8-1): both glow green, "structure preserved"
-    const edgeStep = phase < 0.3 ? -1 : phase < 0.8 ? Math.floor(((phase-0.3)/0.5)*edges.length) : edges.length;
-    const done = phase > 0.8;
-
-    // --- Left: Graph ("Problem A") ---
-    ctx.fillStyle='#4a5a7a'; ctx.font=`bold ${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('Problem A: path in graph', w*0.28, h*0.06);
-
-    // Draw edges
-    for (let i=0; i<edges.length; i++) {
-      const [a,b] = edges[i];
-      const na=nodes[a], nb=nodes[b];
-      const lit = i <= edgeStep;
-      ctx.strokeStyle = lit ? '#00e5ff' : '#1a2a3a';
-      ctx.lineWidth = lit ? 3 : 1.5;
-      ctx.beginPath(); ctx.moveTo(na.x*w,na.y*h); ctx.lineTo(nb.x*w,nb.y*h); ctx.stroke();
-    }
-    // Draw nodes
-    const R = 14*S;
-    for (let i=0; i<n; i++) {
-      const nd=nodes[i], x=nd.x*w, y=nd.y*h;
-      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2);
-      ctx.fillStyle = done ? '#0a1e0a' : '#0a0e14'; ctx.fill();
-      ctx.strokeStyle = done ? '#4caf50' : '#2a3a4a'; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.fillStyle = done ? '#4caf50' : '#5a6a8a';
-      ctx.font=`bold ${12*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(String(i), x, y);
-    }
-
-    // --- Arrow in the middle ---
-    const ax1 = w*0.52, ax2 = w*0.58, ay = h*0.28;
-    ctx.strokeStyle = done ? '#4caf50' : '#00e5ff66'; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(ax1,ay); ctx.lineTo(ax2,ay); ctx.stroke();
-    ctx.fillStyle = done ? '#4caf50' : '#00e5ff66';
-    ctx.beginPath(); ctx.moveTo(ax2,ay-6); ctx.lineTo(ax2+10,ay); ctx.lineTo(ax2,ay+6); ctx.fill();
-    ctx.fillStyle = done ? '#4caf50' : '#5a6a8a';
-    ctx.font=`${10*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('reduce', (ax1+ax2)/2+5, ay-12);
-
-    // --- Right: Adjacency matrix ("Problem B") ---
-    ctx.fillStyle='#4a5a7a'; ctx.font=`bold ${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('Problem B: matrix reachability', w*0.78, h*0.06);
-
-    const mx = w*0.62, my = h*0.14;
-    const cs = 28*S; // cell size
-    // Header row/col
-    ctx.fillStyle='#3a4a5a'; ctx.font=`${10*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    for (let i=0; i<n; i++) {
-      ctx.fillText(String(i), mx + i*cs + cs/2, my - 8);
-      ctx.fillText(String(i), mx - 12, my + i*cs + cs/2);
-    }
-    // Grid
-    // Build adjacency set for lookup
-    const adj = new Set();
-    for (const [a,b] of edges) { adj.add(a*n+b); adj.add(b*n+a); }
-
-    for (let r=0; r<n; r++) {
-      for (let c=0; c<n; c++) {
-        const cx = mx + c*cs, cy = my + r*cs;
-        const isEdge = adj.has(r*n+c);
-        // Find which edge index this corresponds to
-        let edgeIdx = -1;
-        if (isEdge) {
-          for (let e=0; e<edges.length; e++) {
-            const [a,b] = edges[e];
-            if ((a===r&&b===c)||(b===r&&a===c)) { edgeIdx = e; break; }
-          }
-        }
-        const lit = isEdge && edgeIdx <= edgeStep;
-        ctx.fillStyle = lit ? '#00e5ff18' : '#08080f';
-        ctx.fillRect(cx, cy, cs, cs);
-        ctx.strokeStyle = lit ? '#00e5ff44' : '#1a1a2a';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(cx, cy, cs, cs);
-        // Value
-        ctx.fillStyle = lit ? '#00e5ff' : isEdge ? '#2a3a4a' : '#1a1a2a';
-        ctx.font=`bold ${13*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(isEdge ? '1' : '0', cx+cs/2, cy+cs/2);
-      }
-    }
-
-    // --- Bottom status ---
-    ctx.textAlign='center';
-    if (done) {
-      ctx.fillStyle='#4caf50'; ctx.font=`bold ${13*S}px sans-serif`;
-      ctx.fillText('✓ Structure preserved — same answer in both worlds', w/2, h-14);
-    } else if (edgeStep >= 0) {
-      ctx.fillStyle='#00e5ff88'; ctx.font=`${12*S}px sans-serif`;
-      ctx.fillText('edge → matrix cell', w/2, h-14);
-    }
-  }
-
-  // 3-SAT → Independent Set reduction, 4 progressive steps
-  // φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ ¬x₃)
-  _drawSat2IS() {
-    const {ctx,w,h,t,mode} = this;
-    const S = ANIM_SCALE;
-    const step = mode==='sat2is-setup'?0 : mode==='sat2is-tri'?1 : mode==='sat2is-conflict'?2 : 3;
-
-    // 6 nodes: clause 1 triangle (left), clause 2 triangle (right)
-    const nodes = [
-      {x:0.20,y:0.20, label:'x₁',  clause:0, varIdx:0, neg:false},
-      {x:0.08,y:0.55, label:'¬x₂', clause:0, varIdx:1, neg:true},
-      {x:0.32,y:0.55, label:'x₃',  clause:0, varIdx:2, neg:false},
-      {x:0.68,y:0.20, label:'¬x₁', clause:1, varIdx:0, neg:true},
-      {x:0.80,y:0.55, label:'x₂',  clause:1, varIdx:1, neg:false},
-      {x:0.56,y:0.55, label:'¬x₃', clause:1, varIdx:2, neg:true},
-    ];
-    // Triangle edges (within clause)
-    const triEdges = [[0,1],[0,2],[1,2],[3,4],[3,5],[4,5]];
-    // Conflict edges (contradictory literals across clauses)
-    const conflictEdges = [[0,3],[1,4],[2,5]]; // x₁↔¬x₁, ¬x₂↔x₂, x₃↔¬x₃
-    // Solution: pick node 0 (x₁ from clause 1) and node 4 (x₂ from clause 2)
-    const solution = new Set([0, 4]);
-    const R = 22*S;
-
-    // --- Draw triangle edges (step ≥ 1) ---
-    if (step >= 1) {
-      for (const [a,b] of triEdges) {
-        const na=nodes[a], nb=nodes[b];
-        ctx.strokeStyle = step===1 ? '#ff920088' : '#ff920044';
-        ctx.lineWidth = step===1 ? 2.5 : 1.5;
-        ctx.beginPath(); ctx.moveTo(na.x*w,na.y*h); ctx.lineTo(nb.x*w,nb.y*h); ctx.stroke();
-      }
-      // "at most one" label
-      if (step === 1) {
-        ctx.fillStyle='#ff9800'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
-        ctx.fillText('pick at most 1 per triangle', w*0.20, h*0.75);
-        ctx.fillText('pick at most 1 per triangle', w*0.68, h*0.75);
-      }
-    }
-
-    // --- Draw conflict edges (step ≥ 2) ---
-    if (step >= 2) {
-      for (const [a,b] of conflictEdges) {
-        const na=nodes[a], nb=nodes[b];
-        ctx.strokeStyle = step===2 ? '#ff525088' : '#ff525044';
-        ctx.lineWidth = step===2 ? 2.5 : 1.5;
-        ctx.setLineDash([6,4]);
-        ctx.beginPath(); ctx.moveTo(na.x*w,na.y*h); ctx.lineTo(nb.x*w,nb.y*h); ctx.stroke();
-        ctx.setLineDash([]);
-        // X on the midpoint
-        if (step === 2) {
-          const mx=(na.x+nb.x)/2*w, my=(na.y+nb.y)/2*h;
-          ctx.fillStyle='#ff5252'; ctx.font=`bold ${12*S}px sans-serif`;
-          ctx.textAlign='center'; ctx.textBaseline='middle';
-          ctx.fillText('✗', mx, my-8);
-        }
-      }
-      if (step === 2) {
-        ctx.fillStyle='#ff5252'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
-        ctx.fillText('can\'t pick both x and ¬x', w/2, h*0.08);
-      }
-    }
-
-    // --- Draw nodes ---
-    for (let i=0; i<nodes.length; i++) {
-      const nd=nodes[i], x=nd.x*w, y=nd.y*h;
-      const picked = step===3 && solution.has(i);
-      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2);
-      if (picked) {
-        ctx.shadowBlur=14; ctx.shadowColor='#4caf50';
-        ctx.fillStyle='#0a2e0a'; ctx.fill();
-        ctx.strokeStyle='#4caf50'; ctx.lineWidth=3; ctx.stroke();
-        ctx.shadowBlur=0;
-      } else {
-        ctx.fillStyle='#0a0e14'; ctx.fill();
-        ctx.strokeStyle = step===0 ? '#00e5ff' : '#2a3a5a';
-        ctx.lineWidth = step===0 ? 2.5 : 1.5; ctx.stroke();
-      }
-      ctx.fillStyle = picked ? '#4caf50' : step===0 ? '#00e5ff' : '#7a8a9a';
-      ctx.font=`bold ${13*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(nd.label, x, y);
-    }
-
-    // --- Clause labels ---
-    ctx.fillStyle='#3a4a6a'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('clause 1', w*0.20, h*0.85);
-    ctx.fillText('clause 2', w*0.68, h*0.85);
-
-    // --- Step-specific overlays ---
-    if (step === 0) {
-      // Show the formula at top
-      ctx.fillStyle='#00e5ff'; ctx.font=`bold ${14*S}px monospace`; ctx.textAlign='center';
-      ctx.fillText('(x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ ¬x₃)', w/2, h*0.08);
-      ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`;
-      ctx.fillText('1 node per literal per clause → 6 nodes, k = 2', w/2, h*0.92);
-    }
-
-    if (step === 3) {
-      // Show solution
-      ctx.fillStyle='#4caf50'; ctx.font=`bold ${13*S}px sans-serif`; ctx.textAlign='center';
-      ctx.fillText('✓ Independent set: {x₁, x₂}  →  x₁=T, x₂=T', w/2, h*0.92);
-    }
-  }
-
-  // Landscape: topographic difficulty map — problems at different elevations, reductions as paths
-  _drawLandscape() {
-    const {ctx,w,h} = this;
-    const S = ANIM_SCALE;
-
-    // Draw terrain gradient — darker at bottom (easy), lighter at top (hard)
-    for (let y=0; y<h; y++) {
-      const f = y/h; // 0=top(hard), 1=bottom(easy)
-      const r = Math.floor(10 - f*6), g = Math.floor(10 + (1-f)*14), b = Math.floor(20 + (1-f)*20);
-      ctx.fillStyle = `rgb(${r},${g},${b})`;
-      ctx.fillRect(0, y, w, 1);
-    }
-
-    // Elevation contour lines
-    for (let i=1; i<=4; i++) {
-      const y = h * (i/5);
-      ctx.strokeStyle='#1a2a3a'; ctx.lineWidth=0.5; ctx.setLineDash([8,12]);
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
-      ctx.setLineDash([]);
-    }
-
-    // Difficulty axis
-    ctx.fillStyle='#2a3a5a'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='right';
-    ctx.fillText('harder', 32, h*0.12);
-    ctx.fillText('easier', 32, h*0.88);
-
-    // Problems placed by difficulty (y = elevation)
-    const problems = [
-      // Easy (P) — bottom
-      {x:0.15, y:0.82, label:'Sort', color:'#4caf50', r:14},
-      {x:0.35, y:0.78, label:'ShortPath', color:'#4caf50', r:14},
-      {x:0.55, y:0.80, label:'Match', color:'#4caf50', r:14},
-      {x:0.78, y:0.84, label:'Primes', color:'#4caf50', r:14},
-      // NP-complete — middle-high plateau (all same height = equivalent)
-      {x:0.12, y:0.35, label:'SAT', color:'#ff5252', r:18},
-      {x:0.30, y:0.35, label:'3-Color', color:'#ff5252', r:14},
-      {x:0.48, y:0.35, label:'IndSet', color:'#ff5252', r:14},
-      {x:0.65, y:0.35, label:'TSP', color:'#ff5252', r:14},
-      {x:0.82, y:0.35, label:'Clique', color:'#ff5252', r:14},
-      // PSPACE — higher
-      {x:0.30, y:0.16, label:'QBF', color:'#ff9800', r:14},
-      {x:0.65, y:0.16, label:'TQBF', color:'#ff9800', r:14},
-    ];
-
-    // Reduction arrows between NP-complete problems (bidirectional = equivalent)
-    const reductions = [[4,5],[5,6],[6,7],[7,8],[4,8],[4,6]];
-    for (const [a,b] of reductions) {
-      const pa=problems[a], pb=problems[b];
-      ctx.strokeStyle='#ff525033'; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.moveTo(pa.x*w,pa.y*h); ctx.lineTo(pb.x*w,pb.y*h); ctx.stroke();
-      // Bidirectional arrows at midpoint
-      const mx=(pa.x+pb.x)/2*w, my=(pa.y+pb.y)/2*h;
-      ctx.fillStyle='#ff525044'; ctx.font=`${8*S}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('≡', mx, my-6);
-    }
-
-    // P to NP-complete: upward arrows (one-way)
-    ctx.setLineDash([4,4]);
-    ctx.strokeStyle='#ffffff11'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(w*0.35,h*0.72); ctx.lineTo(w*0.30,h*0.42); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(w*0.55,h*0.74); ctx.lineTo(w*0.48,h*0.42); ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Draw nodes
-    for (const p of problems) {
-      const x=p.x*w, y=p.y*h, r=p.r*S;
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
-      ctx.fillStyle=p.color+'18'; ctx.fill();
-      ctx.strokeStyle=p.color; ctx.lineWidth=1.5; ctx.stroke();
-      ctx.fillStyle=p.color;
-      ctx.font=`bold ${10*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(p.label, x, y);
-    }
-
-    // Region labels
-    ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='left';
-    ctx.fillStyle='#4caf5066'; ctx.fillText('P', w*0.88, h*0.80);
-    ctx.fillStyle='#ff525066'; ctx.fillText('NP-complete', w*0.72, h*0.28);
-    ctx.fillStyle='#ff980066'; ctx.fillText('PSPACE', w*0.74, h*0.12);
-
-    // Key insight: NP-complete problems form a FLAT plateau (all equivalent)
-    ctx.strokeStyle='#ff525022'; ctx.lineWidth=1; ctx.setLineDash([6,6]);
-    ctx.beginPath(); ctx.moveTo(w*0.06,h*0.35); ctx.lineTo(w*0.92,h*0.35); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle='#ff525044'; ctx.font=`${9*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('same elevation = equivalent difficulty', w/2, h*0.43);
-  }
-
-  _drawDomino() {
-    const {ctx,w,h,t} = this;
-    const S = ANIM_SCALE;
-    // SAT at center, problems radiate outward in waves
-    const nodes = [
-      {x:0.50,y:0.40, label:'SAT', wave:0},
-      // Wave 1: direct from SAT
-      {x:0.28,y:0.20, label:'3-SAT', wave:1},
-      {x:0.72,y:0.20, label:'Clique', wave:1},
-      {x:0.30,y:0.60, label:'3-Color', wave:1},
-      {x:0.70,y:0.60, label:'SubsetSum', wave:1},
-      // Wave 2: from wave 1
-      {x:0.10,y:0.35, label:'IndSet', wave:2},
-      {x:0.90,y:0.35, label:'Knapsack', wave:2},
-      {x:0.12,y:0.70, label:'HamPath', wave:2},
-      {x:0.88,y:0.70, label:'BinPack', wave:2},
-      // Wave 3: from wave 2
-      {x:0.08,y:0.10, label:'VtxCover', wave:3},
-      {x:0.50,y:0.80, label:'TSP', wave:3},
-      {x:0.92,y:0.10, label:'IntProg', wave:3},
-      {x:0.50,y:0.12, label:'Sched', wave:3},
-    ];
-    // Edges: from → to (reduction direction)
-    const edges = [
-      [0,1],[0,2],[0,3],[0,4],   // SAT → wave 1
-      [1,5],[2,6],[3,7],[4,8],   // wave 1 → wave 2
-      [5,9],[7,10],[6,11],[1,12], // wave 2 → wave 3
-    ];
-
-    const cycle = 14;
-    const phase = (t % cycle) / cycle;
-    // Which wave is active (0→1→2→3 over time)
-    const activeWave = phase < 0.15 ? 0 : phase < 0.35 ? 1 : phase < 0.55 ? 2 : 3;
-    const allDone = phase > 0.7;
-
-    // Draw edges
-    for (const [a,b] of edges) {
-      const na=nodes[a], nb=nodes[b];
-      const edgeActive = nodes[a].wave < activeWave || (allDone);
-      const edgeFresh = nodes[b].wave === activeWave && !allDone;
-      ctx.strokeStyle = edgeFresh ? '#00e5ff66' : edgeActive ? '#4caf5033' : '#0e1a2a';
-      ctx.lineWidth = edgeFresh ? 2.5 : 1.5;
-      ctx.beginPath(); ctx.moveTo(na.x*w,na.y*h); ctx.lineTo(nb.x*w,nb.y*h); ctx.stroke();
-      // Arrowhead
-      if (edgeActive || edgeFresh) {
-        const mx=(na.x*0.4+nb.x*0.6)*w, my=(na.y*0.4+nb.y*0.6)*h;
-        const ang=Math.atan2(nb.y*h-na.y*h, nb.x*w-na.x*w);
-        ctx.fillStyle = edgeFresh ? '#00e5ff44' : '#4caf5022';
-        ctx.beginPath();
-        ctx.moveTo(mx+5*Math.cos(ang),my+5*Math.sin(ang));
-        ctx.lineTo(mx-4*Math.cos(ang-0.6),my-4*Math.sin(ang-0.6));
-        ctx.lineTo(mx-4*Math.cos(ang+0.6),my-4*Math.sin(ang+0.6));
-        ctx.fill();
-      }
-    }
-
-    // Draw nodes
-    const R = 22*S;
-    for (const n of nodes) {
-      const x=n.x*w, y=n.y*h;
-      const reached = n.wave <= activeWave || allDone;
-      const fresh = n.wave === activeWave && !allDone;
-      const isSAT = n.wave === 0;
-      ctx.beginPath(); ctx.arc(x,y,R,0,Math.PI*2);
-      if (isSAT) {
-        ctx.shadowBlur=18; ctx.shadowColor='#ff5252';
-        ctx.fillStyle='#2a0a0a'; ctx.fill();
-        ctx.strokeStyle='#ff5252'; ctx.lineWidth=3; ctx.stroke();
-        ctx.shadowBlur=0;
-      } else if (fresh) {
-        ctx.shadowBlur=14; ctx.shadowColor='#00e5ff';
-        ctx.fillStyle='#0a1a2a'; ctx.fill();
-        ctx.strokeStyle='#00e5ff'; ctx.lineWidth=2.5; ctx.stroke();
-        ctx.shadowBlur=0;
-      } else if (reached) {
-        ctx.fillStyle='#0a1e0a'; ctx.fill();
-        ctx.strokeStyle='#4caf5066'; ctx.lineWidth=1.5; ctx.stroke();
-      } else {
-        ctx.fillStyle='#08080f'; ctx.fill();
-        ctx.strokeStyle='#1a1a2a'; ctx.lineWidth=1; ctx.stroke();
-      }
-      // Label
-      ctx.fillStyle = isSAT ? '#ff5252' : fresh ? '#00e5ff' : reached ? '#4caf50' : '#2a2a4a';
-      ctx.font=`bold ${isSAT ? 14*S : 10*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(n.label, x, y);
-    }
-
-    // Wave counter
-    if (!allDone) {
-      ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
-      ctx.fillText(activeWave===0 ? 'Cook-Levin: SAT is NP-complete' : 'wave '+activeWave+': reductions spread...', w/2, h-14);
-    } else {
-      ctx.fillStyle='#4caf50'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
-      ctx.fillText('thousands of NP-complete problems — all equivalent', w/2, h-14);
-    }
-  }
-
-  _drawRelations() {
-    const {ctx,w,h} = this;
-    const S = ANIM_SCALE;
-    const pad = 16, gap = 12;
-    const cw = (w - pad*2 - gap) / 2;
-    const ch = (h - pad*2 - gap) / 2;
-    const cells = [
-      { x:pad,        y:pad,        label:'A ⊆ B', sub:'containment', color:'#00e5ff', ex:'P ⊆ NP' },
-      { x:pad+cw+gap, y:pad,        label:'A ⊊ B', sub:'strict', color:'#4caf50', ex:'P ⊊ EXP' },
-      { x:pad,        y:pad+ch+gap, label:'A = B',  sub:'equality', color:'#ff9800', ex:'P = NP ?' },
-      { x:pad+cw+gap, y:pad+ch+gap, label:'A ⊥ B', sub:'incomparable', color:'#e040fb', ex:'BPP vs NP ?' },
-    ];
-    for (const c of cells) {
-      // Box
-      ctx.fillStyle = c.color + '0c';
-      ctx.beginPath(); ctx.roundRect(c.x, c.y, cw, ch, 8*S); ctx.fill();
-      ctx.strokeStyle = c.color + '66'; ctx.lineWidth = 2;
-      ctx.stroke();
-      // Symbol
-      ctx.fillStyle = c.color;
-      ctx.font = `bold ${28*S}px monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(c.label, c.x + cw/2, c.y + ch*0.32);
-      // Sub-label
-      ctx.fillStyle = c.color + 'aa';
-      ctx.font = `${13*S}px sans-serif`;
-      ctx.fillText(c.sub, c.x + cw/2, c.y + ch*0.55);
-      // Mini diagram
-      const dx = c.x + cw/2, dy = c.y + ch*0.78, r = 14*S;
-      if (c.label === 'A ⊆ B') {
-        // A circle inside B circle
-        ctx.strokeStyle = c.color + '88'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(dx, dy, r+8, 0, Math.PI*2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(dx-4, dy, r-4, 0, Math.PI*2); ctx.stroke();
-        ctx.fillStyle = c.color + '44'; ctx.font = `${9*S}px monospace`; ctx.textAlign = 'center';
-        ctx.fillText('A', dx-8, dy); ctx.fillText('B', dx+r+2, dy-r);
-      } else if (c.label === 'A ⊊ B') {
-        // A circle inside B, with extra region shaded
-        ctx.strokeStyle = c.color + '88'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(dx, dy, r+8, 0, Math.PI*2); ctx.stroke();
-        ctx.fillStyle = c.color + '15';
-        ctx.beginPath(); ctx.arc(dx, dy, r+8, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = c.color; ctx.beginPath(); ctx.arc(dx-6, dy, r-6, 0, Math.PI*2); ctx.stroke();
-        ctx.fillStyle = '#0a0e14'; ctx.beginPath(); ctx.arc(dx-6, dy, r-6, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = c.color + '66'; ctx.font = `${9*S}px monospace`;
-        ctx.fillText('A', dx-8, dy); ctx.fillText('gap', dx+8, dy+4);
-      } else if (c.label === 'A = B') {
-        // Two overlapping circles, perfectly aligned
-        ctx.strokeStyle = c.color + '88'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(dx, dy, r, 0, Math.PI*2); ctx.stroke();
-        ctx.setLineDash([3,3]);
-        ctx.beginPath(); ctx.arc(dx, dy, r+3, 0, Math.PI*2); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = c.color + '66'; ctx.font = `${9*S}px monospace`;
-        ctx.fillText('A=B', dx, dy);
-      } else {
-        // Two separate circles
-        ctx.strokeStyle = c.color + '88'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(dx-r-2, dy, r-2, 0, Math.PI*2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(dx+r+2, dy, r-2, 0, Math.PI*2); ctx.stroke();
-        ctx.fillStyle = c.color + '66'; ctx.font = `${9*S}px monospace`;
-        ctx.fillText('A', dx-r-2, dy); ctx.fillText('B', dx+r+2, dy);
-      }
-      // Example
-      ctx.fillStyle = '#5a6a7a'; ctx.font = `${10*S}px sans-serif`; ctx.textAlign = 'center';
-      ctx.fillText(c.ex, c.x + cw/2, c.y + ch - 8);
     }
   }
 
@@ -2448,14 +2058,12 @@ class RandomAnim {
 class QuantumAnim {
   constructor(ctx, w, h, cfg={}) {
     this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
-    this.mode = (cfg && cfg.mode) || 'default';
   }
-  setState(cfg) { if (cfg && cfg.mode) this.mode = cfg.mode; }
+  setState(cfg) {}
   draw() {
     const {ctx,w,h} = this;
     ctx.clearRect(0,0,w,h);
     this.t += 0.012 * ANIM_SPEED;
-    if (this.mode === 'hadamard') return this._drawHadamard();
     const cy = h/2, lx = 70, hx = w/2, rx = w-50;
     // wire
     ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2.5;
@@ -2495,87 +2103,6 @@ class QuantumAnim {
       ctx.beginPath(); ctx.arc(dx, dy, 7, 0, Math.PI*2);
       ctx.fillStyle='#00e5ff'; ctx.shadowBlur=14; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
     }
-  }
-
-  _drawHadamard() {
-    const {ctx,w,h,t} = this;
-    const S = ANIM_SCALE;
-    const mid = w/2;
-
-    // --- Left: Classical coin flip (BPP) ---
-    ctx.fillStyle='#ff920088'; ctx.font=`bold ${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('BPP: coin flip', mid*0.5, 24);
-
-    // Coin
-    const coinX = mid*0.5, coinY = h*0.38, coinR = 34*S;
-    const flip = Math.sin(t * 2); // -1 to 1
-    const scaleY = Math.abs(flip); // squish for flip effect
-    ctx.save();
-    ctx.translate(coinX, coinY);
-    ctx.scale(1, Math.max(0.08, scaleY));
-    ctx.beginPath(); ctx.arc(0, 0, coinR, 0, Math.PI*2);
-    ctx.fillStyle = flip > 0 ? '#ff920022' : '#00e5ff22'; ctx.fill();
-    ctx.strokeStyle = flip > 0 ? '#ff9800' : '#00e5ff'; ctx.lineWidth = 2.5; ctx.stroke();
-    ctx.fillStyle = flip > 0 ? '#ff9800' : '#00e5ff';
-    ctx.font = `bold ${22*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(flip > 0 ? '0' : '1', 0, 0);
-    ctx.restore();
-
-    // Probability labels
-    ctx.fillStyle='#5a6a8a'; ctx.font=`${12*S}px monospace`; ctx.textAlign='center';
-    ctx.fillText('P(0) = ½', coinX, h*0.62);
-    ctx.fillText('P(1) = ½', coinX, h*0.70);
-
-    // --- Arrow ---
-    const ax1=mid-30, ax2=mid+30, ay=h*0.38;
-    ctx.strokeStyle='#4caf5088'; ctx.lineWidth=2.5;
-    ctx.beginPath(); ctx.moveTo(ax1,ay); ctx.lineTo(ax2,ay); ctx.stroke();
-    ctx.fillStyle='#4caf5088';
-    ctx.beginPath(); ctx.moveTo(ax2,ay-6); ctx.lineTo(ax2+10,ay); ctx.lineTo(ax2,ay+6); ctx.fill();
-    ctx.fillStyle='#4caf50'; ctx.font=`bold ${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('gadget', mid, ay-16);
-
-    // --- Right: Hadamard gate (BQP) ---
-    ctx.fillStyle='#00e5ff88'; ctx.font=`bold ${11*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('BQP: Hadamard gate', mid + (w-mid)*0.5, 24);
-
-    const gx = mid + (w-mid)*0.5, gy = h*0.38;
-    // Wire
-    ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(gx-80*S, gy); ctx.lineTo(gx+80*S, gy); ctx.stroke();
-    // |0⟩ input
-    ctx.fillStyle='#00e5ff'; ctx.font=`bold ${18*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('|0⟩', gx-70*S, gy);
-    // H box
-    const gs = 40*S;
-    ctx.fillStyle='#0e1a2a'; ctx.fillRect(gx-gs/2, gy-gs/2, gs, gs);
-    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=2.5; ctx.strokeRect(gx-gs/2, gy-gs/2, gs, gs);
-    ctx.fillStyle='#00e5ff'; ctx.font=`bold ${22*S}px monospace`;
-    ctx.fillText('H', gx, gy);
-    // Output: superposition
-    ctx.fillStyle='#9aaacc'; ctx.font=`${13*S}px monospace`; ctx.textAlign='left';
-    ctx.fillText('(|0⟩+|1⟩)/√2', gx+gs/2+12, gy);
-
-    // Travelling dot (same as default mode)
-    const dp = (t*0.3) % 1;
-    if (dp > 0.6) {
-      const px = gx + gs/2 + (80*S - gs/2) * ((dp-0.6)/0.4);
-      const split = ((dp-0.6)/0.4) * 20*S;
-      ctx.beginPath(); ctx.arc(px, gy-split, 5*S, 0, Math.PI*2);
-      ctx.fillStyle='#4caf50'; ctx.shadowBlur=10; ctx.shadowColor='#4caf50'; ctx.fill(); ctx.shadowBlur=0;
-      ctx.beginPath(); ctx.arc(px, gy+split, 5*S, 0, Math.PI*2);
-      ctx.fillStyle='#ff5252'; ctx.shadowBlur=10; ctx.shadowColor='#ff5252'; ctx.fill(); ctx.shadowBlur=0;
-    } else if (dp > 0.1) {
-      const px = gx - 70*S + (gx - gx + 70*S) * ((dp-0.1)/0.5);
-      ctx.beginPath(); ctx.arc(px, gy, 5*S, 0, Math.PI*2);
-      ctx.fillStyle='#00e5ff'; ctx.shadowBlur=10; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
-    }
-
-    // Bottom: equivalence
-    ctx.fillStyle='#4caf50'; ctx.font=`bold ${13*S}px sans-serif`; ctx.textAlign='center';
-    ctx.fillText('coin flip  =  H|0⟩ + measure', w/2, h*0.88);
-    ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`;
-    ctx.fillText('same output distribution → BPP ⊆ BQP', w/2, h*0.94);
   }
 }
 
@@ -2946,25 +2473,6 @@ document.addEventListener('toggle', (e) => {
   const ctrl = window.__ctrl;
   let isEditor = false;
 
-  // Restore editor mode and scroll position on refresh
-  if (localStorage.getItem('ct-editor') === '1') {
-    // defer so DOM is ready
-    requestAnimationFrame(() => {
-      enterEditor();
-      const pos = localStorage.getItem('ct-scroll');
-      if (pos) window.scrollTo(0, parseInt(pos, 10));
-    });
-  } else {
-    const pos = localStorage.getItem('ct-scroll');
-    if (pos) requestAnimationFrame(() => window.scrollTo(0, parseInt(pos, 10)));
-  }
-  // Save scroll position periodically
-  let _scrollTimer;
-  window.addEventListener('scroll', () => {
-    clearTimeout(_scrollTimer);
-    _scrollTimer = setTimeout(() => localStorage.setItem('ct-scroll', String(window.scrollY)), 200);
-  });
-
   function flash(msg, color) {
     const ind = document.createElement('div');
     ind.textContent = msg;
@@ -3023,20 +2531,21 @@ document.addEventListener('toggle', (e) => {
 
   function enterEditor() {
     isEditor = true;
-    localStorage.setItem('ct-editor', '1');
     document.body.classList.add('editor-mode');
     document.documentElement.style.scrollSnapType = 'none';
     content.setAttribute('contenteditable', 'true');
     btn.textContent = 'View Mode';
     btn.classList.add('editing');
     labelBlocks();
+    // keep animation running — don't stop it
     if (ctrl && !ctrl.running) { ctrl.running = true; ctrl._loop(); }
+    window.scrollTo(0, 0);
+    // listen for cursor changes
     document.addEventListener('selectionchange', trackCursor);
   }
 
   function enterView() {
     isEditor = false;
-    localStorage.setItem('ct-editor', '0');
     document.body.classList.remove('editor-mode');
     document.documentElement.style.scrollSnapType = 'y mandatory';
     content.removeAttribute('contenteditable');
@@ -3109,4 +2618,4 @@ document.addEventListener('toggle', (e) => {
 
 
 
-<div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div></body></html>
+<div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div></body></html>

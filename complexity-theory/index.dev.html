@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en" style=""><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hidden Map — Complexity Theory from First Principles</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    background: #0b0b14;
+    color: #c8c8d8;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Two-column layout ---------- */
+  .layout {
+    display: block;
+  }
+
+  /* Left column: text content */
+  .content {
+    max-width: 600px;
+    padding: 0 40px 0 60px;
+  }
+
+  /* Animation panel — fixed right column */
+  .anim-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: 50vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .anim-panel canvas {
+    width: min(420px, 40vw);
+    height: min(420px, 40vw);
+    pointer-events: none;
+  }
+
+  /* ---------- Typography ---------- */
+  header {
+    scroll-snap-align: center;
+    min-height: 100vh;
+    display: grid;
+    align-content: center;
+    text-align: center;
+    padding: 0;
+  }
+  header h1 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #eef;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  header .subtitle {
+    font-size: 18px;
+    color: #7a7a9a;
+    font-style: italic;
+  }
+
+  section {
+    margin-bottom: 0;
+  }
+  section h2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #dde;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+
+  .pb {
+    scroll-snap-align: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30vh 0 20vh;
+    text-align: left;
+    transition: opacity .4s ease;
+    opacity: 0.2;
+  }
+  .pb.active { opacity: 1; }
+
+  em { color: #a8c8ff; font-style: italic; }
+  strong { color: #eef; font-weight: 600; }
+  .highlight { color: #6ec6ff; }
+
+  .aside {
+    border-left: 3px solid #2a2a4a;
+    padding: 30vh 0 20vh 20px;
+    margin: 0;
+    color: #9a9ab8;
+    font-size: 17px;
+    transition: opacity .4s ease;
+    opacity: 0.2;
+    scroll-snap-align: center;
+    min-height: 100vh;
+  }
+  .aside.active { opacity: 1; }
+
+  hr {
+    display: none;
+  }
+
+  ::selection {
+    background: #3a3a6a;
+    color: #fff;
+  }
+
+  details.aside-dropdown {
+    scroll-snap-align: center;
+    min-height: 100vh;
+    margin: 0;
+    border-left: 3px solid #2a2a4a;
+    padding: 30vh 0 20vh 20px;
+    transition: opacity .4s ease;
+    opacity: 0.2;
+  }
+  details.aside-dropdown.active { opacity: 1; }
+
+  details.aside-dropdown summary {
+    color: #6ec6ff;
+    cursor: pointer;
+    font-size: 17px;
+    font-style: italic;
+    padding: 4px 0;
+    list-style: none;
+  }
+  details.aside-dropdown summary::-webkit-details-marker { display: none; }
+  details.aside-dropdown summary::before { content: '\25B8 '; }
+  details.aside-dropdown[open] summary::before { content: '\25BE '; }
+  details.aside-dropdown .aside {
+    border-left: none;
+    padding-left: 0;
+    margin: 12px 0 0;
+    opacity: 1;
+  }
+
+  /* ---------- Mode toggle button ---------- */
+  .mode-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    color: #8a9aba;
+    font: bold 13px -apple-system, sans-serif;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+    pointer-events: auto;
+  }
+  .mode-toggle:hover { background: #2a2a4a; color: #eef; }
+  .mode-toggle.editing { background: #0a3a2a; border-color: #4caf50; color: #4caf50; }
+
+  /* ---------- Editor mode overrides ---------- */
+  html:has(body.editor-mode) { scroll-snap-type: none !important; }
+
+  body.editor-mode .content {
+    max-width: 600px;
+    padding: 60px 40px 120px 60px;
+    counter-reset: block;
+  }
+
+  body.editor-mode .pb,
+  body.editor-mode .aside,
+  body.editor-mode details.aside-dropdown {
+    scroll-snap-align: unset;
+    min-height: unset;
+    padding: 16px 16px 16px 16px;
+    opacity: 1 !important;
+    position: relative;
+    counter-increment: block;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: border-color .2s;
+  }
+
+  /* Block number badge — left side */
+  body.editor-mode .pb::before,
+  body.editor-mode .aside::before,
+  body.editor-mode details.aside-dropdown::before {
+    content: counter(block);
+    position: absolute;
+    left: -38px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    border-radius: 50%;
+    color: #6a7a9a;
+    font: bold 12px -apple-system, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* Animation type badge — right side */
+  body.editor-mode .pb::after {
+    content: attr(data-anim-label);
+    position: absolute;
+    right: -8px;
+    top: 8px;
+    transform: translateX(100%);
+    background: #0e1a2a;
+    border: 1px solid #1a2a4a;
+    border-radius: 4px;
+    color: #4a7aaa;
+    font: 11px -apple-system, sans-serif;
+    padding: 3px 8px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* Hover highlight */
+  body.editor-mode .pb:hover,
+  body.editor-mode .aside:hover,
+  body.editor-mode details.aside-dropdown:hover {
+    border-color: #2a3a5a;
+    background: #0e0e1a;
+  }
+  body.editor-mode .pb:hover::before,
+  body.editor-mode .aside:hover::before,
+  body.editor-mode details.aside-dropdown:hover::before {
+    background: #00e5ff;
+    border-color: #00e5ff;
+    color: #000;
+  }
+
+  /* Active block (cursor is inside) */
+  body.editor-mode .pb.editor-active {
+    border-color: #00e5ff44;
+    background: #0a1218;
+  }
+  body.editor-mode .pb.editor-active::before {
+    background: #00e5ff;
+    border-color: #00e5ff;
+    color: #000;
+  }
+
+  body.editor-mode header {
+    scroll-snap-align: unset;
+    min-height: unset;
+    display: block;
+    padding: 60px 0 40px;
+  }
+
+  body.editor-mode section { margin-bottom: 24px; }
+  body.editor-mode section h2 { margin-bottom: 16px; }
+  body.editor-mode hr { display: block; border-top: 1px solid #1a1a2e; margin: 32px 0; }
+  body.editor-mode .aside { padding: 12px 12px 12px 20px; min-height: unset; }
+  body.editor-mode details.aside-dropdown { padding: 12px 12px 12px 20px; min-height: unset; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .anim-panel { display: none; }
+    .content { max-width: 100%; padding: 0 32px; }
+  }
+  @media (max-width: 600px) {
+    .content { padding: 0 20px; }
+    header h1 { font-size: 30px; }
+    body { font-size: 17px; }
+    section h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body class="">
+
+<button class="mode-toggle" id="mode-toggle" title="Switch between View and Editor mode">Editor Mode</button>
+
+<div class="layout">
+
+<!-- ===== Content + Animation ===== -->
+<div class="content" data-testid="content" spellcheck="false">
+
+<header>
+  <h1>The Hidden Map</h1>
+  <div class="subtitle">Complexity Theory from First Principles</div>
+</header>
+
+<!-- ============================================================ -->
+<section id="sec-1" data-a="intro">
+<div class="pb" data-testid="pb">
+<h2>I. Introduction</h2>
+<p>You may have not experienced this day to day, but many of the problems we want to tackle in this universe are bounded in some way. Resist. Not because we're missing something obvious. Not because there's a clever trick we haven't thought of. But because there seems to be something about the problem itself — something structural, something deep — that makes it stubbornly, irreducibly hard.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">What would it even mean for a problem to be </span><em>inherently</em><span style="background-color: rgb(10, 18, 24);"> hard? We're used to thinking of difficulty as something relative to </span><em>us</em><span style="background-color: rgb(10, 18, 24);">, to our tools, to our level of understanding. A calculus problem is hard for a high schooler and routine for a mathematician. But what if some problems are hard in an </span><em>absolute</em><span style="background-color: rgb(10, 18, 24);"> sense? Hard for everyone, hard for anything that could possibly attempt to solve them? Hard not because the solver is insufficient, but because the </span><em>universe itself</em><span style="background-color: rgb(10, 18, 24);"> imposes limits on how quickly the answer can be found?<br></span><span style="background-color: rgb(10, 18, 24);"><br>Is that even a coherent idea? Can we separate the difficulty of a problem from the cleverness of the solver?<br></span><span style="background-color: rgb(10, 18, 24);"><br>That's the founding question of complexity theory.&nbsp;</span><em>How hard IS this?</em></p></div>
+
+<p class="pb" data-testid="pb">
+And why should we care? It's hard to motivate this field because it lives in EVERY domain. I'm particularly motivated to study this field because it's so general: there's a beautiful theory hiding behind the jargon. I have personally taken 3 classes before (Classical, Quantum, Communication). But every time I try to learn it, I run into walls of definitions and proofs that seem to be disconnected from any intuition I can grab onto. This is considered one of the hardest subjects to understand.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">I hope to dispel this fear and approach it head on. We're going to build up complexity theory from the ground, motivated at every step.&nbsp;</span></p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-2">
+<div class="pb" data-testid="pb">
+<h2>II. The Brave Assumptions</h2>
+<p>
+Before we can measure the difficulty of a problem, we need to agree on what a "problem" even <em>is</em>.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Complexity theory takes the vast, messy, infinite universe of computational tasks — finding shortest paths, scheduling jobs, cracking codes, folding proteins, proving theorems — and reduces them all to a single simple format: </span><strong>a yes/no question</strong><span style="background-color: rgb(10, 18, 24);">. "Is there a tour of these cities shorter than 1000 miles?" "Can this Boolean formula be made true?" "Does this graph contain a triangle?".</span></p></div>
+
+<p class="pb" data-testid="pb">
+Why strip everything down to yes or no? What do we lose by doing this? And what, if anything, do we gain?<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">The yes/no format isolates the </span><em>difficulty</em><span style="background-color: rgb(10, 18, 24);"> of a problem. All the challenge lives in "figuring it out" — the part where you're wrestling with the structure, searching through possibilities, reasoning about constraints. The output is just one bit: yes or no.<br></span><span style="background-color: rgb(10, 18, 24);"><br>You can almost always convert an optimization or search problem into a sequence of yes/no questions. Ask: "Is there a path of length at most </span><em>k</em><span style="background-color: rgb(10, 18, 24);">?" Then binary search on </span><em>k</em><span style="background-color: rgb(10, 18, 24);">. The decision version captures the essential difficulty. If solving the yes/no question is hard, then finding the actual answer is at least as hard.</span></p>
+
+<details class="aside-dropdown pb" data-testid="pb">
+<summary>But is the yes/no format really all there is? Does complexity theory only care about decision problems?</summary>
+<div class="aside">
+<p>
+The yes/no format isn't arbitrary — it's where the field was born. In 1928, Hilbert asked his <em>Entscheidungsproblem</em>: is there a mechanical procedure that can decide whether any mathematical statement is true or false? A yes/no question about yes/no questions. Turing answered it in 1936 by inventing the Turing machine and proving that the halting problem — "does this program ever stop?" — is undecidable. The very first impossibility result in computation was a decision problem. The format stuck because it's the simplest non-trivial output (one bit), which makes it the cleanest setting for proving things about difficulty. Everything harder builds on top of it.
+</p>
+<p>
+Not at all. The choice of problem type is itself a <em>dimension</em> of the theory, a separate dial you can turn to get a different landscape of difficulty. <strong>Search problems</strong> ask: find me an actual solution, not just whether one exists. The class FNP is the search analogue of NP. <strong>Counting problems</strong> ask: <em>how many</em> solutions are there? The class #P captures this — and it turns out that counting can be vastly harder than deciding. Even for problems where the decision version is easy! Counting perfect matchings in a bipartite graph is #P-complete, even though <em>deciding</em> whether a perfect matching exists is in P. Knowing that a solution exists and knowing how many there are — these are different questions with different difficulties. <strong>Optimization problems</strong> ask: what's the <em>best</em> solution? <strong>Promise problems</strong> restrict the inputs — the algorithm only needs to work on inputs that satisfy some structural guarantee.
+</p>
+<p>
+Each of these choices leads to a different ecosystem of complexity classes, reductions, and completeness results. So yes — the choice of problem type is an independent axis of the theory. Decision problems are the foundation, the simplest and cleanest setting where the core ideas are sharpest. But they're not the whole building. Think of it as choosing a coordinate system: decision problems are the most natural set of axes, the one that makes the theory most tractable, but the landscape they describe is just one slice of a higher-dimensional space. When you hear "NP-complete," that's a statement in the decision-problem slice. There are analogous notions of completeness in the counting, search, and optimization slices — each with their own surprises.
+</p>
+</div>
+</details>
+
+<p class="pb" data-testid="pb">
+Two more hidden assumptions you should know about. First: <strong>worst-case analysis</strong>. When complexity theory calls a problem "hard," it means there exist <em>some</em> inputs that defeat every algorithm. Not that all inputs are hard — maybe 99% are easy. This is why SAT solvers work great in practice even though SAT is NP-complete: real-world instances have exploitable structure. "NP-hard" means no universal shortcut exists, not that your specific problem is doomed.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Second: the theory draws a line between "efficient" and "inefficient" at </span><strong>polynomial time</strong><span style="background-color: rgb(10, 18, 24);">. Everything running in </span><em>n</em><span style="background-color: rgb(10, 18, 24);">, </span><em>n</em><span style="background-color: rgb(10, 18, 24);">², </span><em>n</em><span style="background-color: rgb(10, 18, 24);">³ is "tractable." Everything like 2</span><sup>n</sup><span style="background-color: rgb(10, 18, 24);"> is not. Why this line? Because it's the only one that doesn't depend on your hardware. An algorithm that's polynomial on a Turing machine is still polynomial on a laptop — the exponent might change, but it stays polynomial. Every other boundary would shift depending on the machine. This one is universal, and that's what makes the whole theory machine-independent.</span></p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-3">
+<div class="pb" data-testid="pb">
+<h2>III. The Measuring Stick</h2>
+<p>
+Before we get to complexity theory's model of choice, let's start where the story actually started — with machines much simpler than anything we'd call a "computer." Because the thing about history is that people didn't leap to the most powerful model. They started small, and discovered, step by step, what computation <em>couldn't</em> do at each level.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">The simplest model is a </span><strong>finite automaton</strong><span style="background-color: rgb(10, 18, 24);">: a machine with a fixed number of states that reads input one symbol at a time, left to right, never going back. No scratch paper, no memory beyond its current state. Finite automata can recognize certain patterns — whether a binary string ends in 01, whether a word contains the substring "abc."&nbsp;</span></p></div>
+
+<p class="pb" data-testid="pb">But they have a sharp, provable ceiling: they&nbsp;<em>cannot count</em>. A finite automaton cannot determine whether a string has equal numbers of a's and b's. Why not? Because counting requires&nbsp;<em>remembering</em>&nbsp;a number, and a machine with fixed states runs out of memory. No finite automaton, no matter how many states, can do it.</p><p class="pb" data-testid="pb">
+So what if we give the machine a little memory — say, a stack? That gives us a <strong>pushdown automaton</strong>, which can count, match nested parentheses, and parse the grammar of programming languages. More power. But it too has a ceiling. It can match a's against b's (push a's, pop on b's), but it can't simultaneously match a's against b's against c's. The stack is last-in-first-out — it can only track one running count at a time.
+</p>
+
+<p class="pb" data-testid="pb">
+Do you see the pattern? Each model has a sharp limitation — problems it provably cannot solve — and each limitation points toward a more powerful machine. Finite automata can't count. Pushdown automata can't cross-reference. What happens if we remove <em>all</em> the restrictions? Give the machine an infinite tape it can read, write, and traverse freely in any direction?
+</p>
+
+<p class="pb" data-testid="pb">
+That gives us a <strong>Turing machine</strong>. And the astonishing thing is: nobody has ever found a convincing model that's <em>more powerful</em>. Every alternative anyone has proposed — RAM machines, lambda calculus, cellular automata, even quantum computers (for what's <em>computable</em>, not for speed) — computes exactly the same set of functions. The hierarchy of increasing power <em>stops</em> at the Turing machine. We hit a ceiling that appears to be the ceiling — not of a particular formalism, but of computation itself.
+</p>
+
+<p class="pb" data-testid="pb">
+This progression — finite automata to pushdown automata to Turing machines, each step motivated by the proven failures of the last — is why Sipser's textbook starts with automata. It isn't historical decoration. It's the <em>motivation</em>. You need to see what simple machines cannot do to appreciate what it means when we reach a model whose limitations seem truly fundamental. The question shifts: we're no longer asking "what can this model compute?" (the answer for Turing machines is: everything computable). We're asking: "how <em>efficiently</em> can it compute?" And that's where complexity theory begins.
+</p>
+
+<p class="pb" data-testid="pb">
+Here's a puzzle that should bother you: how do you measure the difficulty of a problem <em>without mentioning a specific computer</em>? If I say "sorting can be done in <em>n</em> log <em>n</em> comparisons," that's a statement about sorting, not about any particular machine. But how did we arrive at that statement? We needed some way to reason about computation <em>in the abstract</em> — some model precise enough to prove things about, but general enough that the results apply everywhere.
+</p>
+
+<p class="pb" data-testid="pb">
+How do you build such a model? What would it even look like — a definition of "computation" so general that it captures everything any computer could ever do, yet so precise that you can prove theorems about it?
+</p>
+
+<p class="pb" data-testid="pb">
+That's what a Turing machine is. And I want to be very clear about what it is and what it <em>isn't</em>, because this is where many people get confused, lose the thread, and decide that complexity theory isn't for them.
+</p>
+
+<p class="pb" data-testid="pb">
+A Turing machine is <strong>not</strong> a practical device. Nobody builds them. Nobody programs them. They are preposterously slow, hilariously low-level, and deliberately stripped down to the barest possible essentials. An infinite tape of cells. A head that reads and writes one cell at a time. A finite set of states and rules. That's it.
+</p>
+
+<p class="pb" data-testid="pb">
+So why care about them?
+</p>
+
+<p class="pb" data-testid="pb">
+A Turing machine is a <strong>definition</strong>. Think of it like the definition of a meter. You don't build things with the definition of a meter — but you absolutely need it if you want to measure things consistently. Before you can say "this building is 50 meters tall," everyone has to agree on what a meter is. A Turing machine gives us a precise, mathematical, unambiguous definition of what it means to "compute something." Without it, we'd be waving our hands, using words like "algorithm" without any formal content behind them.
+</p>
+
+<p class="pb" data-testid="pb">
+And here's where something miraculous happens — so miraculous it's been called a "thesis" rather than a theorem, because it can't be formally proved, only observed and believed. The <strong>Church-Turing thesis</strong> says: anything that any reasonable physical process can compute, a Turing machine can compute too. Your laptop, a supercomputer, a hypothetical alien civilization's technology, your brain (to the extent that it computes) — if it can answer a question, a Turing machine can answer the same question. The Turing machine might be inconceivably slower, but it gets there.
+</p>
+
+<p class="pb" data-testid="pb">
+What does this mean for us? It means that studying the limits of Turing machines <em>is</em> studying the limits of computation. Any impossibility we prove for Turing machines applies to every computer that could ever exist. That's the power of having a universal model. We don't need to worry about every possible hardware architecture and programming paradigm — we study one deliberately simple model, and the results transfer.
+</p>
+
+<p class="pb" data-testid="pb">
+But wait — does the <em>speed</em> of the model matter? If a Turing machine takes <em>n</em>³ steps where your laptop takes <em>n</em> steps, isn't that a huge difference? It is! But here's the key: for reasonable models of computation, the speed differences are always <em>polynomial</em>. A Turing machine might be polynomially slower than a RAM machine, but it's not exponentially slower. And since we've already decided that polynomial is our notion of "efficient," this slowdown is absorbed by the definition. The class P is the same whether you define it with Turing machines, RAM machines, lambda calculus, or whatever reasonable model you like.
+</p>
+
+<details class="aside-dropdown pb" data-testid="pb">
+<summary>An aside: why is difficulty measured by input <em>size</em>?</summary>
+<div class="aside">
+<p>
+Why should the number of bits in the input determine how hard a problem is? This is so foundational that most treatments don't flag it as a choice, but it deserves a moment.
+</p>
+<p>
+Think about it concretely. A graph with 10 nodes has at most 45 possible edges. A graph with 100 nodes has up to 4,950. A graph with 1,000 has nearly 500,000. As the input description grows, the space of possible structures — the number of possible graphs, assignments, configurations — grows <em>combinatorially</em>. More bits means more information that could be relevant, more possibilities to consider or rule out, more structure to untangle. The input size is a proxy for the <em>scale</em> of the combinatorial object you're wrestling with.
+</p>
+<p>
+There's also a deeper reason. We want to classify the difficulty of a <em>problem</em> — an infinite family of instances — not of one particular instance. Any single, fixed instance has a fixed answer; there's nothing to "compute" in a deep sense. The difficulty only materializes when you ask: how does the work grow as the instances get <em>bigger</em>? Input size is the natural axis along which difficulty unfolds. It's the parameter that turns a static question into a scaling law.
+</p>
+</div>
+</details>
+
+<p class="pb" data-testid="pb">
+This is yet another reason the polynomial boundary is the right one — it's the only boundary that's <em>model-independent</em>. The models disagree on exact speeds, but they agree on what's polynomial and what's exponential. Our theory is built exactly on this bedrock of agreement.
+</p>
+
+<p class="pb" data-testid="pb">
+But here's something deeper that we've been dancing around. The Turing machine isn't just <em>a</em> model — it defines the entire <em>arena</em>, the scope, in which standard complexity theory plays out. And this is the thing: swap in a different computational model, and you get a <em>different arena</em> entirely, with its own complexity classes, its own reductions, its own notion of what "hard" means.
+</p>
+
+<p class="pb" data-testid="pb">
+Consider <strong>communication complexity</strong>. The model isn't a single machine reading an input tape. It's two players — Alice and Bob — each holding a private input, who need to compute some joint function by exchanging bits back and forth. The resource being measured isn't time or space — it's <em>communication</em>. This model generates its own world of complexity classes, its own complete problems, and its own mathematical tools for reasoning about difficulty. Tools like communication matrices and monochromatic rectangles, which have no analogue in the Turing machine world. The very <em>questions you can ask</em> are different, because the model is different.
+</p>
+
+<p class="pb" data-testid="pb">
+Or take <strong>quantum complexity</strong>. The model now includes quantum gates, superposition, and entanglement. This doesn't just add speed — it reshapes the <em>geometry</em> of what's efficiently computable. What does "reshape the geometry" mean concretely? Consider: a quantum computer can natively do everything a randomized classical computer can do. A classical coin flip — the fundamental operation of randomized algorithms — is just a Hadamard gate applied to a qubit in state |0⟩, followed by a measurement. The result is 0 or 1, each with probability 1/2. A perfect fair coin, built from a quantum primitive. Every classical logic gate has a quantum equivalent. So the class BPP (efficient randomized computation) sits inside BQP (efficient quantum computation) automatically — the quantum model <em>contains</em> the randomized model as a special case. And then quantum goes further: Shor's algorithm factors integers efficiently, something no known classical algorithm can do. But NP-complete problems appear to remain hard even for quantum computers. The model doesn't make <em>everything</em> easier — it <em>rearranges</em> which problems are easy and which are hard. Some walls dissolve. Others remain standing. That's what "reshaping the geometry" means: the boundary between tractable and intractable shifts into a new shape.
+</p>
+
+<p class="pb" data-testid="pb">
+Or <strong>circuit complexity</strong>, where computation is a fixed-size network of logic gates rather than a step-by-step machine. This gives a "non-uniform" perspective — a different circuit for each input size — with its own hierarchy of classes (NC, AC, TC) and its own open questions.
+</p>
+
+<p class="pb" data-testid="pb">
+What's the pattern here? The computational model is the <em>outermost layer</em> — the scope that determines which universe of complexity you're even working in. Within that scope, you define resources (time, space, communication bits, circuit depth, quantum gates), and from those resources you carve out classes. The Turing machine gives you the "standard" universe: P, NP, PSPACE, EXPTIME. Communication models give you a different universe. Quantum models give you yet another. Each has its own internal structure, its own reductions, its own web of difficulty. But they're all instances of the same meta-pattern: <em>fix a model, measure a resource, classify problems</em>. The model is the context. The resource is the ruler. The classes are the map.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-4">
+<div class="pb" data-testid="pb">
+<h2>IV. The Map</h2>
+<p>
+What if you could draw a map of every computational problem in existence? Not a map of algorithms — we have plenty of those. A map of <em>problems</em>, organized by how much intrinsic computational effort they require? A topographical chart of difficulty, where the lowlands are the easy problems and the mountains are the hard ones?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+That's what complexity classes are. They're neighborhoods on this map, grouping together problems that share the same fundamental resource requirements. And the relationships between these neighborhoods — which ones contain which, which ones might be secretly identical, which ones are provably different — form the deep structure of the computational universe.
+</p>
+
+<p class="pb" data-testid="pb">
+What is the class <strong>P</strong>, really? It's the collection of all decision problems that can be solved in polynomial time. Sorting a list? In P. Finding the shortest path between two nodes in a graph? In P. Checking whether a number is prime? In P — though this last one was only proven in 2002, when Agrawal, Kayal, and Saxena found a polynomial-time primality test. For decades, people weren't sure whether primality belonged in P or somewhere harder.
+</p>
+
+<p class="pb" data-testid="pb">
+These are the problems that <em>cooperate</em>. Feed them bigger inputs, and the work grows manageably. Double the input, and the time might quadruple (if the algorithm is <em>n</em>²) — but it doesn't explode. There's a clear sense in which these problems have structure that algorithms can exploit.
+</p>
+
+<p class="pb" data-testid="pb">
+And then there's <strong>NP</strong>. This is the most misunderstood class in all of computer science. The name does <em>not</em> stand for "Non-Polynomial." It stands for "Nondeterministic Polynomial" — which is a terrible name that actively obscures the beautiful idea underneath. Let me give you the real definition, the one that actually matters.
+</p>
+
+<p class="pb" data-testid="pb">
+A problem is in NP if, whenever the answer is YES, there exists a short proof of that fact — a piece of evidence, a "certificate" or "witness" — that can be <em>checked quickly</em>. In polynomial time. For the traveling salesman problem: the certificate is the tour. Someone hands you a specific route, and you add up the distances. Is the total under the target? You can check in seconds. For Boolean satisfiability: the certificate is the assignment of TRUE/FALSE to each variable. Plug it in, evaluate the formula. Does it come out TRUE? Instant check.
+</p>
+
+<p class="pb" data-testid="pb">
+The certificate is the proof that the answer is YES. The remarkable thing about NP problems is that even though <em>finding</em> the right certificate might require searching through an astronomical number of possibilities, <em>checking</em> any specific candidate is quick. The difficulty lives entirely in the search, not in the verification.
+</p>
+
+<p class="pb" data-testid="pb">
+And the map extends much further. <strong>PSPACE</strong> collects everything you can solve using a polynomial amount of memory — even if it takes exponential time. <strong>EXPTIME</strong> is everything solvable in exponential time. <strong>L</strong> and <strong>NL</strong> capture what's possible with extremely limited memory (logarithmic space). <strong>BPP</strong> captures what you can do with randomized algorithms. Each class carves out a different region of the computational landscape, defined by a different combination of resources and constraints.
+</p>
+
+<p class="pb" data-testid="pb">
+What's remarkable is how much we <em>don't</em> know about this map. We know that P ⊆ NP ⊆ PSPACE ⊆ EXPTIME, and we know that P ≠ EXPTIME (there are problems solvable in exponential time that provably can't be solved in polynomial time). But every single intermediate relationship — whether P = NP, whether NP = PSPACE, whether NP = coNP — remains wide open. We have a map with neighborhoods we can name, but we're not sure which neighborhoods are actually distinct.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-5">
+<div class="pb" data-testid="pb">
+<h2>V. The Great Asymmetry</h2>
+<p>
+Have you ever had this experience? You struggle with a problem for an hour. Someone shows you the answer, and you immediately see that it's right. You could never have found it yourself — but the moment it's in front of you, it's obviously correct. What's going on there? Why is it so much easier to <em>recognize</em> a solution than to <em>discover</em> one?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Is this asymmetry just a psychological artifact — a quirk of how human minds work? Or is it something deeper? Something that would be true for <em>any</em> computational process, human or otherwise?
+</p>
+
+<p class="pb" data-testid="pb">
+This everyday experience is, quite precisely, the <strong>P versus NP</strong> question. P asks: can a computer efficiently <em>find</em> the answer? NP asks: can a computer efficiently <em>check</em> a proposed answer? If P = NP, then efficient checking implies efficient finding. Every problem where you can quickly verify a solution is also a problem where you can quickly discover one.
+</p>
+
+<p class="pb" data-testid="pb">
+But if P ≠ NP — and almost everyone who has thought deeply about this believes it's true — then there is an inherent, inescapable gap between creating and verifying. Between searching and recognizing. Between the composer who writes the symphony and the listener who appreciates it. This gap would be a <em>law of nature</em>, a structural feature of computation itself, not a limitation of any specific approach.
+</p>
+
+<p class="pb" data-testid="pb">
+Why is this so hard to prove? Because proving P ≠ NP means proving a <em>negative</em>: that no algorithm, no matter how clever, no matter how unlike anything we've ever seen, could solve NP problems efficiently. You have to rule out every possible approach — not just the ones we know about, but every approach that could ever be conceived. That's qualitatively different from finding an algorithm (where you just have to be clever once). It's the difference between showing that a lock can be picked (find one key) and showing that a lock <em>cannot</em> be picked (rule out every possible key). No wonder it's been open for over fifty years.
+</p>
+
+<p class="pb" data-testid="pb">
+What would the world look like if P <em>did</em> equal NP? It's worth dwelling on this, because the consequences are so staggering that many people take them as evidence that P ≠ NP.
+</p>
+
+<p class="pb" data-testid="pb">
+If P = NP, then every mathematical theorem with a reasonably short proof could be <em>discovered automatically</em>. Protein folding would become trivially solvable. Optimal scheduling, logistics, circuit design — all solved exactly, efficiently, without heuristics or approximations. Cryptography would collapse utterly, because the security of every encryption scheme depends on certain problems being hard. Your bank account, your encrypted messages, your digital identity — all protected by the computational difficulty of factoring, discrete logarithms, and related problems. If finding solutions were as easy as checking them, all of that protection would evaporate.
+</p>
+
+<p class="pb" data-testid="pb">
+The creative act of discovery — in mathematics, in science, in engineering — would become a <em>mechanical computation</em>. Many people find this so deeply implausible that it serves as powerful (though informal) evidence for P ≠ NP.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-6">
+<div class="pb" data-testid="pb">
+<h2>VI. The Beautiful Bridge</h2>
+<p>
+Here's a question that might not seem connected to anything we've discussed, but turns out to be the <em>most important</em> idea in complexity theory: how do computational problems <em>relate</em> to each other? Not in terms of subject matter — obviously graph coloring and airline scheduling are about different things. But in terms of <em>difficulty</em>. Is there a rigorous way to say "problem A is at least as hard as problem B"? And can we do this <em>without knowing how hard either one actually is</em>?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Why would we need to compare difficulties without knowing them absolutely? Because we're terrible at proving absolute lower bounds. We can't even prove P ≠ NP! We can't prove that any specific NP problem requires more than polynomial time. But what we <em>can</em> do — and this is the crucial insight — is prove <em>relative</em> statements. We can say: "Whatever the difficulty of problem A is, problem B is at least as hard." We can chart the relative topography of difficulty even while the absolute elevation remains unknown.
+</p>
+
+<p class="pb" data-testid="pb">
+This is what a <strong>reduction</strong> does. And the idea is so elegant it almost feels like cheating.
+</p>
+
+<p class="pb" data-testid="pb">
+A reduction from problem A to problem B is a <strong>translation</strong>: you take <em>any</em> instance of problem A and efficiently convert it into an instance of problem B, in a way that perfectly preserves the answer. If the original instance of A is a YES, the translated instance of B is a YES. If it's a NO, it maps to a NO. And the translation itself must be efficient — computable in polynomial time.
+</p>
+
+<p class="pb" data-testid="pb">
+What does this buy you? The practical benefit is obvious: if you can solve B, you can solve A. Just translate your A-instance, solve the resulting B-instance, and the answer carries back. But the deep implication is about <em>difficulty</em>. If problem A is hard, then problem B must be at least as hard. Why? Because if B were easy, you could solve A easily too (translate, then solve B). But A is hard — contradiction. So B must be at least as hard as A.
+</p>
+
+<p class="pb" data-testid="pb">
+Reductions are the "≤" of computational difficulty. They let us build a hierarchy, a partial ordering of all problems by hardness. And just like ≤ on numbers, this ordering has a rich and beautiful structure.
+</p>
+
+<p class="pb" data-testid="pb">
+Now — here's where your intuition comes alive. You described something that I want to savor, because it captures the essence of reductions better than most textbooks do.
+</p>
+
+<p class="pb" data-testid="pb">
+You said: <em>"A lot of the time when reasoning through a problem, you kind of hallucinate some scenarios in your head how the problem will be solved in one domain or with one model, and this just so happens to create an isomorphism of every simulation step mapped to another problem domain or model."</em>
+</p>
+
+<p class="pb" data-testid="pb">
+Yes. That's exactly it.
+</p>
+
+<p class="pb" data-testid="pb">
+When you design a reduction, you are <em>imagining</em> one problem as if it were another. You take the vocabulary of problem A — its variables, its constraints, its entire structure — and you reconstruct all of it using the vocabulary of problem B. You're not just mapping inputs to inputs. You're mapping <em>meaning</em> to <em>meaning</em>. Every constraint in A must find an equivalent expression in B's language. Every relationship, every logical dependency, every piece of structure must be faithfully represented.
+</p>
+
+<p class="pb" data-testid="pb">
+And when you succeed, something magical happens. The solution to B, when you "read it back" through the translation, <em>is</em> a solution to A. Every step of solving B corresponds to a step of solving A. The two problems, living in completely different domains, expressed in completely different vocabularies, are <strong>structurally isomorphic</strong>. The answers correspond. The non-answers correspond. The entire solution landscape is preserved.
+</p>
+
+<p class="pb" data-testid="pb">
+That's the "hallucination" you described — the act of mentally simulating one problem inside the world of another, and discovering that the simulation is <em>faithful</em>. That the structure you built in B's world mirrors the structure of A so perfectly that every computational path through B traces a corresponding path through A.
+</p>
+
+<p class="pb" data-testid="pb">
+Why is this so powerful? Because it means we can study the <em>structure</em> of difficulty itself, as something that transcends the specific domain of any one problem. When two problems are connected by a reduction, their difficulty is entangled. They rise and fall together. Solve one, and you solve the other. Prove one is hard, and the other is hard too. The reduction is a bridge — and once you cross it, the two problems are inseparable.
+</p>
+
+<p class="pb" data-testid="pb">
+But what does a reduction actually <em>look like</em> when you build one? It turns out reductions come in two distinct flavors, and seeing them side by side sharpens the whole idea.
+</p>
+
+<p class="pb" data-testid="pb">
+The first flavor is <strong>gadget-based reduction</strong>. You translate an instance of problem A into an instance of problem B by constructing B piece by piece. The key tool is the <em>gadget</em>: a small, local construction in B's language that encodes one specific constraint from A. Think of it as a translation device for a single unit of meaning — built entirely from B's vocabulary (graph edges, Boolean clauses, whatever B speaks), but <em>behaving</em> like a piece of A. You wire gadgets together into a scaffold, and the whole structure is a faithful copy of A, written in B's language.
+</p>
+
+<p class="pb" data-testid="pb">
+Let me show you what this looks like concretely. We'll reduce <strong>3-SAT</strong> to <strong>Independent Set</strong>. In 3-SAT, you have a Boolean formula where each clause has 3 literals, and you ask: is there a TRUE/FALSE assignment making every clause true? In Independent Set, you have a graph and a number <em>k</em>, and you ask: is there a set of <em>k</em> vertices with no edges between any pair? One is logic. The other is geometry. Watch the gadgets build a bridge.
+</p>
+
+<p class="pb" data-testid="pb">
+Take: <strong>φ = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (¬x₁ ∨ x₂ ∨ ¬x₃)</strong>. Two clauses, three variables. Create one node for every literal in every clause — six nodes total. Set <em>k</em> = 2 (the number of clauses).
+</p>
+
+<p class="pb" data-testid="pb">
+<strong>Gadget 1 — clause triangles:</strong> Within each clause, connect all three nodes to each other. This forms a triangle. In any independent set, you can pick at most one node per triangle — exactly like choosing which literal satisfies each clause.
+</p>
+
+<p class="pb" data-testid="pb">
+<strong>Gadget 2 — consistency edges:</strong> Between clauses, add an edge wherever two nodes represent contradictory literals. "x₁" in clause 1 connects to "¬x₁" in clause 2. "¬x₂" in clause 1 connects to "x₂" in clause 2. These prevent picking both a variable and its negation — exactly like requiring a consistent assignment.
+</p>
+
+<p class="pb" data-testid="pb">
+Now watch: x₁ = TRUE, x₂ = TRUE, x₃ = TRUE satisfies φ. In the graph, pick "x₁" from clause 1's triangle and "x₂" from clause 2's. Different triangles (no clause edge), not contradictory (no consistency edge) — it's an independent set of size 2. The mapping, laid bare:
+</p>
+
+<div class="aside pb" data-testid="pb">
+<p>
+<strong>SAT domain → Graph domain</strong><br><br>
+Variable xᵢ → literal nodes (positive and negative) across clauses<br>
+Literal in clause j → node in clause j's triangle<br>
+"At least one true literal per clause" → "Pick one node per triangle" (triangle edges)<br>
+"No contradictions" → "Can't pick contradictory nodes" (consistency edges)<br>
+Satisfying assignment → independent set of size <em>k</em><br>
+Unsatisfiable → no independent set of size <em>k</em>
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Every constraint in the formula has a structural counterpart in the graph. The "costume" is completely different — logic versus geometry — but the combinatorial structure is identical.
+</p>
+
+<p class="pb" data-testid="pb">
+The second flavor looks completely different: <strong>simulation-based reduction</strong>. Instead of translating <em>instances</em> piece by piece, you show that one computational <em>model</em> can directly simulate another. Every step of computation in Model A has a corresponding step in Model B. The simulation itself is the proof.
+</p>
+
+<p class="pb" data-testid="pb">
+Here's a clean example: proving <strong>BPP ⊆ BQP</strong> — that anything a randomized classical computer can do efficiently, a quantum computer can do too. The core operation of a randomized algorithm is a coin flip: generate 0 or 1, each with probability 1/2. In a quantum circuit, you simulate this with one operation: a Hadamard gate applied to |0⟩, producing (|0⟩ + |1⟩)/√2. Measure, and you get a perfect fair coin. Every classical logic gate (AND, OR, NOT) has a reversible quantum equivalent. So you translate the entire randomized algorithm gate by gate, coin flip by Hadamard, and the quantum circuit produces the same output distribution. The quantum model <em>contains</em> the randomized model. No gadgets, no instance-by-instance translation — just a direct, step-for-step simulation.
+</p>
+
+<p class="pb" data-testid="pb">
+Notice how different the two flavors feel. The 3-SAT → Independent Set reduction translated a specific <em>instance</em> — one formula into one graph. The mapping was between objects. BPP ⊆ BQP translated the entire <em>model of computation</em> — coin flips become Hadamard gates, classical gates become quantum gates. The mapping was between operations. One builds a bridge between problems. The other builds a bridge between worlds. But both are reductions. Both establish "at least as powerful as." The same core idea — faithful translation preserving answers — manifests at different scales.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-7">
+<div class="pb" data-testid="pb">
+<h2>VII. The Rosetta Stone</h2>
+<p>
+Is there a single problem so expressive, so versatile, that <em>every other</em> problem in NP can be translated into it? A universal language of difficulty — a Rosetta Stone that can speak for any NP problem?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+The answer is yes. And it's called <strong>SAT</strong> — Boolean satisfiability. Given a Boolean formula (a logical expression with variables, ANDs, ORs, and NOTs), is there an assignment of TRUE/FALSE to each variable that makes the whole formula evaluate to TRUE?
+</p>
+
+<p class="pb" data-testid="pb">
+In 1971, Stephen Cook (and independently, Leonid Levin) proved something astounding: <strong>every problem in NP can be reduced to SAT in polynomial time</strong>. Every single one. Scheduling, graph coloring, protein folding, cryptanalysis, theorem proving — if it's in NP, it can be translated into a SAT instance. This means SAT is at least as hard as everything in NP. If you could solve SAT efficiently, you could solve <em>all</em> of NP efficiently.
+</p>
+
+<p class="pb" data-testid="pb">
+How is this possible? How can one specific problem, about Boolean formulas, capture the difficulty of <em>every</em> NP problem?
+</p>
+
+<p class="pb" data-testid="pb">
+The answer is one of the most breathtaking constructions in all of computer science.
+</p>
+
+<p class="pb" data-testid="pb">
+Remember: every NP problem, by definition, has a polynomial-time verifier — a Turing machine that takes an input and a certificate and checks whether the certificate is valid. That Turing machine's computation is a physical process that unfolds step by step. At each moment, the machine has a configuration: the contents of its tape, the position of its head, the state of its control. And each configuration follows from the previous one according to a fixed set of rules — the machine's transition function.
+</p>
+
+<p class="pb" data-testid="pb">
+Now here's the move that makes the reduction work: <em>encode the entire computation as a Boolean formula</em>.
+</p>
+
+<p class="pb" data-testid="pb">
+Picture a grid — a <strong>computation tableau</strong>. Time runs downward. Tape position runs across. Each cell of the grid represents one bit of the machine's tape at one moment in time. Each cell becomes a Boolean variable. And the transition rules — the rules that say how one configuration follows from the previous one — become <strong>clauses</strong>. Small, local constraints that say: "if these three cells in row <em>t</em> look like this, then these three cells in row <em>t+1</em> must look like that."
+</p>
+
+<p class="pb" data-testid="pb">
+Can you see the skeleton and gadgets here? The skeleton is the tableau — the grid of time × tape. The gadgets are the clause patterns. One set of gadgets ensures the first row correctly encodes the input. Another set ensures each row follows from the previous one according to the transition rules. A third set ensures that somewhere in the final rows, an accepting state appears. And the whole formula is satisfiable if and only if there exists a valid, accepting computation — which is true if and only if a valid certificate exists — which is true if and only if the answer to the original problem is YES.
+</p>
+
+<p class="pb" data-testid="pb">
+Can you feel the isomorphism? Every step of the Turing machine's computation corresponds to a row in the tableau, which corresponds to a set of Boolean variables and constraints. The <em>satisfying assignment</em> of the formula literally <em>is</em> the valid computation. The simulation of the verifier is the assignment. They are the same thing viewed from two different angles.
+</p>
+
+<p class="pb" data-testid="pb">
+This is Cook-Levin's proof that SAT is <strong>NP-complete</strong>: it is both in NP (you can check an assignment quickly) and at least as hard as everything in NP (because everything reduces to it). It sits at the summit of NP — the hardest of the hard.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-8">
+<div class="pb" data-testid="pb">
+<h2>VIII. The Web</h2>
+<p>
+Once Cook and Levin established that SAT is NP-complete — one problem that captures the difficulty of <em>all</em> of NP — something remarkable happened. A chain reaction.
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Researchers started showing that other problems were <em>also</em> NP-complete, by constructing reductions from SAT (or from any already-known NP-complete problem) to the new target. And then from those problems to still others. The chain spread rapidly.
+</p>
+
+<p class="pb" data-testid="pb">
+SAT reduces to 3-SAT (break long clauses into triples using auxiliary variables — the logical content is preserved). 3-SAT reduces to 3-Coloring (variable gadgets force nodes into TRUE/FALSE colors; clause gadgets enforce that at least one literal is true). 3-SAT reduces to Clique. Clique is equivalent to Independent Set (just take the complement graph). Independent Set reduces to Vertex Cover (take the complement vertex set). Vertex Cover reduces to Hamiltonian Path. And onward: Subset Sum, Knapsack, Bin Packing, Traveling Salesman, Integer Programming, Job-Shop Scheduling, Graph Isomorphism's complement, Protein Folding…
+</p>
+
+<p class="pb" data-testid="pb">
+How many problems are NP-complete? Thousands. <em>Literally thousands.</em> From every corner of computer science, mathematics, biology, economics, operations research, physics, and engineering. Problems that were studied independently for decades, by researchers who had no idea they were working on the same thing, turned out to be computationally equivalent.
+</p>
+
+<p class="pb" data-testid="pb">
+What does it mean for them to be "equivalent"? It means: solving any one of them efficiently solves <em>all</em> of them. A fast algorithm for graph coloring would give you a fast algorithm for scheduling, and for SAT, and for protein folding, and for the traveling salesman problem, and for everything else in NP. They rise and fall as one.
+</p>
+
+<p class="pb" data-testid="pb">
+Isn't that astonishing? Graph coloring, on its surface, has nothing to do with Boolean formulas. Airline scheduling looks nothing like finding Hamiltonian paths in a graph. Protein folding seems like a completely different kind of problem from subset sum. And yet the reductions reveal hidden structural parallels connecting all of them. The gadgets that translate between these worlds expose deep, non-obvious equivalences. Each NP-complete problem is the <em>same problem</em> wearing a different costume.
+</p>
+
+<p class="pb" data-testid="pb">
+This is, I think, one of the most profound discoveries of 20th-century science: that difficulty has a <em>universal structure</em>. That the computational landscape is not a formless wilderness of unrelated challenges, but a highly organized space with deep, surprising connections. And these connections are revealed not by studying the problems individually, but by studying the <em>translations between them</em>.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-9">
+<div class="pb" data-testid="pb">
+<h2>IX. The Two Directions of Proof</h2>
+<p>
+Here's a question that sits at the root of everything we've discussed: how do you <em>know</em> how hard a problem is? We've been talking about complexity classes, reductions, NP-completeness — but all of that is a framework for organizing difficulty. The actual <em>work</em> of complexity theory comes down to two activities, two directions you can push in, and they feel completely different from each other.
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+You can prove an <strong>upper bound</strong>: "this problem can be solved with at most X resources." Or you can prove a <strong>lower bound</strong>: "this problem <em>requires</em> at least Y resources." They sound symmetric. They're not.
+</p>
+
+<p class="pb" data-testid="pb">
+An upper bound is <em>constructive</em>. You prove it by exhibiting one algorithm, one protocol, one circuit that works. "Here's a sorting algorithm that runs in <em>n</em> log <em>n</em> time." Done. One witness is enough. It's like proving a door exists — you just open it.
+</p>
+
+<p class="pb" data-testid="pb">
+A lower bound is <em>universal</em>. You have to show that <em>no</em> algorithm, no protocol, no circuit — not just the ones we know, but any that could ever be conceived — can do better than Y. You're ruling out every possible approach, including approaches nobody has imagined yet. It's like proving a room has no doors — you need to inspect every wall, even the walls you can't see.
+</p>
+
+<p class="pb" data-testid="pb">
+How do you do that? How do you argue about all possible algorithms at once? This is where the real ingenuity lives, and where each domain of complexity theory develops its own <em>mathematical framework</em> — a new kind of mathematical object, purpose-built for constraining what all possible solutions must look like.
+</p>
+
+<p class="pb" data-testid="pb">
+And there's a deeper pattern beneath all these frameworks. Every lower bound technique, across every domain, ultimately works the same way: <em>identify some mathematical quantity that all algorithms/protocols/circuits must respect, then show that the problem in question forces that quantity to be large</em>. The quantity is different in each domain — rectangle cover number in communication, polynomial degree in query complexity, adversary bound in quantum, circuit depth for parallel computation — but the strategy is always the same. Find the right ruler. Measure. Show the measurement is unavoidably big.
+</p>
+
+<p class="pb" data-testid="pb">
+Consider <strong>communication complexity</strong>, because it illustrates this beautifully. An upper bound is concrete: you design one specific protocol where Alice and Bob compute a function by exchanging few bits. You exhibit a protocol tree and measure its cost. Constructive. One instance of a solution.
+</p>
+
+<p class="pb" data-testid="pb">
+But a lower bound? You can't just show that one protocol is slow — maybe a cleverer one exists. You need a mathematical object that captures what <em>every</em> protocol must satisfy. That object is the <strong>communication matrix</strong> and its decomposition into <strong>monochromatic rectangles</strong>. Every deterministic protocol — no matter how ingenious — partitions the input space into monochromatic rectangles. That's a mathematical fact about the structure of communication, not a choice. So if you show the function's matrix requires many rectangles to cover, you've ruled out every efficient protocol at once. The framework <em>transcends</em> any individual protocol.
+</p>
+
+<p class="pb" data-testid="pb">
+The same pattern plays out in <strong>randomness and derandomization</strong>. The class BPP captures what randomized algorithms can do efficiently — algorithms that flip coins. An upper bound is a specific randomized algorithm: "here's a randomized polynomial-time algorithm for polynomial identity testing." But here's where things get fascinating. We <em>believe</em> BPP = P — that randomness doesn't actually help — that anything you can do efficiently with coin flips, you can do efficiently without them. Why? Because of a stunning connection: if you could prove strong enough <em>circuit lower bounds</em> (showing certain functions require large circuits), you could construct <strong>pseudorandom generators</strong> — deterministic functions whose output <em>looks</em> random to any efficient algorithm. These generators would let you replace every coin flip with a deterministic bit, derandomizing the entire algorithm. Proving a problem is hard in one domain (circuits) would <em>collapse</em> a complexity class in another (BPP into P). Lower bounds and derandomization are secretly the same quest.
+</p>
+
+<p class="pb" data-testid="pb">
+Can you feel the asymmetry? Upper bounds live in the world of <em>specific constructions</em>: one algorithm, one protocol, one circuit. Lower bounds live in the world of <em>mathematical frameworks</em>: objects like rectangle covers, polynomial degree, adversary bounds that constrain the <em>entire space</em> of possible solutions. The construction shows what one approach can do. The framework shows what no approach can escape.
+</p>
+
+<p class="pb" data-testid="pb">
+But here's what makes this landscape strange: the frameworks don't form a single unified theory. They form something more like an <strong>archipelago</strong> — a collection of islands, each with its own tools, connected by occasional bridges.
+</p>
+
+<p class="pb" data-testid="pb">
+<strong>Query complexity</strong> is the island where things are most resolved. The adversary method and the polynomial method give tight or near-tight bounds for many problems. It's the best-understood domain. But it's also provably limited — results in query complexity can't directly transfer to prove circuit or time lower bounds.
+</p>
+
+<p class="pb" data-testid="pb">
+<strong>Communication complexity</strong> has its own rich toolkit: rank bounds, discrepancy, information complexity. And crucially, it connects to circuit complexity via <strong>lifting theorems</strong> — you can sometimes "lift" a communication lower bound into a circuit or proof complexity lower bound. This is one of the most active bridges between islands right now.
+</p>
+
+<p class="pb" data-testid="pb">
+<strong>Circuit complexity</strong> has sporadic breakthroughs — monotone circuit lower bounds, Ryan Williams's ACC lower bounds — but no general framework. Each breakthrough uses bespoke techniques. And the frontier is tantalizing: the "chasm at depth 4" results show that even <em>modest</em> lower bounds for depth-4 circuits would imply superpolynomial lower bounds for general circuits. The summit might be closer than it looks, but the path is invisible.
+</p>
+
+<p class="pb" data-testid="pb">
+And in <strong>standard time complexity</strong> — the Turing machine world of P and NP — the tools are shockingly weak. We can prove P ≠ EXPTIME (the time hierarchy theorem), but we can't prove SAT requires more than linear time. Ryan Williams's remarkable insight suggests a completely different approach: instead of attacking lower bounds head-on, find <em>faster algorithms</em> for restricted problems, and show that the existence of these algorithms <em>implies</em> lower bounds for harder problems. Algorithm design and lower bounds, which seem like opposite activities, turn out to be connected.
+</p>
+
+<p class="pb" data-testid="pb">
+What does this archipelago tell us? That if unification happens — if someone finds the mathematical framework powerful enough to prove P ≠ NP — it might look nothing like what we currently call a "lower bound technique." It might come from an unexpected island, via a bridge nobody has built yet. The mathematical language in which P ≠ NP becomes provable may not yet exist. We're not just missing a proof. We may be missing an entire <em>way of thinking</em>.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-10">
+<div class="pb" data-testid="pb">
+<h2>X. Beyond the Horizon</h2>
+<p>
+NP is just one neighborhood on a vast map. What lies beyond?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+There's <strong>coNP</strong> — the complement of NP. While NP collects problems where YES answers have short proofs, coNP collects problems where NO answers have short proofs. "Is this formula unsatisfiable?" is in coNP: if it is unsatisfiable, there's a proof of that (via resolution or other proof systems), and you can check the proof. Whether NP = coNP is unknown, but most people believe they're different — that the <em>direction</em> of the proof matters.
+</p>
+
+<p class="pb" data-testid="pb">
+There's the <strong>polynomial hierarchy</strong> — an infinite tower of classes that generalizes NP and coNP. NP captures "there exists an assignment such that..." (one level of existential quantification). The next level up asks: "there exists an x such that for all y, this condition holds." The level after that: "there exists an x such that for all y, there exists a z..." Each level adds another alternation of quantifiers, and each level is (presumably) strictly harder than the one below. The entire tower is contained in PSPACE.
+</p>
+
+<p class="pb" data-testid="pb">
+And then there's <strong>PSPACE</strong> itself — everything solvable with polynomial memory, regardless of time. This class has a surprising equivalent characterization: it equals <strong>IP</strong>, the class of problems solvable by interactive proofs. This result, proved by Shamir in 1992, says something profound: <em>conversation</em> is as powerful as polynomial memory. If you can solve a problem with polynomial space, you can also solve it by a back-and-forth dialogue between a skeptical verifier and a powerful (but potentially untrustworthy) prover. The interactive protocol gives the verifier the same power as having a polynomial-size scratch pad.
+</p>
+
+<p class="pb" data-testid="pb">
+There's <strong>BPP</strong> — the problems solvable efficiently by randomized algorithms that are allowed to flip coins. We believe BPP = P — that randomness doesn't actually help — but proving it remains open. And there's <strong>BQP</strong>, the class of problems solvable by quantum computers. Factoring large numbers is in BQP (Shor's algorithm), but is believed to not be in P. Yet most people believe NP-complete problems are not in BQP either — quantum computers are not expected to be magic bullets for everything.
+</p>
+
+<p class="pb" data-testid="pb">
+Each of these classes captures a different <em>flavor</em> of computational power: time, space, randomness, interaction, quantum effects, quantifier depth. They're the dimensions of the computational universe, and the complexity classes are the regions in this high-dimensional space. Understanding which regions are truly different — and which secretly collapse into each other — is the central project of complexity theory, and it will likely occupy mathematicians and computer scientists for centuries to come.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-11">
+<div class="pb" data-testid="pb">
+<h2>XI. Why Any of This Matters</h2>
+<p>
+So why should anyone who isn't a theoretical computer scientist care about any of this? Why does this abstract landscape of complexity classes and reductions matter to the real world?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Because your <strong>bank account</strong> depends on it. Every encryption system in use today — RSA, AES, Diffie-Hellman, elliptic curve cryptography — rests on the assumption that certain computational problems are hard. RSA relies on the difficulty of factoring large numbers. Diffie-Hellman relies on the discrete logarithm problem. If P = NP, all of modern cryptography crumbles instantly. Your messages, your identity, your financial transactions — every shred of digital privacy — is protected by computational hardness. Complexity theory doesn't merely study this hardness. It <em>defines</em> it.
+</p>
+
+<p class="pb" data-testid="pb">
+Because it <strong>redirects engineering effort</strong>. When you prove that a problem is NP-hard, you're not saying "give up." You're saying: "don't spend years searching for a perfect polynomial-time algorithm that almost certainly doesn't exist. Instead, invest in approximation algorithms, heuristic methods, or special-case solutions." This is immensely practical. It's the difference between banging your head against an impossible wall and finding a door in a nearby wall. The NP-hardness proof is the sign that says "wall, not door."
+</p>
+
+<p class="pb" data-testid="pb">
+Because it raises the deepest question about <strong>the nature of intelligence</strong>. If P ≠ NP, then there is an inherent, irreducible gap between verification and discovery. Between recognizing a correct solution and finding one. Between hearing a symphony and composing one. Between following a proof and creating one. This asymmetry — if it's real, if it's a law of nature — says something profound about creativity, about the structure of knowledge, about what it means to understand.
+</p>
+
+<p class="pb" data-testid="pb">
+And because complexity theory reveals something unexpected and beautiful about the <strong>unity of knowledge</strong>. Problems from biology, economics, physics, operations research, and pure mathematics — problems that look completely unrelated — turn out to be computationally equivalent. The reductions between them are hidden tunnels connecting distant regions of the intellectual landscape. When you prove a reduction, you're not just establishing a difficulty relationship. You're discovering that two seemingly different corners of the universe are, at their deepest structural level, reflections of each other.
+</p>
+</section>
+
+<hr>
+
+<!-- ============================================================ -->
+<section id="sec-closing">
+<div class="pb" data-testid="pb">
+<h2>Closing</h2>
+<p>
+What we've traced in this essay is the outline of a hidden map — a map not of places, but of problems. A map that exists independently of any algorithm, any programming language, any hardware architecture. It tells you, before you write a single line of code, something deep about the terrain you're about to enter. Is this problem tractable? Is it one of thousands of secretly equivalent problems that humanity has struggled with for decades? Does its difficulty connect, through a chain of reductions, all the way back to the universal hardness of SAT?
+</p>
+</div>
+
+<p class="pb" data-testid="pb">
+Complexity theory is often presented as forbidding and arcane — a fortress of definitions guarded by impenetrable proofs. But underneath the formalism, it's really about something very human: the desire to understand what makes things hard, to find hidden connections between seemingly unrelated challenges, and to know — truly know — the limits of what can be achieved.
+</p>
+
+<p class="pb" data-testid="pb">
+The map is still being drawn. Most of the deep questions remain open. We don't know if P equals NP. We don't know where quantum computing sits in the landscape. We don't know whether randomness truly helps. But the structure we've uncovered so far — the classes, the reductions, the webs of equivalence, the surprising collapses and separations — suggests that the full map, when it's eventually revealed, will be one of the most beautiful and consequential objects in all of mathematics.
+</p>
+
+<p class="pb" data-testid="pb">
+And the most remarkable thing? The map was always there. We're just learning to read it.
+</p>
+</section>
+
+</div><!-- .content -->
+
+<!-- ===== Animation Panel ===== -->
+<div class="anim-panel" data-testid="anim-panel">
+  <canvas id="anim-canvas" width="800" height="800"></canvas>
+</div>
+
+</div><!-- .layout -->
+
+<script>
+/* =============================================================
+   ANIMATION TEMPLATES
+   ============================================================= */
+
+// --- 1. AutomataAnim ---
+// Modes: "abc" (substring detector walkthrough), "fail" (counting failure), default (generic)
+class AutomataAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+    this.mode = (cfg && cfg.mode) || 'default';
+  }
+  setState(cfg) { if (cfg && cfg.mode) this.mode = cfg.mode; }
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.014;
+    if (this.mode === 'abc') this._drawAbc();
+    else if (this.mode === 'fail') this._drawFail();
+    else this._drawDefault();
+  }
+
+  // --- Helper: draw a state circle ---
+  _state(x, y, label, active, accept, R) {
+    const {ctx} = this;
+    R = R || 30;
+    const pulse = active ? 3*Math.sin(this.t*4) : 0;
+    if (accept) {
+      ctx.beginPath(); ctx.arc(x,y,R+7+pulse,0,Math.PI*2);
+      ctx.strokeStyle=active?'#4caf50':'#2a3a5a'; ctx.lineWidth=2; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(x,y,R+pulse,0,Math.PI*2);
+    if (active) {
+      ctx.shadowBlur=20; ctx.shadowColor='#00e5ff';
+      ctx.fillStyle='#0a2a3a'; ctx.fill();
+      ctx.strokeStyle='#00e5ff'; ctx.lineWidth=2.5; ctx.stroke();
+      ctx.shadowBlur=0;
+    } else {
+      ctx.fillStyle='#0e0e1e'; ctx.fill();
+      ctx.strokeStyle='#2a3a5a'; ctx.lineWidth=1.5; ctx.stroke();
+    }
+    ctx.fillStyle = active ? '#00e5ff' : '#7a8aaa';
+    ctx.font = 'bold 16px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(label, x, y);
+  }
+
+  // --- Helper: draw arrow between two points ---
+  _arrow(x1, y1, x2, y2, label, highlight) {
+    const {ctx} = this;
+    ctx.strokeStyle = highlight ? '#00e5ff88' : '#2a3a5a'; ctx.lineWidth = highlight ? 2.5 : 1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    // arrowhead
+    const ang = Math.atan2(y2-y1,x2-x1);
+    ctx.fillStyle = highlight ? '#00e5ff' : '#2a3a5a';
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-10*Math.cos(ang-0.35), y2-10*Math.sin(ang-0.35));
+    ctx.lineTo(x2-10*Math.cos(ang+0.35), y2-10*Math.sin(ang+0.35));
+    ctx.fill();
+    if (label) {
+      const mx=(x1+x2)/2, my=(y1+y2)/2 - 14;
+      ctx.fillStyle = highlight ? '#00e5ff' : '#5a6a8a';
+      ctx.font = 'bold 14px monospace'; ctx.textAlign='center';
+      ctx.fillText(label, mx, my);
+    }
+  }
+
+  // === ABC mode: detect substring "abc" in "xabcy" ===
+  _drawAbc() {
+    const {ctx,w,h,t} = this;
+    const input = ['x','a','b','c','y'];
+    const stateLabels = ['∅','a','ab','abc ✓'];
+    // Which input char are we processing? Cycle through with pauses
+    const cycle = 8; // seconds per full cycle
+    const phase = t % cycle;
+    const step = Math.min(Math.floor(phase / 1.3), input.length); // 0-5, 5=done
+    const activeState = [0,0,1,2,3,3][Math.min(step,5)]; // state after reading each char
+
+    // --- Input tape at top ---
+    const tw=52, th=46, tx0=w/2-input.length*tw/2, ty=30;
+    for (let i=0; i<input.length; i++) {
+      const x=tx0+i*tw;
+      const isCurrent = i === step && step < input.length;
+      const isPast = i < step;
+      ctx.fillStyle = isCurrent ? '#0a2a3a' : '#08080f';
+      ctx.fillRect(x,ty,tw,th);
+      ctx.strokeStyle = isCurrent ? '#00e5ff' : isPast ? '#1a3a2a' : '#1a1a2e';
+      ctx.lineWidth = isCurrent ? 2.5 : 1;
+      ctx.strokeRect(x,ty,tw,th);
+      ctx.fillStyle = isCurrent ? '#fff' : isPast ? '#4caf50' : '#5a5a7a';
+      ctx.font = 'bold 22px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(input[i], x+tw/2, ty+th/2);
+    }
+    // pointer triangle above current
+    if (step < input.length) {
+      const px = tx0 + step*tw + tw/2;
+      ctx.fillStyle='#00e5ff';
+      ctx.beginPath(); ctx.moveTo(px-8,ty+th+6); ctx.lineTo(px+8,ty+th+6); ctx.lineTo(px,ty+th+14); ctx.fill();
+      ctx.fillStyle='#00e5ff'; ctx.font='12px sans-serif'; ctx.textAlign='center';
+      ctx.fillText('reading', px, ty+th+28);
+    }
+
+    // --- State machine below ---
+    const R=30, sy=h*0.62, gap=w/(stateLabels.length+1);
+    // arrows
+    for (let i=0; i<stateLabels.length-1; i++) {
+      const x1=gap*(i+1)+R, x2=gap*(i+2)-R;
+      const transLabels = ['a','b','c'];
+      const hl = (activeState === i && step < input.length);
+      this._arrow(x1,sy,x2,sy,transLabels[i],hl);
+    }
+    // self-loop on ∅ for non-'a' chars
+    const s0x = gap;
+    ctx.strokeStyle = (activeState===0 && step<input.length && input[step]!=='a') ? '#00e5ff88' : '#2a3a5a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(s0x, sy-R-12, 14, 0.3, Math.PI-0.3); ctx.stroke();
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.font = '12px monospace'; ctx.textAlign='center';
+    ctx.fillText('other', s0x, sy-R-32);
+
+    // states
+    for (let i=0; i<stateLabels.length; i++) {
+      const x = gap*(i+1);
+      const isAccept = i === 3;
+      this._state(x, sy, stateLabels[i], i===activeState, isAccept, R);
+    }
+
+    // --- Status text at bottom ---
+    ctx.font='15px sans-serif'; ctx.textAlign='center';
+    if (step >= input.length) {
+      ctx.fillStyle='#4caf50';
+      ctx.fillText('✓ Found "abc" — accepted!', w/2, h-24);
+    } else {
+      ctx.fillStyle='#6a7a9a';
+      ctx.fillText(`Read "${input[step]}" → state: ${stateLabels[activeState]}`, w/2, h-24);
+    }
+  }
+
+  // === FAIL mode: trying to count a's vs b's and failing ===
+  _drawFail() {
+    const {ctx,w,h,t} = this;
+    const input = ['a','a','b','a','b','b'];
+    const stateLabels = ['q₀','q₁','q₂'];
+    const cycle = 10;
+    const phase = t % cycle;
+    const step = Math.min(Math.floor(phase / 1.2), input.length);
+    // The machine tries: q0 = "balanced?", q1 = "more a's", q2 = "more b's"
+    // But with only 3 states it LOSES TRACK after a few chars
+    const stateSeq = [0, 1, 1, 2, 1, 2, 2]; // pretend transitions
+    const activeState = stateSeq[Math.min(step, input.length)];
+    const confused = step >= 4; // after 4 chars, it can't distinguish counts
+
+    // --- Input tape ---
+    const tw=48, th=44, tx0=w/2-input.length*tw/2, ty=28;
+    for (let i=0; i<input.length; i++) {
+      const x=tx0+i*tw;
+      const isCurrent = i === step && step < input.length;
+      const isPast = i < step;
+      ctx.fillStyle = isCurrent ? '#0a2a3a' : '#08080f';
+      ctx.fillRect(x,ty,tw,th);
+      ctx.strokeStyle = isCurrent ? '#00e5ff' : isPast ? '#1a2a3a' : '#1a1a2e';
+      ctx.lineWidth = isCurrent ? 2.5 : 1;
+      ctx.strokeRect(x,ty,tw,th);
+      ctx.fillStyle = isCurrent ? '#fff' : isPast ? '#6a7a8a' : '#5a5a7a';
+      ctx.font = 'bold 22px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(input[i], x+tw/2, ty+th/2);
+    }
+    if (step < input.length) {
+      const px = tx0 + step*tw + tw/2;
+      ctx.fillStyle='#00e5ff';
+      ctx.beginPath(); ctx.moveTo(px-8,ty+th+6); ctx.lineTo(px+8,ty+th+6); ctx.lineTo(px,ty+th+14); ctx.fill();
+    }
+
+    // --- States in triangle layout ---
+    const positions = [{x:w/2, y:h*0.45}, {x:w/2-80, y:h*0.68}, {x:w/2+80, y:h*0.68}];
+    const transLabels = [['a→','b→'],['a→','b→'],['a→','b→']];
+    // Draw arrows between states
+    for (let i=0; i<3; i++) {
+      const j = (i+1)%3;
+      const a=positions[i], b=positions[j];
+      const dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy);
+      const nx=dx/d, ny=dy/d;
+      this._arrow(a.x+nx*32, a.y+ny*32, b.x-nx*32, b.y-ny*32, null, false);
+    }
+    // Draw states
+    for (let i=0; i<3; i++) {
+      const p = positions[i];
+      const isActive = i === activeState;
+      this._state(p.x, p.y, stateLabels[i], isActive, false, 28);
+    }
+
+    // --- Confusion indicator ---
+    if (confused) {
+      // Red X or question marks
+      const shake = Math.sin(t*8)*3;
+      ctx.save();
+      ctx.translate(w/2+shake, h*0.45);
+      ctx.fillStyle='#ff5252'; ctx.font='bold 28px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('?!', 0, -50);
+      ctx.restore();
+
+      ctx.fillStyle='#ff5252aa'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+      ctx.fillText('Only 3 states — can\'t track the count!', w/2, h-40);
+      // Draw red X over the machine
+      ctx.strokeStyle='#ff525266'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(w*0.25,h*0.35); ctx.lineTo(w*0.75,h*0.8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.75,h*0.35); ctx.lineTo(w*0.25,h*0.8); ctx.stroke();
+    }
+
+    // --- Status ---
+    ctx.font='14px sans-serif'; ctx.textAlign='center';
+    if (step < input.length && !confused) {
+      ctx.fillStyle='#6a7a9a';
+      ctx.fillText(`Read "${input[step]}" → state: ${stateLabels[activeState]}`, w/2, h-16);
+    } else if (step >= input.length) {
+      ctx.fillStyle='#ff5252';
+      ctx.fillText('Wrong answer! 3a\'s ≠ 3b\'s but machine says "balanced"', w/2, h-16);
+    }
+  }
+
+  // === Default mode: generic 4-state DFA ===
+  _drawDefault() {
+    const {ctx,w,h,t} = this;
+    const stateLabels = ['q₀','q₁','q₂','q₃'];
+    const n=4, cy=h/2, gap=w/(n+1), R=30;
+    const active = Math.floor((t*0.5) % n);
+    for (let i=0;i<n-1;i++) {
+      const x1=gap*(i+1)+R, x2=gap*(i+2)-R;
+      this._arrow(x1,cy,x2,cy,['a','b','c'][i], i===active);
+    }
+    // start arrow
+    ctx.strokeStyle='#2a3a5a'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(gap-R-30,cy); ctx.lineTo(gap-R,cy); ctx.stroke();
+    for (let i=0;i<n;i++) {
+      this._state(gap*(i+1), cy, stateLabels[i], i===active, i===3, R);
+    }
+  }
+}
+
+// --- 2. TuringAnim ---
+class TuringAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+    this.tape = ['_','a','a','b','b','_','_'];
+    this.state = 'q₀';
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.014;
+    const cw=52, ch=50, n=this.tape.length;
+    const x0=w/2-n*cw/2, y0=h/2-40;
+    const headPos = 2 + Math.sin(this.t*0.7)*2;
+    const headIdx = Math.round(headPos);
+    const headX = x0 + headPos*cw + cw/2;
+    // tape cells
+    for (let i=0;i<n;i++) {
+      const x=x0+i*cw;
+      const near = Math.abs(i - headPos) < 1.2;
+      ctx.fillStyle = near ? '#0a1e2e' : '#08080f';
+      ctx.fillRect(x,y0,cw,ch);
+      ctx.strokeStyle = near ? '#00e5ff' : '#1e1e3a';
+      ctx.lineWidth = near ? 2.5 : 1;
+      ctx.strokeRect(x,y0,cw,ch);
+      ctx.fillStyle = near ? '#eef' : '#5a5a7a';
+      ctx.font = 'bold 22px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(this.tape[i], x+cw/2, y0+ch/2);
+    }
+    // head triangle
+    const hy = y0+ch+14;
+    ctx.fillStyle = '#00e5ff';
+    ctx.shadowBlur=16; ctx.shadowColor='#00e5ff';
+    ctx.beginPath(); ctx.moveTo(headX-14,hy+24); ctx.lineTo(headX+14,hy+24); ctx.lineTo(headX,hy); ctx.fill();
+    ctx.shadowBlur=0;
+    // state label
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 18px monospace'; ctx.textAlign='center';
+    ctx.fillText(this.state, headX, hy+46);
+    // "Tape" label
+    ctx.fillStyle='#3a3a5a'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('tape', w/2, y0-14);
+  }
+}
+
+// --- 3. CircuitAnim ---
+class CircuitAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h;
+    this.mode = (cfg && cfg.mode) || 'default';
+    this.t = 0;
+  }
+  setState(cfg) { if (cfg && cfg.mode) this.mode = cfg.mode; }
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.015;
+    if (this.mode === 'classes') this._drawClasses();
+    else if (this.mode === 'web') this._drawWeb();
+    else this._drawDefault();
+  }
+  _drawDefault() {
+    const {ctx,w,h,t} = this;
+    // Simple 3-layer circuit: 3 inputs → 2 gates → 1 output
+    const layers = [
+      [{x:w*0.2, y:h*0.2, label:'x₁'},{x:w*0.2, y:h*0.5, label:'x₂'},{x:w*0.2, y:h*0.8, label:'x₃'}],
+      [{x:w*0.55, y:h*0.32, label:'AND'},{x:w*0.55, y:h*0.68, label:'OR'}],
+      [{x:w*0.85, y:h*0.5, label:'OUT'}],
+    ];
+    const R = 28;
+    // wires
+    const conns = [[0,0,1,0],[0,1,1,0],[0,1,1,1],[0,2,1,1],[1,0,2,0],[1,1,2,0]];
+    for (const [l1,i1,l2,i2] of conns) {
+      const a=layers[l1][i1], b=layers[l2][i2];
+      ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(a.x+R,a.y); ctx.lineTo(b.x-R,b.y); ctx.stroke();
+    }
+    // signal dots
+    for (let d=0;d<3;d++) {
+      const phase = (t*0.7 + d*1.1) % 2;
+      const ci = d % conns.length;
+      const [l1,i1,l2,i2] = conns[ci];
+      const a=layers[l1][i1], b=layers[l2][i2];
+      const frac = phase < 1 ? phase : 2-phase;
+      const sx=a.x+R + (b.x-R-a.x-R)*frac, sy=a.y + (b.y-a.y)*frac;
+      ctx.beginPath(); ctx.arc(sx,sy,5,0,Math.PI*2);
+      ctx.fillStyle='#00e5ff'; ctx.shadowBlur=12; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
+    }
+    // nodes
+    for (const layer of layers) {
+      for (const nd of layer) {
+        const isGate = nd.label.length > 2;
+        ctx.beginPath(); ctx.arc(nd.x,nd.y,R,0,Math.PI*2);
+        ctx.fillStyle='#0a0e1a'; ctx.fill();
+        ctx.strokeStyle= isGate ? '#00e5ff' : '#2a3a5a'; ctx.lineWidth=2; ctx.stroke();
+        ctx.fillStyle = isGate ? '#00e5ff' : '#8a9aba';
+        ctx.font = isGate ? 'bold 15px sans-serif' : 'bold 20px monospace';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(nd.label, nd.x, nd.y);
+      }
+    }
+  }
+  _drawClasses() {
+    const {ctx,w,h,t} = this;
+    const cx=w/2, cy=h/2;
+    const classes = [
+      {label:'P', r:60, color:'#4caf50'},
+      {label:'NP', r:110, color:'#00e5ff'},
+      {label:'PSPACE', r:155, color:'#ff9800'},
+      {label:'EXPTIME', r:195, color:'#ff5252'}
+    ];
+    for (let i=classes.length-1;i>=0;i--) {
+      const c=classes[i];
+      const pulse = 2*Math.sin(t*1.5 + i);
+      ctx.beginPath(); ctx.ellipse(cx, cy, c.r+pulse, (c.r+pulse)*0.7, 0, 0, Math.PI*2);
+      ctx.fillStyle = c.color+'12'; ctx.fill();
+      ctx.strokeStyle = c.color+'99'; ctx.lineWidth=2; ctx.stroke();
+      const ly = cy - (c.r*0.7) + 18;
+      ctx.fillStyle = c.color; ctx.font='bold 16px sans-serif';
+      ctx.textAlign='center'; ctx.fillText(c.label, cx, ly);
+    }
+    ctx.fillStyle='#ffffff15'; ctx.font='bold 90px sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('?', cx, cy+10);
+  }
+  _drawWeb() {
+    const {ctx,w,h,t} = this;
+    const cx=w/2, cy=h/2;
+    const problems = ['3-SAT','Clique','3-Color','Ham Path','Subset Sum','TSP'];
+    const n = problems.length, R=28, r=150;
+    // SAT center
+    ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
+    ctx.fillStyle='#0a1a2a'; ctx.fill();
+    ctx.shadowBlur=18; ctx.shadowColor='#00e5ff';
+    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=2.5; ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 18px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('SAT',cx,cy);
+    // satellites
+    for (let i=0;i<n;i++) {
+      const a=(i/n)*Math.PI*2 - Math.PI/2;
+      const sx=cx+Math.cos(a)*r, sy=cy+Math.sin(a)*r;
+      const pulse = 0.4 + 0.6*Math.abs(Math.sin(t*1.2 + i*0.8));
+      ctx.strokeStyle = `rgba(0,229,255,${pulse*0.4})`; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(sx,sy); ctx.stroke();
+      // traveling dot
+      const dp = (t*0.5 + i*0.5) % 1;
+      const dx=cx+(sx-cx)*dp, dy=cy+(sy-cy)*dp;
+      ctx.beginPath(); ctx.arc(dx,dy,4,0,Math.PI*2);
+      ctx.fillStyle='#00e5ff'; ctx.shadowBlur=10; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
+      // node
+      ctx.beginPath(); ctx.arc(sx,sy,R,0,Math.PI*2);
+      ctx.fillStyle='#0e0e1e'; ctx.fill();
+      ctx.strokeStyle='#3a4a6a'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle='#9aaacc'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(problems[i], sx, sy);
+    }
+  }
+}
+
+// --- 4. RandomAnim ---
+class RandomAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+    this.counts = [0,0]; this.flipTimer = 0; this.lastResult = 0;
+    this.coinAngle = 0;
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.02;
+    this.flipTimer += 0.02;
+    if (this.flipTimer > 1.8) {
+      this.flipTimer = 0;
+      this.lastResult = Math.random() < 0.5 ? 0 : 1;
+      this.counts[this.lastResult]++;
+    }
+    // coin — large
+    const cx=w/2, cy=h*0.28;
+    this.coinAngle += 0.05;
+    const scaleX = Math.abs(Math.cos(this.coinAngle));
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(scaleX,1);
+    ctx.beginPath(); ctx.arc(0,0,50,0,Math.PI*2);
+    ctx.fillStyle='#1a2a3a'; ctx.fill();
+    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=3; ctx.stroke();
+    if (scaleX > 0.3) {
+      ctx.fillStyle='#00e5ff'; ctx.font='bold 30px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(this.lastResult === 0 ? 'H' : 'T', 0, 0);
+    }
+    ctx.restore();
+    // bar chart — larger
+    const total = this.counts[0]+this.counts[1] || 1;
+    const maxH = h*0.35, barW = 80, barGap = 50;
+    const bx = w/2 - barW - barGap/2;
+    const by = h - 50;
+    const labels = ['Heads','Tails'];
+    const colors = ['#4caf50','#ff5252'];
+    for (let i=0;i<2;i++) {
+      const bh = (this.counts[i]/total) * maxH;
+      const x = bx + i*(barW+barGap);
+      ctx.fillStyle = colors[i]+'44'; ctx.fillRect(x, by-bh, barW, bh);
+      ctx.strokeStyle = colors[i]; ctx.lineWidth=2; ctx.strokeRect(x, by-bh, barW, bh);
+      ctx.fillStyle = colors[i]; ctx.font='bold 14px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(labels[i], x+barW/2, by+20);
+      if (this.counts[i]>0) ctx.fillText(this.counts[i].toString(), x+barW/2, by-bh-12);
+    }
+  }
+}
+
+// --- 5. QuantumAnim ---
+class QuantumAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.012;
+    const cy = h/2, lx = 70, hx = w/2, rx = w-50;
+    // wire
+    ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(lx,cy); ctx.lineTo(rx,cy); ctx.stroke();
+    // |0> label
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 26px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('|0\u27E9', lx-16, cy);
+    // H gate box — large
+    const gs=58;
+    ctx.fillStyle='#0e1a2a'; ctx.fillRect(hx-gs/2, cy-gs/2, gs, gs);
+    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=2.5; ctx.strokeRect(hx-gs/2, cy-gs/2, gs, gs);
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 28px monospace';
+    ctx.fillText('H', hx, cy);
+    // output label
+    ctx.fillStyle='#9aaacc'; ctx.font='16px monospace'; ctx.textAlign='left';
+    ctx.fillText('(|0\u27E9+|1\u27E9)/\u221A2', hx+gs/2+30, cy-30);
+    // traveling qubit dot
+    const dp = (this.t*0.35) % 1;
+    let dx, dy=cy;
+    if (dp < 0.42) { dx = lx + (hx-gs/2-lx) * (dp/0.42); }
+    else if (dp < 0.58) { dx = hx; }
+    else { dx = hx+gs/2 + (rx-hx-gs/2)*((dp-0.58)/0.42); }
+    // split after gate
+    if (dp > 0.58) {
+      const split = (dp-0.58)/0.42 * 35;
+      ctx.beginPath(); ctx.arc(dx, cy-split, 7, 0, Math.PI*2);
+      ctx.fillStyle='#4caf50'; ctx.shadowBlur=14; ctx.shadowColor='#4caf50'; ctx.fill(); ctx.shadowBlur=0;
+      ctx.beginPath(); ctx.arc(dx, cy+split, 7, 0, Math.PI*2);
+      ctx.fillStyle='#ff5252'; ctx.shadowBlur=14; ctx.shadowColor='#ff5252'; ctx.fill(); ctx.shadowBlur=0;
+      if (dp > 0.72) {
+        ctx.fillStyle='#4caf50aa'; ctx.font='bold 16px monospace'; ctx.textAlign='left';
+        ctx.fillText('|0\u27E9', dx+12, cy-split);
+        ctx.fillStyle='#ff5252aa';
+        ctx.fillText('|1\u27E9', dx+12, cy+split);
+      }
+    } else {
+      ctx.beginPath(); ctx.arc(dx, dy, 7, 0, Math.PI*2);
+      ctx.fillStyle='#00e5ff'; ctx.shadowBlur=14; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
+    }
+  }
+}
+
+// --- 6. CommTreeAnim ---
+class CommTreeAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.012;
+    // Alice and Bob labels
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 16px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Alice', 46, h*0.5);
+    ctx.fillStyle='#ff9800'; ctx.fillText('Bob', w-46, h*0.5);
+    // binary tree — 3 levels, larger nodes
+    const depth=3, rootX=w/2, rootY=60;
+    const nodes = [];
+    const buildTree = (x,y,d,spread) => {
+      const id=nodes.length;
+      nodes.push({x,y,left:-1,right:-1,depth:d});
+      if (d<depth) {
+        const ns = spread*0.52;
+        nodes[id].left = buildTree(x-spread, y+90, d+1, ns);
+        nodes[id].right = buildTree(x+spread, y+90, d+1, ns);
+      }
+      return id;
+    };
+    buildTree(rootX, rootY, 0, 120);
+    // edges
+    for (const nd of nodes) {
+      for (const child of [nd.left, nd.right]) {
+        if (child>=0) {
+          ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2;
+          ctx.beginPath(); ctx.moveTo(nd.x,nd.y); ctx.lineTo(nodes[child].x, nodes[child].y); ctx.stroke();
+        }
+      }
+    }
+    // active path
+    const pathSeed = Math.floor(this.t*0.25);
+    let pathId = 0; const path = [0]; let rng = pathSeed;
+    for (let d=0;d<depth;d++) {
+      const nd=nodes[pathId];
+      rng = (rng * 7 + 3) % 13;
+      pathId = rng%2===0 ? nd.left : nd.right;
+      if (pathId>=0) path.push(pathId);
+    }
+    for (let i=0;i<path.length-1;i++) {
+      const a=nodes[path[i]], b=nodes[path[i+1]];
+      ctx.strokeStyle='#00e5ff55'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+    // traveling dot
+    const dp = (this.t*0.5) % path.length;
+    const si = Math.floor(dp), frac = dp-si;
+    if (si < path.length-1) {
+      const a=nodes[path[si]], b=nodes[path[si+1]];
+      const dx=a.x+(b.x-a.x)*frac, dy=a.y+(b.y-a.y)*frac;
+      ctx.beginPath(); ctx.arc(dx,dy,7,0,Math.PI*2);
+      ctx.fillStyle='#00e5ff'; ctx.shadowBlur=14; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
+    }
+    // nodes
+    const R=10;
+    for (let i=0;i<nodes.length;i++) {
+      const nd=nodes[i], onPath=path.includes(i);
+      ctx.beginPath(); ctx.arc(nd.x,nd.y,R,0,Math.PI*2);
+      ctx.fillStyle = onPath ? '#0a2a3a' : '#0a0a14'; ctx.fill();
+      ctx.strokeStyle = onPath ? '#00e5ff' : '#2a3a4a'; ctx.lineWidth=2; ctx.stroke();
+    }
+    // edge labels (0/1)
+    for (const nd of nodes) {
+      if (nd.left>=0) {
+        const c=nodes[nd.left], mx=(nd.x+c.x)/2-10, my=(nd.y+c.y)/2;
+        ctx.fillStyle='#4a6a8a'; ctx.font='bold 13px monospace'; ctx.textAlign='center'; ctx.fillText('0',mx,my);
+      }
+      if (nd.right>=0) {
+        const c=nodes[nd.right], mx=(nd.x+c.x)/2+10, my=(nd.y+c.y)/2;
+        ctx.fillStyle='#4a6a8a'; ctx.font='bold 13px monospace'; ctx.textAlign='center'; ctx.fillText('1',mx,my);
+      }
+    }
+  }
+}
+
+// --- 7. CommRectAnim ---
+class CommRectAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+    this.grid = [];
+    for (let r=0;r<6;r++) {
+      const row=[];
+      for (let c=0;c<6;c++) row.push((r^c)%2);
+      this.grid.push(row);
+    }
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx,w,h} = this;
+    ctx.clearRect(0,0,w,h);
+    this.t += 0.012;
+    const gs=50, N=6, x0=w/2-N*gs/2, y0=h/2-N*gs/2-20;
+    // labels
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 14px sans-serif'; ctx.textAlign='center';
+    ctx.fillText("Alice's input \u2192", w/2, y0-18);
+    ctx.save(); ctx.translate(x0-22, y0+N*gs/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle='#ff9800'; ctx.fillText("Bob's input \u2192", 0, 0); ctx.restore();
+    // grid cells
+    const cellColors = ['#1a2a3a','#0a0e14'];
+    for (let r=0;r<N;r++) {
+      for (let c=0;c<N;c++) {
+        const x=x0+c*gs, y=y0+r*gs;
+        ctx.fillStyle = cellColors[this.grid[r][c]];
+        ctx.fillRect(x,y,gs,gs);
+        ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=1;
+        ctx.strokeRect(x,y,gs,gs);
+        // value label
+        ctx.fillStyle = this.grid[r][c] ? '#5a6a7a' : '#3a5a6a';
+        ctx.font='bold 16px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(this.grid[r][c].toString(), x+gs/2, y+gs/2);
+      }
+    }
+    // rectangle overlays
+    const numRects = Math.floor(this.t*0.4) % 4 + 1;
+    const rects = [
+      {r1:0,c1:0,r2:2,c2:2,color:'#4caf50'},
+      {r1:0,c1:3,r2:1,c2:5,color:'#ff5252'},
+      {r1:3,c1:0,r2:5,c2:2,color:'#ff9800'},
+      {r1:3,c1:3,r2:5,c2:5,color:'#00e5ff'},
+    ];
+    for (let i=0;i<numRects && i<rects.length;i++) {
+      const rc=rects[i];
+      const rx=x0+rc.c1*gs, ry=y0+rc.r1*gs;
+      const rw=(rc.c2-rc.c1+1)*gs, rh=(rc.r2-rc.r1+1)*gs;
+      ctx.fillStyle = rc.color+'1a'; ctx.fillRect(rx,ry,rw,rh);
+      ctx.strokeStyle = rc.color+'88'; ctx.lineWidth=3; ctx.setLineDash([6,4]);
+      ctx.strokeRect(rx,ry,rw,rh); ctx.setLineDash([]);
+    }
+    ctx.fillStyle='#4a5a7a'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Monochromatic rectangles: '+numRects, w/2, y0+N*gs+28);
+  }
+}
+
+// --- 0. NoneAnim — blank canvas placeholder ---
+class NoneAnim {
+  constructor(ctx, w, h) { this.ctx = ctx; this.w = w; this.h = h; }
+  setState() {}
+  draw() { this.ctx.clearRect(0, 0, this.w, this.h); }
+}
+
+// --- 8. IntroAnim — cycles through all models as a preview ---
+class IntroAnim {
+  constructor(ctx, w, h, cfg={}) {
+    this.ctx = ctx; this.w = w; this.h = h; this.t = 0;
+    this.models = [
+      { label: 'Turing Machine', cls: TuringAnim, cfg: {} },
+      { label: 'Finite Automata', cls: AutomataAnim, cfg: {} },
+      { label: 'Logic Circuits', cls: CircuitAnim, cfg: {} },
+      { label: 'Complexity Classes', cls: CircuitAnim, cfg: {mode:'classes'} },
+      { label: 'Quantum Computing', cls: QuantumAnim, cfg: {} },
+      { label: 'Randomness', cls: RandomAnim, cfg: {} },
+      { label: 'Communication Protocol', cls: CommTreeAnim, cfg: {} },
+      { label: 'Communication Matrix', cls: CommRectAnim, cfg: {} },
+    ];
+    this.duration = 3.5;
+    this.idx = 0;
+    this.child = new this.models[0].cls(ctx, w, h, this.models[0].cfg);
+  }
+  setState(cfg) {}
+  draw() {
+    const {ctx, w, h} = this;
+    this.t += 0.016;
+    const idx = Math.floor(this.t / this.duration) % this.models.length;
+    if (idx !== this.idx) {
+      this.idx = idx;
+      this.child = new this.models[idx].cls(ctx, w, h, this.models[idx].cfg);
+    }
+    this.child.draw();
+    // Label pill with fade
+    const phase = (this.t % this.duration) / this.duration;
+    const alpha = phase < 0.08 ? phase/0.08 : phase > 0.88 ? (1-phase)/0.12 : 1;
+    const label = this.models[this.idx].label;
+    ctx.globalAlpha = alpha * 0.85;
+    const pw = 190, ph = 32;
+    const px = w/2 - pw/2, py = h - 50;
+    ctx.fillStyle = '#0b0b14';
+    ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 8); ctx.fill();
+    ctx.strokeStyle = '#1a2a4a'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = '#00e5ff';
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(label, w/2, py + ph/2);
+    // Progress dots
+    const dotY = py + ph + 14;
+    for (let i = 0; i < this.models.length; i++) {
+      ctx.beginPath();
+      ctx.arc(w/2 + (i - this.models.length/2 + 0.5) * 12, dotY, i === this.idx ? 3.5 : 2, 0, Math.PI*2);
+      ctx.fillStyle = i === this.idx ? '#00e5ff' : '#2a3a5a';
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+/* =============================================================
+   ANIMATION CONTROLLER
+   ============================================================= */
+class AnimController {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.w = canvas.width;
+    this.h = canvas.height;
+    this.currentType = null;
+    this.currentConfig = null;
+    this.anim = null;
+    this.running = true;
+    this._loop();
+  }
+  _loop() {
+    if (!this.running) return;
+    if (this.anim) this.anim.draw();
+    requestAnimationFrame(() => this._loop());
+  }
+  activate(type, config) {
+    config = config || {};
+    // If same type, just update state
+    if (this.anim && this.currentType === type) {
+      this.anim.setState(config);
+      this.currentConfig = config;
+      return;
+    }
+    this.currentType = type;
+    this.currentConfig = config;
+    const C = {
+      none: NoneAnim,
+      intro: IntroAnim,
+      automata: AutomataAnim,
+      turing: TuringAnim,
+      circuit: CircuitAnim,
+      random: RandomAnim,
+      quantum: QuantumAnim,
+      commtree: CommTreeAnim,
+      commrect: CommRectAnim,
+    }[type];
+    if (C) {
+      this.anim = new C(this.ctx, this.w, this.h, config);
+    }
+  }
+  stop() { this.running = false; }
+}
+
+/* =============================================================
+   PARAGRAPH TRACKING + TOC HIGHLIGHT
+   ============================================================= */
+(function() {
+  const canvas = document.getElementById('anim-canvas');
+  const ctrl = new AnimController(canvas);
+  window.__ctrl = ctrl;
+  window.__active = null;
+
+  // All trackable blocks: .pb elements + aside-dropdowns + standalone asides
+  const pbs = Array.from(document.querySelectorAll('.pb, details.aside-dropdown, section > .aside'));
+
+  // Resolve animation type + config for a paragraph
+  function resolveAnim(el) {
+    // Check paragraph-level override
+    let type = el.getAttribute('data-a');
+    let configStr = el.getAttribute('data-c');
+    if (!type) {
+      // Fall back to parent section
+      const sec = el.closest('section');
+      if (sec) {
+        type = sec.getAttribute('data-a');
+        configStr = sec.getAttribute('data-c');
+      }
+    }
+    let config = {};
+    if (configStr) {
+      try { config = JSON.parse(configStr); } catch(e) {}
+    }
+    return { type: type || 'none', config };
+  }
+
+  // IntersectionObserver to find most-visible paragraph
+  let visibleEntries = new Map();
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        visibleEntries.set(entry.target, entry.intersectionRatio);
+      } else {
+        visibleEntries.delete(entry.target);
+      }
+    }
+    // Find the most visible
+    let best = null, bestRatio = 0;
+    for (const [el, ratio] of visibleEntries) {
+      if (ratio > bestRatio) { bestRatio = ratio; best = el; }
+    }
+    if (best && best !== window.__active) {
+      // Deactivate old
+      if (window.__active) window.__active.classList.remove('active');
+      // Activate new
+      best.classList.add('active');
+      window.__active = best;
+      // Update animation
+      const {type, config} = resolveAnim(best);
+      ctrl.activate(type, config);
+    }
+  }, {
+    root: null,
+    threshold: [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+  });
+
+  pbs.forEach(p => observer.observe(p));
+
+  // Initialize: activate first paragraph
+  if (pbs.length) {
+    pbs[0].classList.add('active');
+    window.__active = pbs[0];
+    const {type, config} = resolveAnim(pbs[0]);
+    ctrl.activate(type, config);
+  }
+})();
+
+/* =============================================================
+   MODE TOGGLE — Editor / View
+   ============================================================= */
+(function() {
+  const btn = document.getElementById('mode-toggle');
+  const content = document.querySelector('.content');
+  const ctrl = window.__ctrl;
+  let isEditor = false;
+
+  function flash(msg, color) {
+    const ind = document.createElement('div');
+    ind.textContent = msg;
+    ind.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+color+';color:#000;padding:8px 20px;border-radius:6px;font:bold 14px sans-serif;z-index:9999;';
+    document.body.appendChild(ind);
+    setTimeout(() => ind.remove(), 1500);
+  }
+
+  // Resolve the animation label for a block
+  function getAnimLabel(el) {
+    let type = el.getAttribute('data-a');
+    if (!type) {
+      const sec = el.closest('section');
+      if (sec) type = sec.getAttribute('data-a');
+    }
+    const names = {turing:'Turing Machine',circuit:'Circuit',automata:'Automata',
+      quantum:'Quantum',random:'Randomness',commtree:'Comm Tree',commrect:'Comm Rect'};
+    return names[type] || type || '';
+  }
+
+  // Set data-anim-label on all blocks (for CSS ::after)
+  function labelBlocks() {
+    document.querySelectorAll('.pb, section > .aside, details.aside-dropdown').forEach(el => {
+      el.setAttribute('data-anim-label', getAnimLabel(el));
+    });
+  }
+
+  // Track cursor position in editor mode to highlight active block + update animation
+  let editorActiveBlock = null;
+  function trackCursor() {
+    if (!isEditor) return;
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const node = sel.anchorNode;
+    if (!node) return;
+    const el = node.nodeType === 1 ? node : node.parentElement;
+    const block = el?.closest('.pb, .aside, details.aside-dropdown');
+    if (block && block !== editorActiveBlock) {
+      if (editorActiveBlock) editorActiveBlock.classList.remove('editor-active');
+      block.classList.add('editor-active');
+      editorActiveBlock = block;
+      // Update animation panel to show this block's animation
+      if (ctrl) {
+        let type = block.getAttribute('data-a');
+        let configStr = block.getAttribute('data-c');
+        if (!type) {
+          const sec = block.closest('section');
+          if (sec) { type = sec.getAttribute('data-a'); configStr = sec.getAttribute('data-c'); }
+        }
+        let config = {};
+        if (configStr) { try { config = JSON.parse(configStr); } catch(e) {} }
+        ctrl.activate(type || 'none', config);
+      }
+    }
+  }
+
+  function enterEditor() {
+    isEditor = true;
+    document.body.classList.add('editor-mode');
+    document.documentElement.style.scrollSnapType = 'none';
+    content.setAttribute('contenteditable', 'true');
+    btn.textContent = 'View Mode';
+    btn.classList.add('editing');
+    labelBlocks();
+    // keep animation running — don't stop it
+    if (ctrl && !ctrl.running) { ctrl.running = true; ctrl._loop(); }
+    window.scrollTo(0, 0);
+    // listen for cursor changes
+    document.addEventListener('selectionchange', trackCursor);
+  }
+
+  function enterView() {
+    isEditor = false;
+    document.body.classList.remove('editor-mode');
+    document.documentElement.style.scrollSnapType = 'y mandatory';
+    content.removeAttribute('contenteditable');
+    btn.textContent = 'Editor Mode';
+    btn.classList.remove('editing');
+    if (editorActiveBlock) editorActiveBlock.classList.remove('editor-active');
+    editorActiveBlock = null;
+    document.removeEventListener('selectionchange', trackCursor);
+    // remove data-anim-label attributes (clean DOM)
+    document.querySelectorAll('[data-anim-label]').forEach(el => el.removeAttribute('data-anim-label'));
+    // restart animation for first visible block
+    if (ctrl && !ctrl.running) { ctrl.running = true; ctrl._loop(); }
+    const first = document.querySelector('.pb');
+    if (first) first.scrollIntoView({behavior:'instant'});
+  }
+
+  btn.addEventListener('click', () => {
+    if (isEditor) enterView(); else enterEditor();
+  });
+
+  // Ctrl+S / Cmd+S to save directly to disk (or download as fallback)
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      const clone = document.documentElement.cloneNode(true);
+      // Clean up for export
+      clone.querySelectorAll('.active, .editor-active').forEach(el => {
+        el.classList.remove('active'); el.classList.remove('editor-active');
+      });
+      clone.querySelector('[contenteditable]')?.removeAttribute('contenteditable');
+      clone.querySelectorAll('[data-anim-label]').forEach(el => el.removeAttribute('data-anim-label'));
+      const body = clone.querySelector('body');
+      if (body) body.classList.remove('editor-mode');
+      const modeBtn = clone.querySelector('#mode-toggle');
+      if (modeBtn) { modeBtn.textContent = 'Editor Mode'; modeBtn.classList.remove('editing'); }
+      clone.style.scrollSnapType = '';
+      // Remove browser-injected dark mode stylesheets
+      clone.querySelectorAll('[id^="dark-mode"]').forEach(el => el.remove());
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+
+      // Try to save to server (direct disk write)
+      fetch('/save', {method:'POST', body: html, headers:{'Content-Type':'text/html'}})
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok) flash('Saved to disk \u2713', '#4caf50');
+          else flash('Save failed', '#ff5252');
+        })
+        .catch(() => {
+          // Fallback: download as file
+          const blob = new Blob([html], {type: 'text/html'});
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'index.html';
+          a.click();
+          URL.revokeObjectURL(a.href);
+          flash('Downloaded (no server)', '#ff9800');
+        });
+    }
+  });
+
+  // Cmd+E to toggle mode
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+      e.preventDefault();
+      if (isEditor) enterView(); else enterEditor();
+    }
+  });
+})();
+</script>
+
+
+
+</body></html>
