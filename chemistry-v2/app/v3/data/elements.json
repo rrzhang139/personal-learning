@@ -1,0 +1,22 @@
+[
+  { "Z": 1,  "symbol": "H",  "name": "Hydrogen",  "group": 1,  "period": 1, "EN": 2.20, "VE": 1, "mass": 1.008,  "color": "#ffffff", "radius": 22 },
+  { "Z": 2,  "symbol": "He", "name": "Helium",    "group": 18, "period": 1, "EN": 0,    "VE": 2, "mass": 4.003,  "color": "#d9ffff", "radius": 20 },
+  { "Z": 3,  "symbol": "Li", "name": "Lithium",   "group": 1,  "period": 2, "EN": 0.98, "VE": 1, "mass": 6.941,  "color": "#cc80ff", "radius": 28 },
+  { "Z": 5,  "symbol": "B",  "name": "Boron",     "group": 13, "period": 2, "EN": 2.04, "VE": 3, "mass": 10.81,  "color": "#ffb5b5", "radius": 26 },
+  { "Z": 6,  "symbol": "C",  "name": "Carbon",    "group": 14, "period": 2, "EN": 2.55, "VE": 4, "mass": 12.01,  "color": "#909090", "radius": 26 },
+  { "Z": 7,  "symbol": "N",  "name": "Nitrogen",  "group": 15, "period": 2, "EN": 3.04, "VE": 5, "mass": 14.01,  "color": "#3050f8", "radius": 25 },
+  { "Z": 8,  "symbol": "O",  "name": "Oxygen",    "group": 16, "period": 2, "EN": 3.44, "VE": 6, "mass": 16.00,  "color": "#ff0d0d", "radius": 24 },
+  { "Z": 9,  "symbol": "F",  "name": "Fluorine",  "group": 17, "period": 2, "EN": 3.98, "VE": 7, "mass": 19.00,  "color": "#90e050", "radius": 22 },
+  { "Z": 10, "symbol": "Ne", "name": "Neon",      "group": 18, "period": 2, "EN": 0,    "VE": 8, "mass": 20.18,  "color": "#b3e3f5", "radius": 20 },
+  { "Z": 11, "symbol": "Na", "name": "Sodium",    "group": 1,  "period": 3, "EN": 0.93, "VE": 1, "mass": 22.99,  "color": "#ab5cf2", "radius": 32 },
+  { "Z": 12, "symbol": "Mg", "name": "Magnesium", "group": 2,  "period": 3, "EN": 1.31, "VE": 2, "mass": 24.31,  "color": "#8aff00", "radius": 30 },
+  { "Z": 15, "symbol": "P",  "name": "Phosphorus","group": 15, "period": 3, "EN": 2.19, "VE": 5, "mass": 30.97,  "color": "#ff8000", "radius": 28 },
+  { "Z": 16, "symbol": "S",  "name": "Sulfur",    "group": 16, "period": 3, "EN": 2.58, "VE": 6, "mass": 32.07,  "color": "#ffff30", "radius": 28 },
+  { "Z": 17, "symbol": "Cl", "name": "Chlorine",  "group": 17, "period": 3, "EN": 3.16, "VE": 7, "mass": 35.45,  "color": "#1ff01f", "radius": 27 },
+  { "Z": 19, "symbol": "K",  "name": "Potassium", "group": 1,  "period": 4, "EN": 0.82, "VE": 1, "mass": 39.10,  "color": "#8f40d4", "radius": 36 },
+  { "Z": 20, "symbol": "Ca", "name": "Calcium",   "group": 2,  "period": 4, "EN": 1.00, "VE": 2, "mass": 40.08,  "color": "#3dff00", "radius": 34 },
+  { "Z": 26, "symbol": "Fe", "name": "Iron",      "group": 8,  "period": 4, "EN": 1.83, "VE": 2, "mass": 55.85,  "color": "#e06633", "radius": 28 },
+  { "Z": 29, "symbol": "Cu", "name": "Copper",    "group": 11, "period": 4, "EN": 1.90, "VE": 1, "mass": 63.55,  "color": "#c88033", "radius": 27 },
+  { "Z": 35, "symbol": "Br", "name": "Bromine",   "group": 17, "period": 4, "EN": 2.96, "VE": 7, "mass": 79.90,  "color": "#a62929", "radius": 30 },
+  { "Z": 53, "symbol": "I",  "name": "Iodine",    "group": 17, "period": 5, "EN": 2.66, "VE": 7, "mass": 126.90, "color": "#940094", "radius": 32 }
+]

@@ -281,7 +281,7 @@
 <section id="sec-1" data-a="intro">
 <div class="pb" data-testid="pb">
 <h2><span style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;">I. Introduction</span></h2>
-<p>You may have not experienced this day to day, but many of the problems we want to tackle in this universe are bounded in some way. Resist. Not because we're missing something obvious. Not because there's a clever trick we haven't thought of. But because there seems to be something about the problem itself — something structural, something deep — that makes it stubbornly, irreducibly hard.&nbsp;</p><p><span style="background-color: rgb(11, 11, 20);"><br></span><span style="background-color: rgb(10, 18, 24);">What would it even mean for a problem to be </span><em>inherently</em><span style="background-color: rgb(10, 18, 24);"> hard? We're used to thinking of difficulty as something relative to </span><em>us</em><span style="background-color: rgb(10, 18, 24);">, to our tools, to our level of understanding. A calculus problem is hard for a high schooler and routine for a mathematician. But what if some problems are hard in an </span><em>absolute</em><span style="background-color: rgb(10, 18, 24);"> sense? Hard for everyone, hard for anything that could possibly attempt to solve them? Hard not because the solver is insufficient, but because the </span><em>universe itself</em><span style="background-color: rgb(10, 18, 24);"> imposes limits on how quickly the answer can be found?<br></span><span style="background-color: rgb(10, 18, 24);"><br>Is that even a coherent idea? Can we separate the difficulty of a problem from the cleverness of the solver?<br></span><span style="background-color: rgb(10, 18, 24);"><br>That's the founding question of complexity theory.&nbsp;</span><em>How hard IS this?</em></p></div>
+<p>You may have not experienced this day to day, but many of the problems we want to tackle in this universe are bounded in some way. Resist. Not because we're missing something obvious. Not because there's a clever trick we haven't thought of. But because there seems to be something structural that makes it stubbornly, irreducibly hard.&nbsp;</p><p><span style="background-color: rgb(11, 11, 20);"><br></span><span style="background-color: rgb(10, 18, 24);">What would it even mean for a problem to be </span><em>inherently</em><span style="background-color: rgb(10, 18, 24);"> hard? We're used to thinking of difficulty as something relative to </span><em>us</em><span style="background-color: rgb(10, 18, 24);">, to our tools, to our level of understanding. A calculus problem is hard for a high schooler and routine for a mathematician. But what if some problems are hard in an </span><em>absolute</em><span style="background-color: rgb(10, 18, 24);"> sense? Hard for everyone, hard for anything that could possibly attempt to solve them? Hard not because the solver is insufficient, but because the </span><em>universe itself</em><span style="background-color: rgb(10, 18, 24);"> imposes limits on how quickly the answer can be found?<br></span><span style="background-color: rgb(10, 18, 24);"><br>Is that even a coherent idea? Can we separate the difficulty of a problem from the cleverness of the solver?<br></span><span style="background-color: rgb(10, 18, 24);"><br>That's the founding question of complexity theory.&nbsp;</span><em>How hard IS this?</em></p></div>
 
 <p class="pb" data-testid="pb"><span style="background-color: rgb(11, 11, 20);">I will not discount how frustratingly difficult it was to learn this subject. Like it was really pulling my hair out. I think I've "tried" to learn complexity theory 3 times via textbooks and AI, and took 2 classes on more advanced topics (Quantum and Communication), but I still haven't grasped it. As I wrote this guide, I was learning so many connections between so many topics within complexity theory, so I hope you will understand as much as I have from this journey.&nbsp;</span></p>
 </section>
@@ -291,32 +291,53 @@
 <!-- ============================================================ -->
 <section id="sec-2">
 <div class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;decision&quot;}" data-testid="pb">
-<h2>II. The Brave Assumptions</h2>
+<h2>II. Where It All Came From</h2>
 <p>
-Before we can measure the difficulty of a problem, we need to agree on what a "problem" even <em>is</em>.&nbsp;<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Complexity theory takes the vast, messy, infinite universe of computational tasks, like finding shortest paths, scheduling jobs, cracking codes, folding proteins, proving theorems, and reduces them all to a single simple format: </span><strong>a yes/no question</strong><span style="background-color: rgb(10, 18, 24);">. "Is there a tour of these cities shorter than 1000 miles?" "Can this Boolean formula be made true?" "Does this graph contain a triangle?".</span></p></div>
+Complexity theory didn't come from programmers wondering why their code was slow. It came from mathematicians.
+</p>
+<p>
+In the early 1900s, mathematics had a dream. David Hilbert, one of the most influential mathematicians alive, believed math could be made <em>perfect</em>: a complete, consistent system where every true statement could be proved, and where there existed a mechanical procedure, an algorithm, that could look at any mathematical statement and tell you: <strong>true or false</strong>. He called this the <em>Entscheidungsproblem</em> — German for "decision problem." Literally: can truth be decided?
+</p>
+<p>
+Notice the format of Hilbert's question. Not "find a proof." Not "what's the shortest proof?" Just: <strong>yes or no</strong>. <em>Is this statement true?</em> The yes/no question gave birth to computation.</p>
+</div>
 
 <div class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;binarySearch&quot;}" data-testid="pb">
 <p>
-Why strip everything down to yes or no? The yes/no format isolates the <em>difficulty</em> of a problem. All the challenge lives in "figuring it out" — wrestling with structure, searching through possibilities. The output is just one bit.
+Hilbert's dream fell apart in two blows. In 1931, Kurt Gödel proved that any sufficiently powerful mathematical system contains true statements that <em>cannot be proved within the system</em>. Completeness was dead. But decidability was still an open question — maybe you can't prove everything, but could you still have an algorithm that <em>sorts</em> statements into "provable" and "not provable"?</p>
+</div>
+
+<p>In 1936, Alan Turing killed that hope too. But to prove that no such algorithm existed, he first had to answer a question nobody had formally answered:&nbsp;<em>what is an algorithm?</em>&nbsp;What does it even mean for a procedure to be "mechanical"? His answer was the Turing machine — a deliberately simple device with a tape, a head, and a rule table. Not a practical computer. A mathematical definition of what "computation" means.</p><p class="pb" data-testid="pb"><span style="background-color: rgb(11, 11, 20);">Using this definition, Turing proved that some yes/no questions have</span><span style="background-color: rgb(11, 11, 20);">&nbsp;</span><em style="background-color: rgb(11, 11, 20);">no</em><span style="background-color: rgb(11, 11, 20);">&nbsp;</span><span style="background-color: rgb(11, 11, 20);">algorithm. The most famous: "does this program ever stop running?" No procedure can answer that correctly for all programs. The first impossibility result in the history of computation was a yes/no question about yes/no questions.</span></p><p class="pb" data-testid="pb">
+So Turing drew a line: some problems are <strong>decidable</strong> (an algorithm exists) and some are <strong>undecidable</strong> (no algorithm can ever exist). But that left a huge, unexplored territory. Among the decidable problems — the ones that <em>can</em> be solved — are some fundamentally harder than others? Not impossible, just... expensive? That's where complexity theory begins. Not "can we solve it?" but "what does it <em>cost</em> to solve it?"
+</p>
+
+<div class="pb" data-a="turing" data-c="{&quot;mode&quot;:&quot;decision&quot;}" data-testid="pb">
+<p>
+To measure cost, we need to agree on what a "problem" is. And here the field inherited Hilbert and Turing's format directly: <strong>a yes/no question</strong>. "Is there a route between these cities shorter than 100 miles?" "Is this list sorted?" "Does this network have a loop?"
 </p>
 <p>
-You can almost always convert an optimization or search problem into yes/no questions. Want the shortest path? Ask: "Is there a path ≤ <em>k</em>?" Binary search on <em>k</em>. The decision version captures the essential difficulty — if the yes/no question is hard, finding the actual answer is at least as hard.
+This might feel like a strange restriction. Real problems don't just ask yes or no — we want shortest paths, optimal schedules, actual answers. But the yes/no format turns out to capture <em>exactly</em> the same difficulty. Want the shortest path? Don't ask "what is it?" — ask "is there a path shorter than <em>k</em> miles?" If yes for k = 100 and no for k = 50, binary search your way to the exact answer. If even answering yes or no is hard, finding the actual answer is at least as hard. And it works the other way too: if you can answer "is there a path shorter than <em>k</em>?" fast, you can <em>find</em> the path fast — try removing each road, re-ask the question, keep the roads whose removal flips yes to no. One bit of output, but the <em>full</em> difficulty of the original problem is preserved.
 </p>
+</div>
+
+<p class="pb" data-testid="pb">
+This leads to a strange but powerful idea. Once every problem is a yes/no question, every problem is also a <strong>set</strong>. The set of all city maps with a route shorter than 100 miles. The set of all sorted lists. The set of all programs that halt. An input is either in the set (YES) or not (NO). In CS, these sets are called <strong>languages</strong> — a term inherited from the logic and automata theory that Turing's work grew out of. Machines "accept" or "reject" strings, just as Hilbert wanted a procedure to accept or reject mathematical statements. It sounds abstract. But this is the move that makes the whole theory possible. Problems become sets. Classes of difficulty become collections of sets. Comparing difficulty becomes asking whether one set can be transformed into another. The abstraction feels like it's losing something — it's actually what gives the theory its power.
+</p>
+
 <details class="aside-dropdown">
 <summary>But is the yes/no format really all there is?</summary>
 <div class="aside">
 <p>
-The yes/no format isn't arbitrary — it's where the field was born. In 1928, Hilbert asked his <em>Entscheidungsproblem</em>: is there a procedure that can decide whether any mathematical statement is true or false? Turing answered in 1936 by proving the halting problem is undecidable. The first impossibility result in computation was a decision problem. The format stuck because one bit is the simplest non-trivial output — the cleanest setting for proving things about difficulty.
-</p>
-<p>
-But it's not all there is. <strong>Search problems</strong> (find a solution), <strong>counting problems</strong> (#P — how many solutions?), and <strong>optimization problems</strong> (best solution?) each create different complexity landscapes. Counting can be vastly harder than deciding — counting perfect matchings is #P-complete even though deciding if one exists is in P. Decision problems are the foundation, but they're one slice of a higher-dimensional space.
+It's not. <strong>Search problems</strong> (find a solution), <strong>counting problems</strong> (how many solutions?), and <strong>optimization problems</strong> (best solution?) each create different complexity landscapes. Decision problems are the foundation, but they're one slice of a higher-dimensional space. We'll see some of these later.
 </p>
 </div>
 </details>
-</div>
 
 <p class="pb" data-a="circuit" data-c="{&quot;mode&quot;:&quot;growth&quot;}" data-testid="pb">
-Two more hidden assumptions you should know about. First: <strong>worst-case analysis</strong>. When complexity theory calls a problem "hard," it means there exist <em>some</em> inputs that defeat every algorithm. Not that all inputs are hard — maybe 99% are easy. This is why SAT solvers work great in practice even though SAT is NP-complete: real-world instances have exploitable structure. "NP-hard" means no universal shortcut exists, not that your specific problem is doomed.<span style="background-color: rgb(11, 11, 20);"><br><br></span><span style="background-color: rgb(10, 18, 24);">Second: the theory draws a line between "efficient" and "inefficient" at </span><strong>polynomial time</strong><span style="background-color: rgb(10, 18, 24);">. Everything running in </span><em>n</em><span style="background-color: rgb(10, 18, 24);">, </span><em>n</em><span style="background-color: rgb(10, 18, 24);">², </span><em>n</em><span style="background-color: rgb(10, 18, 24);">³ is "tractable." Everything like 2</span><sup>n</sup><span style="background-color: rgb(10, 18, 24);"> is not. Why this boundary? Because it's the only one that doesn't depend on your hardware. An algorithm that's polynomial on a Turing machine is still polynomial on a laptop — the exponent might change, but it stays polynomial. Every other boundary would shift depending on the machine. This one is universal, and that's what makes the whole theory machine-independent.</span></p>
+Two more tools we need before moving on. First: <strong>worst-case analysis</strong>. When complexity theory calls a problem "hard," it means there exist <em>some</em> inputs that defeat every algorithm. Not that all inputs are hard — maybe 99% are easy. Your specific instance might be trivial. But <em>somewhere</em> in the infinite space of inputs, every algorithm stumbles. "Hard" means no universal shortcut exists, not that you're personally doomed.
+<br><br>
+Second: the theory draws a line between "efficient" and "inefficient" at <strong>polynomial time</strong>. Everything running in <em>n</em>, <em>n</em>², <em>n</em>³ steps is "tractable." Everything like 2<sup>n</sup> is not. Why this boundary? Because it's the only one that doesn't depend on your hardware. An algorithm that's polynomial on a Turing machine is still polynomial on a laptop — the exponent might change, but it stays polynomial. Every other boundary would shift depending on the machine. This one is universal, and that's what makes the whole theory machine-independent.
+</p>
 </section>
 
 <hr>
@@ -506,68 +527,77 @@ This is not a reduction from one specific problem to SAT. It's a reduction from 
 <div class="pb" data-testid="pb">
 <h2>IX. The Two Directions of Proof</h2>
 <p>
-Here's a question that sits at the root of everything we've discussed: how do you <em>know</em> how hard a problem is? We've been talking about complexity classes, reductions, NP-completeness — but all of that is a framework for organizing difficulty. The actual <em>work</em> of complexity theory comes down to two activities, two directions you can push in, and they feel completely different from each other.
-</p>
+Look at the map we've built. P, NP, etc.</p>
+<p>Every edge on this map is a <em>relative</em> statement. When we reduced 3-SAT to Independent Set, we proved "Independent Set is at least as hard as 3-SAT." When Cook-Levin reduced all of NP to SAT, we proved "SAT is at least as hard as everything in NP." But notice what we never proved: that any NP-complete problem actually <em>requires</em> more than polynomial time. We believe SAT is hard. We believe P ≠ NP. But we have no proof. The map might be wrong — maybe P and NP are the same elevation, and we just haven't found the algorithm yet.</p>
+<p>Why is this so hard to settle? Because proving difficulty has two directions, and they are profoundly unequal.</p>
 </div>
 
 <p class="pb" data-testid="pb">
-You can prove an <strong>upper bound</strong>: "this problem can be solved with at most X resources." Or you can prove a <strong>lower bound</strong>: "this problem <em>requires</em> at least Y resources." They sound symmetric. They're not.
+An <strong>upper bound</strong>: "here is an algorithm that solves it using at most X resources." BFS solves shortest path in O(n+m) — that placed it in P. The NP verifier checks a certificate in polynomial time — that placed problems in NP. One working algorithm is enough. A <strong>lower bound</strong>: "every algorithm needs at least Y resources." To separate P from NP, we'd need to prove every algorithm for SAT requires superpolynomial time. Not just the ones we've tried — every algorithm that could ever be invented.
 </p>
 
 <p class="pb" data-testid="pb">
-An upper bound is <em>constructive</em>. You prove it by exhibiting one algorithm, one protocol, one circuit that works. "Here's a sorting algorithm that runs in <em>n</em> log <em>n</em> time." Done. One witness is enough. It's like proving a door exists — you just open it.
+Sometimes a lower bound is just careful counting. Other times you need structural insights, or deep algebraic frameworks. The technique scales with the difficulty of the domain — not because lower bounds require heavy math by nature, but because the easy arguments get exhausted first. Let's see this concretely, starting with counting and building up.
+</p>
+
+<p class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;search-inputs&quot;}" data-testid="pb">
+<strong>The query model.</strong> Your input is an n-bit string hidden in a black box. The only way to learn anything is to query a position: "what is bit i?" Each query costs 1. We're counting queries, not total computation — a simplified setting where lower bounds are provable. <strong>The problem:</strong> search. The string is either all zeros (NO) or has exactly one 1 hidden somewhere (YES). We'll use n = 8 throughout. The animation shows all 9 possible inputs — one NO, eight YES.
+</p>
+
+<p class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;search-classical&quot;}" data-testid="pb">
+<strong>Classical lower bound.</strong> Look at the animation — it highlights which inputs get eliminated as you query. You query position 3, see a 0. You've ruled out the input with a 1 at position 3 — but 7 other hiding spots remain. One query, one eliminated. 8 hiding spots → 8 queries minimum. This argument didn't mention any algorithm. It just measured how much one query reveals (one bit, one elimination) and counted. It works against every classical strategy simultaneously. That's a lower bound.
 </p>
 
 <p class="pb" data-testid="pb">
-A lower bound is <em>universal</em>. You have to show that <em>no</em> algorithm, no protocol, no circuit — not just the ones we know, but any that could ever be conceived — can do better than Y. You're ruling out every possible approach, including approaches nobody has imagined yet. It's like proving a room has no doors — you need to inspect every wall, even the walls you can't see.
+The proof strategy: pick the hardest scenario for the algorithm (here: the NO input, where you must rule out all 8 hiding spots), then show each step makes limited progress. This is what "adversary method" really means — not a specific technique, but this proof pattern. The adversary is a fictional actor choosing worst-case inputs. It works because the algorithm promised to be correct on <em>all</em> inputs, and "all" includes the hard ones.
+</p>
+
+<p class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;search-amplitudes&quot;}" data-testid="pb">
+<strong>Now: quantum.</strong> A quantum computer queries in <em>superposition</em> — it interacts with all positions simultaneously. Its state is a list of <strong>amplitudes</strong>, one per position: a₁, a₂, ..., a₈. Each aᵢ² gives the probability of finding the answer at position i (so they sum to 1). Grover's algorithm starts with equal amplitudes: each is 1/√8 ≈ 0.354, giving probability 1/8 per position. The animation shows these 8 amplitude bars, all equal.
 </p>
 
 <p class="pb" data-testid="pb">
-How do you do that? How do you argue about all possible algorithms at once? This is where the real ingenuity lives, and where each domain of complexity theory develops its own <em>mathematical framework</em> — a new kind of mathematical object, purpose-built for constraining what all possible solutions must look like.
+<strong>The quantum query</strong> flips the sign of the amplitude at the hidden 1's position. If the 1 is at position 5: its amplitude goes from +0.354 to −0.354. The probabilities don't change ((+0.354)² = (−0.354)²). The sign flip is invisible to a direct measurement. So what good is it?
+</p>
+
+<p class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;search-grover&quot;}" data-testid="pb">
+<strong>Grover's amplification.</strong> After the sign flip, Grover reflects all amplitudes around their mean. The flipped position (now negative, far below the mean) gets boosted above it; all others get slightly pushed down. After one cycle: the winning amplitude grows from 0.354 to ~0.707. After two: ~0.95. After three: ~1.0. Measure, and you find the hidden 1 with near-certainty. <strong>3 queries instead of 8.</strong> In general: √n queries for n positions.
+</p>
+
+<p class="pb" data-a="quantum" data-c="{&quot;mode&quot;:&quot;search-rotate&quot;}" data-testid="pb">
+<strong>Why √n?</strong> Because of symmetry, the state at any point is described by two numbers: the amplitude on the winner and the amplitude on all losers. Two numbers = a point in a 2D plane. The algorithm rotates from the "losers" axis toward the "winner" axis. Each cycle rotates by θ ≈ 1/√n. To rotate 90°: (π/2)/(1/√n) = (π/4)√n steps.
 </p>
 
 <p class="pb" data-testid="pb">
-And there's a deeper pattern beneath all these frameworks. Every lower bound technique, across every domain, ultimately works the same way: <em>identify some mathematical quantity that all algorithms/protocols/circuits must respect, then show that the problem in question forces that quantity to be large</em>. The quantity is different in each domain — rectangle cover number in communication, polynomial degree in query complexity, adversary bound in quantum, circuit depth for parallel computation — but the strategy is always the same. Find the right ruler. Measure. Show the measurement is unavoidably big.
+Grover is an upper bound: √n queries suffice. But can a different quantum algorithm do better? Apply the same proof strategy as the classical bound. Same 9 inputs, same 8 pairs to distinguish: (A,B), (A,C), ..., (A,I). How much does one quantum query reveal?
 </p>
 
 <p class="pb" data-testid="pb">
-Consider <strong>communication complexity</strong>, because it illustrates this beautifully. An upper bound is concrete: you design one specific protocol where Alice and Bob compute a function by exchanging few bits. You exhibit a protocol tree and measure its cost. Constructive. One instance of a solution.
+Classically, querying position 3 fully resolves one pair — you see 0 or 1, eliminating one candidate completely. Quantumly, the query flips one amplitude by 2/√n. The state barely moves. Before any queries, the algorithm's state is identical for all inputs. After one query, the states for different inputs are <em>almost</em> identical — they overlap by roughly 1 − O(1/n). Each query reduces this overlap by at most O(1/√n). The algorithm can only distinguish YES from NO when the overlap drops to near zero. After k queries: overlap reduced by k/√n. Setting k/√n ≈ 1 gives <strong>k ≈ √n</strong>.
 </p>
 
 <p class="pb" data-testid="pb">
-But a lower bound? You can't just show that one protocol is slow — maybe a cleverer one exists. You need a mathematical object that captures what <em>every</em> protocol must satisfy. That object is the <strong>communication matrix</strong> and its decomposition into <strong>monochromatic rectangles</strong>. Every deterministic protocol — no matter how ingenious — partitions the input space into monochromatic rectangles. That's a mathematical fact about the structure of communication, not a choice. So if you show the function's matrix requires many rectangles to cover, you've ruled out every efficient protocol at once. The framework <em>transcends</em> any individual protocol.
+<strong>No quantum algorithm can search faster than √n queries.</strong> Not Grover's, not any future algorithm. The bound comes from the physics: amplitudes are 1/√n, so each query disturbs the state by 2/√n. That's the bottleneck. Upper bound (Grover) = lower bound (adversary) = Θ(√n). Completely characterized — no gap. This is rare. In most of complexity theory, huge gaps remain between best upper and lower bounds.
 </p>
 
 <p class="pb" data-testid="pb">
-The same pattern plays out in <strong>randomness and derandomization</strong>. The class BPP captures what randomized algorithms can do efficiently — algorithms that flip coins. An upper bound is a specific randomized algorithm: "here's a randomized polynomial-time algorithm for polynomial identity testing." But here's where things get fascinating. We <em>believe</em> BPP = P — that randomness doesn't actually help — that anything you can do efficiently with coin flips, you can do efficiently without them. Why? Because of a stunning connection: if you could prove strong enough <em>circuit lower bounds</em> (showing certain functions require large circuits), you could construct <strong>pseudorandom generators</strong> — deterministic functions whose output <em>looks</em> random to any efficient algorithm. These generators would let you replace every coin flip with a deterministic bit, derandomizing the entire algorithm. Proving a problem is hard in one domain (circuits) would <em>collapse</em> a complexity class in another (BPP into P). Lower bounds and derandomization are secretly the same quest.
+The proof strategy was identical for classical and quantum. Pick hard inputs, measure progress per query, show it's bounded. Classically: 1 candidate eliminated per query. Quantumly: O(1/√n) overlap reduction per query. The method didn't change. The physics changed. The math adapted.
 </p>
 
 <p class="pb" data-testid="pb">
-Can you feel the asymmetry? Upper bounds live in the world of <em>specific constructions</em>: one algorithm, one protocol, one circuit. Lower bounds live in the world of <em>mathematical frameworks</em>: objects like rectangle covers, polynomial degree, adversary bounds that constrain the <em>entire space</em> of possible solutions. The construction shows what one approach can do. The framework shows what no approach can escape.
+This strategy — pick hard inputs, measure what each step reveals, show it's not enough — is the same across all of complexity theory. What changes is what counts as a "step" and how you measure it. In communication complexity, a step is one bit exchanged. In circuit complexity, a step is one gate. Sometimes the measurement is counting. Sometimes it's spectral analysis. The domains form an <strong>archipelago</strong> of islands with different tools, connected by occasional bridges.
 </p>
 
 <p class="pb" data-testid="pb">
-But here's what makes this landscape strange: the frameworks don't form a single unified theory. They form something more like an <strong>archipelago</strong> — a collection of islands, each with its own tools, connected by occasional bridges.
+And in the domain we care about most — standard time complexity, the Turing machine world of P and NP — the tools are shockingly weak. We can prove P ≠ EXPTIME (the endpoints differ). But we cannot prove SAT requires more than linear time. The right way to measure progress-per-step for Turing machines hasn't been found. That's the frontier: not a missing proof, but a missing way of measuring.
 </p>
 
 <p class="pb" data-testid="pb">
-<strong>Query complexity</strong> is the island where things are most resolved. The adversary method and the polynomial method give tight or near-tight bounds for many problems. It's the best-understood domain. But it's also provably limited — results in query complexity can't directly transfer to prove circuit or time lower bounds.
+Why does closing the gap matter? Because when upper bound equals lower bound, you've discovered something about the problem itself — not about any particular algorithm. Grover's √n isn't just a good algorithm. It's a statement that <em>the intrinsic difficulty of quantum search is exactly √n</em>. No future algorithm, no matter how clever, will ever beat it. The difficulty is pinned down. It's a fact about computation, not about our current approach.
 </p>
 
 <p class="pb" data-testid="pb">
-<strong>Communication complexity</strong> has its own rich toolkit: rank bounds, discrepancy, information complexity. And crucially, it connects to circuit complexity via <strong>lifting theorems</strong> — you can sometimes "lift" a communication lower bound into a circuit or proof complexity lower bound. This is one of the most active bridges between islands right now.
-</p>
-
-<p class="pb" data-testid="pb">
-<strong>Circuit complexity</strong> has sporadic breakthroughs — monotone circuit lower bounds, Ryan Williams's ACC lower bounds — but no general framework. Each breakthrough uses bespoke techniques. And the frontier is tantalizing: the "chasm at depth 4" results show that even <em>modest</em> lower bounds for depth-4 circuits would imply superpolynomial lower bounds for general circuits. The summit might be closer than it looks, but the path is invisible.
-</p>
-
-<p class="pb" data-testid="pb">
-And in <strong>standard time complexity</strong> — the Turing machine world of P and NP — the tools are shockingly weak. We can prove P ≠ EXPTIME (the time hierarchy theorem), but we can't prove SAT requires more than linear time. Ryan Williams's remarkable insight suggests a completely different approach: instead of attacking lower bounds head-on, find <em>faster algorithms</em> for restricted problems, and show that the existence of these algorithms <em>implies</em> lower bounds for harder problems. Algorithm design and lower bounds, which seem like opposite activities, turn out to be connected.
-</p>
-
-<p class="pb" data-testid="pb">
-What does this archipelago tell us? That if unification happens — if someone finds the mathematical framework powerful enough to prove P ≠ NP — it might look nothing like what we currently call a "lower bound technique." It might come from an unexpected island, via a bridge nobody has built yet. The mathematical language in which P ≠ NP becomes provable may not yet exist. We're not just missing a proof. We may be missing an entire <em>way of thinking</em>.
+When there's a gap — like SAT, where the best algorithm is exponential but the best lower bound is barely linear — we don't know the true difficulty. It could be anywhere in that enormous range. Maybe SAT has a polynomial algorithm we haven't found. Maybe it truly requires exponential time. The gap is our ignorance made visible. Closing it, in either direction, would be one of the deepest results in the history of mathematics.
 </p>
 </section>
 
@@ -610,20 +640,10 @@ Each of these classes captures a different <em>flavor</em> of computational powe
 <div class="pb" data-testid="pb">
 <h2>XI. Why Any of This Matters</h2>
 <p>
-So why should anyone who isn't a theoretical computer scientist care about any of this? Why does this abstract landscape of complexity classes and reductions matter to the real world?
-</p>
-</div>
+So why should anyone who isn't a theoretical computer scientist care about any of this? Why does this abstract landscape of complexity classes and reductions matter? Aside from real world applications like in cryptography and such.</p></div>
 
 <p class="pb" data-testid="pb">
-Because your <strong>bank account</strong> depends on it. Every encryption system in use today — RSA, AES, Diffie-Hellman, elliptic curve cryptography — rests on the assumption that certain computational problems are hard. RSA relies on the difficulty of factoring large numbers. Diffie-Hellman relies on the discrete logarithm problem. If P = NP, all of modern cryptography crumbles instantly. Your messages, your identity, your financial transactions — every shred of digital privacy — is protected by computational hardness. Complexity theory doesn't merely study this hardness. It <em>defines</em> it.
-</p>
-
-<p class="pb" data-testid="pb">
-Because it <strong>redirects engineering effort</strong>. When you prove that a problem is NP-hard, you're not saying "give up." You're saying: "don't spend years searching for a perfect polynomial-time algorithm that almost certainly doesn't exist. Instead, invest in approximation algorithms, heuristic methods, or special-case solutions." This is immensely practical. It's the difference between banging your head against an impossible wall and finding a door in a nearby wall. The NP-hardness proof is the sign that says "wall, not door."
-</p>
-
-<p class="pb" data-testid="pb">
-Because it raises the deepest question about <strong>the nature of intelligence</strong>. If P ≠ NP, then there is an inherent, irreducible gap between verification and discovery. Between recognizing a correct solution and finding one. Between hearing a symphony and composing one. Between following a proof and creating one. This asymmetry — if it's real, if it's a law of nature — says something profound about creativity, about the structure of knowledge, about what it means to understand.
+Because it raises the deepest question about <strong>the nature of intelligence</strong>. If P ≠ NP, then there is an inherent, irreducible gap between verification and discovery. Between recognizing a correct solution and finding one. Between following a proof and creating one. This asymmetry says something profound about creativity, about the structure of knowledge, about what it means to understand.
 </p>
 
 <p class="pb" data-testid="pb">
@@ -643,16 +663,11 @@ What we've traced in this essay is the outline of a hidden map — a map not of 
 </div>
 
 <p class="pb" data-testid="pb">
-Complexity theory is often presented as forbidding and arcane — a fortress of definitions guarded by impenetrable proofs. But underneath the formalism, it's really about something very human: the desire to understand what makes things hard, to find hidden connections between seemingly unrelated challenges, and to know — truly know — the limits of what can be achieved.
+Complexity theory is often presented as forbidding and arcane — a fortress of definitions guarded by impenetrable proofs. But underneath the formalism, it's really about something very human: the desire to understand what makes things hard, to find hidden connections between seemingly unrelated challenges, and to truly know the limits of what can be achieved.
 </p>
 
 <p class="pb" data-testid="pb">
-The map is still being drawn. Most of the deep questions remain open. We don't know if P equals NP. We don't know where quantum computing sits in the landscape. We don't know whether randomness truly helps. But the structure we've uncovered so far — the classes, the reductions, the webs of equivalence, the surprising collapses and separations — suggests that the full map, when it's eventually revealed, will be one of the most beautiful and consequential objects in all of mathematics.
-</p>
-
-<p class="pb" data-testid="pb">
-And the most remarkable thing? The map was always there. We're just learning to read it.
-</p>
+The map is still being drawn. Most of the deep questions remain open. We don't know if P equals NP. We don't know where quantum computing sits in the landscape. We don't know whether randomness truly helps. But the structure we've uncovered so far — the classes, the reductions, the webs of equivalence, the surprising collapses and separations — suggests that the full map, when it's eventually revealed, will be one of the most beautiful and consequential objects in all of mathematics.</p>
 </section>
 
 </div><!-- .content -->
@@ -2456,6 +2471,7 @@ class QuantumAnim {
     ctx.clearRect(0,0,w,h);
     this.t += 0.012 * ANIM_SPEED;
     if (this.mode === 'hadamard') return this._drawHadamard();
+    if (this.mode?.startsWith('search-')) return this._drawSearch();
     const cy = h/2, lx = 70, hx = w/2, rx = w-50;
     // wire
     ctx.strokeStyle='#1e2a3a'; ctx.lineWidth=2.5;
@@ -2576,6 +2592,284 @@ class QuantumAnim {
     ctx.fillText('coin flip  =  H|0⟩ + measure', w/2, h*0.88);
     ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`;
     ctx.fillText('same output distribution → BPP ⊆ BQP', w/2, h*0.94);
+  }
+  // Search lower bound animations: inputs, classical elimination, amplitudes, grover
+  _drawSearch() {
+    const {ctx,w,h,t,mode} = this;
+    const S = ANIM_SCALE;
+    const step = mode==='search-inputs'?0 : mode==='search-classical'?1 : mode==='search-amplitudes'?2 : mode==='search-grover'?3 : 4;
+    const n = 8;
+    const cw = w*0.09, ch = 18*S; // cell size for input grid
+
+    if (step === 0) {
+      // --- 9 inputs grid ---
+      const labels = ['A','B','C','D','E','F','G','H','I'];
+      const bits = [
+        [0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1],
+      ];
+      const gx=w*0.14, gy=h*0.08;
+      const rh=ch+6, rw=cw;
+      // Header
+      ctx.fillStyle='#3a4a6a'; ctx.font=`${10*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+      for (let c=0;c<n;c++) ctx.fillText('pos'+(c+1), gx+40+(c+0.5)*rw, gy-6);
+      for (let r=0;r<9;r++) {
+        const y=gy+r*rh;
+        const isNO = r===0;
+        // Label
+        ctx.fillStyle=isNO?'#ff5252':'#4caf50'; ctx.font=`bold ${12*S}px monospace`; ctx.textAlign='right';
+        ctx.fillText(labels[r], gx+30, y+rh/2);
+        // Bits
+        for (let c=0;c<n;c++) {
+          const x=gx+40+c*rw;
+          const v=bits[r][c];
+          ctx.fillStyle = v===1 ? '#4caf5022' : '#08080f';
+          ctx.fillRect(x,y,rw-2,rh-2);
+          ctx.strokeStyle = v===1 ? '#4caf5044' : '#1a1a2a'; ctx.lineWidth=1; ctx.strokeRect(x,y,rw-2,rh-2);
+          ctx.fillStyle = v===1 ? '#4caf50' : '#2a2a3a';
+          ctx.font=`bold ${13*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(v, x+rw/2-1, y+rh/2);
+        }
+        // Answer
+        ctx.fillStyle=isNO?'#ff5252':'#4caf50'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='left';
+        ctx.fillText(isNO?'NO':'YES', gx+40+n*rw+8, y+rh/2);
+      }
+    }
+
+    if (step === 1) {
+      // --- Same grid, but queries highlight a column and eliminate a row ---
+      const labels = ['A','B','C','D','E','F','G','H','I'];
+      const bits = [
+        [0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1],
+      ];
+      const cycle=20, phase=(t%cycle)/cycle;
+      const queryIdx = Math.min(Math.floor(phase*10), n); // queries 0..8
+      const gx=w*0.14, gy=h*0.08;
+      const rh=ch+6, rw=cw;
+      // Header with query column highlighted
+      ctx.fillStyle='#3a4a6a'; ctx.font=`${10*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+      for (let c=0;c<n;c++) {
+        ctx.fillStyle = c===queryIdx && queryIdx<n ? '#00e5ff' : '#3a4a6a';
+        ctx.fillText('pos'+(c+1), gx+40+(c+0.5)*rw, gy-6);
+      }
+      // Highlight query column
+      if (queryIdx < n) {
+        ctx.fillStyle='#00e5ff08';
+        ctx.fillRect(gx+40+queryIdx*rw, gy, rw-2, 9*rh);
+      }
+      for (let r=0;r<9;r++) {
+        const y=gy+r*rh;
+        const isNO = r===0;
+        const eliminated = r>0 && r<=queryIdx; // rows B..queryIdx are eliminated
+        // Row background for eliminated
+        if (eliminated) { ctx.fillStyle='#1a0a0a08'; ctx.fillRect(gx+40,y,n*rw,rh-2); }
+        // Label
+        ctx.globalAlpha = eliminated ? 0.25 : 1;
+        ctx.fillStyle=isNO?'#ff5252':'#4caf50'; ctx.font=`bold ${12*S}px monospace`; ctx.textAlign='right';
+        ctx.fillText(labels[r], gx+30, y+rh/2);
+        // Bits
+        for (let c=0;c<n;c++) {
+          const x=gx+40+c*rw;
+          const v=bits[r][c];
+          ctx.fillStyle = v===1 ? '#4caf5022' : '#08080f';
+          ctx.fillRect(x,y,rw-2,rh-2);
+          ctx.strokeStyle = v===1 ? '#4caf5044' : '#1a1a2a'; ctx.lineWidth=1; ctx.strokeRect(x,y,rw-2,rh-2);
+          ctx.fillStyle = v===1 ? '#4caf50' : '#2a2a3a';
+          ctx.font=`bold ${13*S}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(v, x+rw/2-1, y+rh/2);
+        }
+        // Answer
+        ctx.fillStyle=isNO?'#ff5252':'#4caf50'; ctx.font=`${10*S}px sans-serif`; ctx.textAlign='left';
+        ctx.fillText(isNO?'NO':'YES', gx+40+n*rw+8, y+rh/2);
+        ctx.globalAlpha = 1;
+      }
+      // Status
+      ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
+      if (queryIdx<n) ctx.fillText('query pos'+(queryIdx+1)+' → see 0 → eliminate '+labels[queryIdx+1], w/2, h-12);
+      else { ctx.fillStyle='#ff5252'; ctx.font=`bold ${12*S}px sans-serif`; ctx.fillText('8 queries to eliminate all — lower bound: n', w/2, h-12); }
+    }
+
+    if (step === 2) {
+      // --- 8 amplitude bars, equal height ---
+      const bw=w*0.08, gap=w*0.02, bx=w*0.08;
+      const maxH=h*0.55, by=h*0.75;
+      const amp = 1/Math.sqrt(n); // 0.354
+      for (let i=0;i<n;i++) {
+        const x=bx+i*(bw+gap);
+        const barH=amp*maxH/1.0;
+        // Bar
+        ctx.fillStyle='#00e5ff22'; ctx.fillRect(x,by-barH,bw,barH);
+        ctx.strokeStyle='#00e5ff66'; ctx.lineWidth=1.5; ctx.strokeRect(x,by-barH,bw,barH);
+        // Value
+        ctx.fillStyle='#00e5ff'; ctx.font=`bold ${11*S}px monospace`; ctx.textAlign='center';
+        ctx.fillText('1/√8', x+bw/2, by-barH-10);
+        // Label
+        ctx.fillStyle='#5a6a8a'; ctx.font=`${10*S}px monospace`; ctx.textAlign='center';
+        ctx.fillText('pos'+(i+1), x+bw/2, by+14);
+      }
+      // Baseline
+      ctx.strokeStyle='#2a3a4a'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(bx-4,by); ctx.lineTo(bx+n*(bw+gap),by); ctx.stroke();
+      // Probability annotation
+      ctx.fillStyle='#5a6a8a'; ctx.font=`${11*S}px sans-serif`; ctx.textAlign='center';
+      ctx.fillText('each amplitude = 1/√8 ≈ 0.354 → probability = (1/√8)² = 1/8', w/2, h*0.12);
+      ctx.fillText('all equal → measuring gives a random position', w/2, h*0.19);
+    }
+
+    if (step === 3) {
+      // --- Grover: amplitude bars evolving over cycles ---
+      const cycle=12, phase=(t%cycle)/cycle;
+      const groverStep = Math.min(Math.floor(phase*5), 3); // 0=start,1=after 1 cycle,2=after 2,3=after 3
+      const winIdx=4; // hidden 1 at position 5
+      // Approximate amplitudes after each Grover iteration for n=8
+      const amps = [
+        [0.354,0.354,0.354,0.354,0.354,0.354,0.354,0.354], // start
+        [0.177,0.177,0.177,0.177,0.884,0.177,0.177,0.177], // after 1
+        [0.044,0.044,0.044,0.044,0.972,0.044,0.044,0.044], // after 2
+        [-.044,-.044,-.044,-.044,0.999,-.044,-.044,-.044],   // after 3 (close to 1)
+      ];
+      const a = amps[groverStep];
+      const bw=w*0.08, gap=w*0.02, bx=w*0.08;
+      const maxH=h*0.50, by=h*0.78;
+      for (let i=0;i<n;i++) {
+        const x=bx+i*(bw+gap);
+        const val=a[i], absVal=Math.abs(val);
+        const barH=absVal*maxH;
+        const isWin = i===winIdx;
+        // Bar (negative = below baseline, shown in red)
+        if (val >= 0) {
+          ctx.fillStyle = isWin ? '#4caf5033' : '#00e5ff18';
+          ctx.fillRect(x,by-barH,bw,barH);
+          ctx.strokeStyle = isWin ? '#4caf50' : '#00e5ff44'; ctx.lineWidth=1.5; ctx.strokeRect(x,by-barH,bw,barH);
+        } else {
+          ctx.fillStyle='#ff525022'; ctx.fillRect(x,by,bw,barH);
+          ctx.strokeStyle='#ff525044'; ctx.lineWidth=1.5; ctx.strokeRect(x,by,bw,barH);
+        }
+        // Value
+        ctx.fillStyle = isWin ? '#4caf50' : val<0 ? '#ff5252' : '#5a6a8a';
+        ctx.font=`${10*S}px monospace`; ctx.textAlign='center';
+        const labelY = val >= 0 ? by-barH-10 : by+barH+14;
+        ctx.fillText(val.toFixed(2), x+bw/2, labelY);
+        // Position label
+        ctx.fillStyle='#3a4a5a'; ctx.font=`${9*S}px monospace`;
+        ctx.fillText(i===winIdx?'★':'pos'+(i+1), x+bw/2, by+h*0.12);
+      }
+      // Baseline
+      ctx.strokeStyle='#2a3a4a'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(bx-4,by); ctx.lineTo(bx+n*(bw+gap),by); ctx.stroke();
+      // Mean line
+      const mean = a.reduce((s,v)=>s+v,0)/n;
+      const meanY = by - mean*maxH;
+      ctx.strokeStyle='#ff980044'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(bx-4,meanY); ctx.lineTo(bx+n*(bw+gap),meanY); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#ff980066'; ctx.font=`${9*S}px sans-serif`; ctx.textAlign='left';
+      ctx.fillText('mean', bx+n*(bw+gap)+4, meanY);
+      // Status
+      ctx.fillStyle='#5a6a8a'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
+      const labels = ['start: all equal', 'after 1 cycle: ★ boosted to 0.88', 'after 2 cycles: ★ at 0.97', 'after 3 cycles: ★ ≈ 1.0 → measure!'];
+      ctx.fillText(labels[groverStep], w/2, h*0.08);
+    }
+
+    if (step === 4) {
+      // --- 2D rotation: arrow rotating from |losers⟩ toward |winner⟩ ---
+      const cycle=12, phase=(t%cycle)/cycle;
+      const cx=w*0.45, cy=h*0.50; // origin
+      const axLen=h*0.38; // axis length
+      // Total angle: starts at arcsin(1/√8) ≈ 0.36 rad, ends at π/2
+      const startAngle = Math.asin(1/Math.sqrt(n)); // ~20.7°
+      const targetAngle = Math.PI/2;
+      const theta = (targetAngle - startAngle) / 3; // per-step rotation
+      const groverStep = Math.min(Math.floor(phase*5), 3);
+      const currentAngle = startAngle + groverStep * theta;
+      // Smooth interpolation within each step
+      const subPhase = (phase*5) - Math.floor(phase*5);
+      const smoothAngle = groverStep < 3
+        ? startAngle + groverStep*theta + subPhase*theta
+        : targetAngle;
+
+      // Draw axes
+      // |losers⟩ axis (horizontal)
+      ctx.strokeStyle='#2a3a5a'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+axLen,cy); ctx.stroke();
+      ctx.fillStyle='#5a6a8a'; ctx.font=`${12*S}px monospace`; ctx.textAlign='left';
+      ctx.fillText('|losers⟩', cx+axLen+6, cy+4);
+      // |winner⟩ axis (vertical)
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy-axLen); ctx.stroke();
+      ctx.fillStyle='#4caf50'; ctx.font=`${12*S}px monospace`; ctx.textAlign='center';
+      ctx.fillText('|winner⟩', cx, cy-axLen-14);
+
+      // Draw arc showing total rotation needed (90°)
+      ctx.strokeStyle='#ffffff0c'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.arc(cx,cy,axLen*0.7,0,-Math.PI/2,true); ctx.stroke();
+
+      // Draw tick marks for each Grover step
+      for (let i=0; i<=3; i++) {
+        const a = startAngle + i*theta;
+        const tx=cx+Math.cos(a)*axLen*0.72, ty=cy-Math.sin(a)*axLen*0.72;
+        ctx.fillStyle = i<=groverStep ? '#00e5ff44' : '#1a2a3a';
+        ctx.beginPath(); ctx.arc(tx,ty,3*S,0,Math.PI*2); ctx.fill();
+      }
+
+      // Draw state arrow (the main vector rotating)
+      const ax=cx+Math.cos(smoothAngle)*axLen*0.85;
+      const ay=cy-Math.sin(smoothAngle)*axLen*0.85;
+      ctx.strokeStyle='#00e5ff'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ax,ay); ctx.stroke();
+      // Arrowhead
+      const ang = Math.atan2(cy-ay, ax-cx);
+      ctx.fillStyle='#00e5ff';
+      ctx.beginPath();
+      ctx.moveTo(ax+8*Math.cos(ang), ay-8*Math.sin(ang));
+      ctx.lineTo(ax-6*Math.cos(ang-0.5), ay+6*Math.sin(ang-0.5));
+      ctx.lineTo(ax-6*Math.cos(ang+0.5), ay+6*Math.sin(ang+0.5));
+      ctx.fill();
+      // Glow dot at tip
+      ctx.beginPath(); ctx.arc(ax,ay,5*S,0,Math.PI*2);
+      ctx.shadowBlur=12; ctx.shadowColor='#00e5ff'; ctx.fill(); ctx.shadowBlur=0;
+
+      // θ arc showing the per-step rotation
+      if (groverStep < 3) {
+        const arcStart = -(startAngle + groverStep*theta);
+        const arcEnd = -(startAngle + (groverStep+1)*theta);
+        ctx.strokeStyle='#ff980066'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.arc(cx,cy,axLen*0.35,arcStart,arcEnd,true); ctx.stroke();
+        const midA = (startAngle + groverStep*theta + startAngle + (groverStep+1)*theta)/2;
+        ctx.fillStyle='#ff9800'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
+        ctx.fillText('θ ≈ 1/√n', cx+Math.cos(midA)*axLen*0.25, cy-Math.sin(midA)*axLen*0.25);
+      }
+
+      // Component projections (dashed)
+      ctx.setLineDash([4,4]); ctx.lineWidth=1;
+      // Horizontal projection (losers component)
+      ctx.strokeStyle='#5a6a8a44';
+      ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax,cy); ctx.stroke();
+      // Vertical projection (winner component)
+      ctx.strokeStyle='#4caf5044';
+      ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(cx,ay); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Labels for projections
+      ctx.font=`${10*S}px monospace`; ctx.textAlign='center';
+      ctx.fillStyle='#4caf5088';
+      ctx.fillText(Math.sin(smoothAngle).toFixed(2), cx-20, ay);
+      ctx.fillStyle='#5a6a8a88';
+      ctx.fillText(Math.cos(smoothAngle).toFixed(2), ax, cy+16);
+
+      // Step counter
+      ctx.fillStyle='#5a6a8a'; ctx.font=`bold ${12*S}px sans-serif`; ctx.textAlign='center';
+      const stepLabels = ['start (θ₀ ≈ 20°)', 'after 1 rotation', 'after 2 rotations', '3 rotations → ≈ 90° → measure!'];
+      ctx.fillText(stepLabels[groverStep], w/2, h*0.08);
+
+      // Winner amplitude value
+      if (groverStep === 3) {
+        ctx.fillStyle='#4caf50'; ctx.font=`bold ${14*S}px sans-serif`; ctx.textAlign='center';
+        ctx.fillText('winner amplitude ≈ 1.0 ✓', w/2, h-14);
+      }
+    }
   }
 }
 
@@ -3109,4 +3403,4 @@ document.addEventListener('toggle', (e) => {
 
 
 
-<div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div></body></html>
+<div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div><div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgb(76, 175, 80); color: rgb(0, 0, 0); padding: 8px 20px; border-radius: 6px; font: bold 14px sans-serif; z-index: 9999;">Saved to disk ✓</div></body></html>
