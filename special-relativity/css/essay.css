@@ -1,0 +1,462 @@
+/* ── Special Relativity Essay — Parchment Theme ── */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Body ── */
+body {
+  background: #f4ead5;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(210,180,140,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse at 80% 30%, rgba(180,150,110,0.1) 0%, transparent 60%);
+  color: #2c1810;
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  font-size: 19px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Essay container ── */
+.essay {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 60px 40px 120px;
+}
+
+/* ── Header ── */
+.essay-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #c4b49a;
+}
+
+.essay-header h1 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 42px;
+  font-weight: 500;
+  font-style: italic;
+  color: #1a0f08;
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+}
+
+.essay-header .subtitle {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 20px;
+  font-style: italic;
+  color: #6b5344;
+  letter-spacing: 0.03em;
+}
+
+/* ── Section headings ── */
+.essay-section {
+  margin-bottom: 48px;
+}
+
+.essay-section h2 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
+  font-style: italic;
+  color: #1a0f08;
+  margin-bottom: 20px;
+  padding-top: 24px;
+  border-top: 1px solid #d4c4aa;
+}
+
+.essay-section h2:first-child,
+#sec-prereqs h2 {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* ── Paragraphs ── */
+.essay-section p {
+  margin-bottom: 18px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.essay-section p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Emphasis & inline elements ── */
+.essay-section em {
+  font-style: italic;
+  color: #8b2500;
+}
+
+.essay-section strong {
+  font-weight: 700;
+  color: #1a0f08;
+}
+
+/* ── Inline math/variables ── */
+.var {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  color: #8b2500;
+}
+
+/* ── Live values (updated by slider) ── */
+.live-val {
+  font-weight: 700;
+  color: #8b2500;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+
+/* ── Concept definitions ── */
+.concept {
+  font-weight: 600;
+  color: #1a5276;
+}
+
+/* ── Visualization container ── */
+.viz-container {
+  margin: 36px -20px;
+  background: #faf3e3;
+  border: 1px solid #c4b49a;
+  border-radius: 6px;
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,0.04),
+    0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.viz-container canvas {
+  display: block;
+  width: 100%;
+  cursor: default;
+}
+
+/* ── Slider bar ── */
+.viz-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-top: 1px solid #d4c4aa;
+  background: #f0e6d0;
+  user-select: none;
+}
+
+.viz-slider-label {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #6b5344;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.viz-range {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: linear-gradient(to right, #c4b49a, #8b7355);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.viz-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #faf3e3;
+  border: 2px solid #8b7355;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  cursor: grab;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.viz-range::-webkit-slider-thumb:hover {
+  border-color: #2c1810;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+}
+
+.viz-range::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  background: #f4ead5;
+}
+
+.viz-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #faf3e3;
+  border: 2px solid #8b7355;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  cursor: grab;
+}
+
+.viz-slider-value {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 14px;
+  color: #2c1810;
+  font-weight: 600;
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Essay images ── */
+.essay-figure {
+  margin: 32px 0;
+  text-align: center;
+}
+
+.essay-figure img {
+  max-width: 320px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #c4b49a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.essay-figure figcaption {
+  margin-top: 10px;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #6b5344;
+  line-height: 1.5;
+}
+
+/* ── Separator between viz and continuation text ── */
+.essay-section .viz-container + p {
+  margin-top: 24px;
+}
+
+/* ── Blockquote / aside for key insights ── */
+.insight {
+  margin: 24px 0;
+  padding: 16px 24px;
+  border-left: 3px solid #8b2500;
+  background: rgba(139, 37, 0, 0.04);
+  font-style: italic;
+  color: #4a2c1a;
+}
+
+/* ── Edit mode ── */
+.edit-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 6px 14px;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 14px;
+  color: #6b5344;
+  background: #faf3e3;
+  border: 1px solid #c4b49a;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: all 0.15s ease;
+}
+
+.edit-toggle:hover {
+  background: #f4ead5;
+  border-color: #8b7355;
+  color: #2c1810;
+}
+
+.edit-toggle.active {
+  background: #2c1810;
+  color: #faf3e3;
+  border-color: #2c1810;
+}
+
+/* Editable blocks in edit mode */
+body.editing .essay-block {
+  position: relative;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+body.editing .essay-block:hover {
+  background: rgba(139, 37, 0, 0.025);
+}
+
+body.editing .essay-block:focus {
+  background: rgba(139, 37, 0, 0.04);
+  outline: none;
+  box-shadow: inset 3px 0 0 #8b2500;
+}
+
+/* Block controls (drag handle + delete button) */
+body.editing .essay-block .block-controls {
+  position: absolute;
+  left: -32px;
+  top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  user-select: none;
+}
+
+body.editing .essay-block:hover .block-controls {
+  opacity: 1;
+}
+
+body.editing .essay-block .drag-handle,
+body.editing .essay-block .delete-btn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #b8a89a;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+body.editing .essay-block .drag-handle {
+  cursor: grab;
+  font-size: 14px;
+}
+
+body.editing .essay-block .drag-handle:active {
+  cursor: grabbing;
+  color: #8b2500;
+}
+
+body.editing .essay-block .delete-btn:hover {
+  color: #c62828;
+}
+
+/* Add-block button between blocks */
+body.editing .add-block-btn {
+  display: block;
+  width: 100%;
+  padding: 2px 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  position: relative;
+}
+
+body.editing .add-block-btn:hover {
+  opacity: 1;
+}
+
+body.editing .add-block-btn::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: #8b2500;
+  border-radius: 1px;
+  opacity: 0.4;
+}
+
+body.editing .add-block-btn::after {
+  content: '+';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  line-height: 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #faf3e3;
+  background: #8b2500;
+  border-radius: 50%;
+}
+
+/* Drop indicator */
+body.editing .drop-indicator {
+  height: 3px;
+  background: #8b2500;
+  border-radius: 2px;
+  margin: 2px 0;
+  pointer-events: none;
+}
+
+/* Dragging state */
+body.editing .essay-block.dragging {
+  opacity: 0.4;
+}
+
+/* Viz containers in edit mode: not text-editable but draggable */
+body.editing .viz-container {
+  pointer-events: auto;
+}
+
+.save-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 8px 18px;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 14px;
+  color: #faf3e3;
+  background: #2c1810;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.save-toast.show {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 800px) {
+  .essay {
+    padding: 40px 20px 80px;
+  }
+  .essay-header h1 {
+    font-size: 32px;
+  }
+  .essay-section h2 {
+    font-size: 24px;
+  }
+  body {
+    font-size: 17px;
+  }
+  .viz-container {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+}
+
+@media (max-width: 500px) {
+  .essay {
+    padding: 24px 14px 60px;
+  }
+  .essay-header h1 {
+    font-size: 26px;
+  }
+  .viz-container {
+    margin-left: -14px;
+    margin-right: -14px;
+    border-radius: 0;
+  }
+}

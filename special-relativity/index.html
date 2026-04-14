@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Relativity: An Interactive Essay</title>
+  <link rel="stylesheet" href="css/essay.css">
+</head>
+<body>
+  <article class="essay">
+
+    <!-- ═══════════════ HEADER ═══════════════ -->
+    <header class="essay-header">
+      <h1>Special Relativity</h1>
+      <p class="subtitle">Part I: From Firecrackers to the Lorentz Transformation</p>
+    </header>
+
+    <!-- ═══════════════ INTRO ═══════════════ -->
+    <section id="sec-intro" class="essay-section">
+      <p>
+        What if everything you know about space and time is an approximation?
+      </p>
+      <p>
+        For three hundred years, Newton's physics worked. It predicted eclipses, launched
+        cannonballs, explained the tides. Space was a fixed stage. Time was a universal clock.
+        Objects moved through space as time ticked forward, and everyone agreed on the distances
+        and durations involved.
+      </p>
+      <p>
+        Then, in the late 1800s, a crack appeared. Light refused to behave. Maxwell's equations
+        said it traveled at a fixed speed, but that speed didn't change when you chased it. Every
+        other thing in physics (sound, water waves, thrown balls) gets faster or slower depending
+        on how you move. Light didn't. Experiment after experiment confirmed it. Light moves at
+        <span class="var">c</span> for everyone, always, no matter what.
+      </p>
+      <p>
+        Einstein took this seriously. Not as a paradox to be explained away, but as a
+        <em>fact to be followed wherever it leads</em>. And where it leads is strange. If the
+        speed of light is the same for all observers, then something else has to give. The thing
+        that gives is simultaneity. Two events that happen at the same time for one person do not
+        happen at the same time for another person moving relative to the first. And once
+        simultaneity breaks, everything built on top of it (duration, length, the ordering of
+        events) comes apart and reassembles differently.
+      </p>
+      <p>
+        This essay is a walk through that reassembly. We start with two firecrackers and a
+        disagreement about timing. We end with a complete mathematical framework that replaces
+        Newton's absolute space and time with something deeper: a geometry where space and time
+        are woven together, where a minus sign changes everything, and where the one thing all
+        observers agree on is not time, not distance, but a strange hybrid of both.
+      </p>
+      <p>
+        No advanced math is required. Pythagoras and algebra will take us the whole way. The hard
+        part isn't the math. The hard part is letting go of intuitions that feel like common sense
+        but turn out to be approximations, approximations that break down the moment you take the
+        speed of light seriously.
+      </p>
+    </section>
+
+    <!-- ═══════════════ HISTORY ═══════════════ -->
+    <section id="sec-history" class="essay-section">
+      
+      <figure class="essay-figure">
+        <img src="img/einstein-1921.jpg" alt="Albert Einstein, 1921">
+        <figcaption>Albert Einstein, 1921.</figcaption>
+      </figure>
+      <p>
+        In 1905, a 26-year-old patent clerk published a paper "On the Electrodynamics of Moving Bodies". Within it emerged a simple question the world had been turning over: what would it look like to ride alongside a beam of light?
+      </p>
+      <p>James Clerk Maxwell's equations predicted
+        that light travels at a fixed speed, but fixed relative to what? Most physicists
+        assumed there was an invisible medium called the "ether" filling all of space, and
+        that light's speed was measured relative to it. In 1887, Michelson and Morley built
+        a precision instrument to detect the Earth's motion through this ether. They found
+        nothing. The ether, if it existed, was undetectable.
+      </p>
+      <p>Instead of trying to save the ether, Einstein proposed two postulates: <b>the laws of
+        physics look the same in every inertial frame, and the speed of light is the same
+        for all observers.</b></p>
+    </section>
+
+    <!-- ═══════════════ PREREQUISITES ═══════════════ -->
+    <section id="sec-prereqs" class="essay-section">
+      <h2>Prerequisites</h2>
+      <p>If you know the Pythagorean theorem you already have the most important tool. Beyond that, you'll need basic algebra.&nbsp;</p><p>An
+        <span class="concept">event</span> is something that happens at a specific place at a specific
+        time: a firecracker going off, a photon hitting a mirror, a clock ticking. It's a point in space
+        and a moment in time, bundled together.&nbsp;</p><p>A <span class="concept">reference frame</span> is the
+        perspective of an observer, their set of rulers and synchronized clocks that they use to assign
+        positions and times to events. Alice has her frame, clock, and ruler; Bob has his.</p><p>And most important: <b>The speed of light is the same for ALL observers!&nbsp;</b></p>
+    </section>
+
+    <!-- ═══════════════ SECTION 1: FIRECRACKERS ═══════════════ -->
+    <section id="sec-1" class="essay-section">
+      <h2>1. Two Firecrackers</h2>
+
+      <p>
+        Imagine a long, straight road. Alice stands at the exact midpoint between two
+        firecrackers, one to her left and one to her right, each the same distance <span class="var">d</span> away.
+        Both firecrackers go off. Since Alice is exactly in the middle and light travels at the
+        same speed in both directions, the flashes reach her at the same instant:
+      </p>
+
+      <div class="viz-container" data-scene="firecracker-alice">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        Simple enough. Now add Bob. He's on a train, gliding past Alice from left to right
+        at a steady speed, just as the firecrackers go off. This is <em>Alice's view</em>
+        of the situation. She watches Bob move toward the right flash and away from the left:
+      </p>
+
+      <div class="viz-container" data-scene="firecracker">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        Alice's explanation is common sense: both firecrackers fired at the same time,
+        but Bob was moving toward the right one, so its flash had less distance to cover
+        to reach him. The right flash arrived first because of Bob's motion, not because of
+        any timing difference.</p>
+      <p>
+        But now look at things from <em>Bob's perspective</em>. In his frame, he is
+        stationary. He's not moving toward anything. The two firecrackers are equidistant
+        from him. Light from both travels toward him at the same speed <span class="var">c</span>,
+        not <span class="var">c + v</span> from the right and <span class="var">c - v</span>
+        from the left, just <span class="var">c</span> from both sides.
+      </p>
+      <p>
+        So Bob reasons: I'm at rest. Both firecrackers are the same distance away. Light
+        from both approaches at the same speed. The right flash arrived first. Equal
+        speeds and equal distances but different arrival times can only mean one thing:
+        <em>they were emitted at different times</em>. The right one fired earlier.
+      </p>
+
+      <div class="viz-container" data-scene="firecracker-bob">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        Both explanations predict the same observable fact: the right flash reaches Bob
+        first. But they disagree on <em>why</em>. Alice says they were fired simultaneously, but because Bob moved he saw the right light first. Bob says they were fired at different times because he is at rest.</p>
+      <p>
+        Neither is wrong. And the reason both can be right is the second postulate: <b>the
+        speed of light is the same for all observers</b>. Without that, everyone would just
+        use Alice's common-sense explanation and agree the firecrackers were simultaneous.
+        The constant speed of light is what forces the two accounts to diverge.
+      </p>
+      <p class="insight">
+        Simultaneity is not a fact about the universe. It depends on who is asking and
+        how they are moving. Two events that are simultaneous for one observer need not
+        be simultaneous for another.
+      </p>
+    </section>
+
+    <!-- ═══════════════ SECTION 2: LIGHT CLOCK ═══════════════ -->
+    <section id="sec-2" class="essay-section">
+      <h2>2. The Light Clock</h2>
+      <p>
+        The simultaneity result is strange, but we extracted it from pure logic and one stubborn
+        fact about light (c is constant). If simultaneity is relative, then the <em>duration between events</em> must also be frame-dependent.</p>
+      <p>
+        Imagine the simplest clock you can: two parallel mirrors, facing each other, with a single
+        photon bouncing between them. Every time the photon hits the bottom mirror, the clock goes
+        "tick." This is a <span class="concept">light clock</span>, and it's useful because its mechanism
+        is nothing but light, and we know exactly how light behaves.
+      </p>
+      <div class="viz-container" data-scene="light-clock-bob">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        Bob is sitting right next to this clock, watching the photon bounce straight up and straight
+        down. In his frame, the path is simple: a vertical line. If the distance between the mirrors is
+        <span class="var">d</span>, then each tick takes time
+        <span class="var">Δτ = 2d/c</span>. We'll call this the
+        <span class="concept">proper time</span>, the time measured by a clock that is at rest
+        relative to the observer.
+      </p>
+      <p>
+        Now Alice watches the same clock from outside, and in her frame the clock is moving to the
+        right at speed <span class="var">v</span>. The photon still bounces between the mirrors, but
+        now each mirror has moved sideways by the time the photon arrives. The photon's path isn't
+        vertical anymore. It's diagonal. And a diagonal path is longer than a vertical path.
+      </p>
+
+      <div class="viz-container" data-scene="light-clock-alice">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        But the photon still travels at speed <span class="var">c</span>, the same speed of
+        light, nonnegotiable. A longer path at the same speed means more time. So Alice's measurement
+        of the tick, <span class="var">Δt</span>, is longer than Bob's
+        <span class="var">Δτ</span>. The moving clock runs slow.
+      </p>
+
+
+
+      <p>
+        How much slower? Look at Alice's triangle. The vertical leg is <span class="var">d</span>.
+        The horizontal leg is <span class="var">v·Δt/2</span> (half the distance the clock
+        moves during one tick). The hypotenuse, the photon's actual path, is
+        <span class="var">c·Δt/2</span>. Pythagoras says:
+      </p>
+      <p style="text-align: center; font-style: italic; color: rgb(139, 37, 0);">
+        (c·Δt/2)² = d² + (v·Δt/2)²
+      </p><p>Given the Pythagorean theorem, we can say that&nbsp;<span style="color: rgb(139, 37, 0); font-style: italic; text-align: center;">c·Δt/2 &gt; d.</span>&nbsp;so it should take longer time for a tick. This is the first indication of a <b>time dilation!&nbsp;</b></p>
+      
+      
+      
+    </section>
+
+    <!-- ═══════════════ SECTION 3: SPACETIME DIAGRAM ═══════════════ -->
+    <section id="sec-3" class="essay-section">
+      <h2>3. The Spacetime Diagram</h2>
+      <p>
+        We now have two results that are hard to hold in our heads at the same time: simultaneity
+        depends on your motion, and moving clocks run slow. We need a visual tool, a way to
+        see both of these results, and the relationship between them at a glance.
+      </p>
+      <p>
+        That tool is the <span class="concept">spacetime diagram</span>. Draw a horizontal axis for space and a vertical axis for time. Every point on this plane
+        represents an <em>event.</em>&nbsp;An object that
+        sits still traces a vertical line as time marches upward: it doesn't move in space, only in
+        time. We call this line its <span class="concept">worldline</span>.
+      </p>
+      <div class="viz-container" data-scene="spacetime-intro">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div><p>
+        An object moving at constant speed traces a tilted line, tilted to the right if
+        it's moving right, tilted more steeply if it's moving faster. And light? We choose our units
+        so that the speed of light is 1 (for instance, one light-second per second). That means light
+        always travels at exactly 45 degrees on our diagram.
+      </p>
+
+      
+
+      <p>An entire history (where something was, where it went, how
+        fast it moved) is encoded in the shape of its worldline. A worldline more than
+        45 degrees would mean moving faster than light, which (as we'll see) is forbidden. The 45-degree
+        light ray is the cosmic speed limit.</p>
+      
+    </section>
+
+    <!-- ═══════════════ SECTION 4: SIMULTANEITY ON THE DIAGRAM ═══════════════ -->
+    <section id="sec-4" class="essay-section">
+      <h2>4. Simultaneity on the Diagram</h2>
+      <p>
+        Let's take the firecracker result from Section 1 and put it on our new diagram.
+        In Alice's frame, the two firecrackers go off at the same time but at different places.
+        On the diagram, "same time" means "same height": both events lie on a horizontal line.
+        We call this Alice's <span class="concept">line of simultaneity</span>, or her "now" line.
+      </p>
+      <p>
+        What about Bob? He's moving to the right, so his worldline tilts on the diagram.
+        And his "now" line tilts too.&nbsp;</p><p>Use the slider to set Bob's velocity:</p>
+
+      <div class="viz-container" data-scene="simultaneity" id="sim-diagram">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div><p>The worldline tilts because Bob is&nbsp;<em>moving</em>. The "now" line tilts because Bob's&nbsp;<em>notion of simultaneity</em>&nbsp;is different from Alice's. These are two separate physical facts, and they produce two separate tilts on the diagram.</p>
+
+      
+
+      
+
+      <p>
+        Look at where the two events sit relative to Bob's tilted "now" line. The right
+        firecracker falls <em>below</em> the line. Below means it's in Bob's past: it has
+        already gone off by the time Bob defines "now." The left firecracker falls <em>above</em>
+        the line. Above means it's in Bob's future: it hasn't gone off yet.
+      </p>
+      
+      <p>
+        The tilted "now" line is the geometric encoding of this physical reasoning. Events
+        in Bob's direction of motion get pushed into his past. Events opposite his motion
+        get pushed into his future. The tilt literally shows you how Bob's motion
+        redistributes events between his past and future, relative to Alice's classification.
+      </p><p>
+        Now watch the physical scene play out at that velocity. Scrub the time slider
+        to see light propagate from both firecrackers and watch which flash reaches Bob first:
+      </p><div class="viz-container" data-scene="firecracker-sync" data-beta-from="sim-diagram">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ SECTION 5: WORLDLINE VS NOW LINE ═══════════════ -->
+    <section id="sec-5" class="essay-section">
+      
+      
+      
+      
+      
+      
+      
+    </section>
+
+    <!-- ═══════════════ SECTION 6: LENGTH CONTRACTION ═══════════════ -->
+    <section id="sec-6" class="essay-section">
+      <h2>6. Length Contraction</h2>
+      <p>
+        We've been talking about time. What about space? If a moving clock ticks slower, does a
+        moving ruler also change?</p>
+      <p>
+        Here is a spaceship. It has a front and a back, and as time passes, both the front and
+        the back trace their own worldlines through spacetime. The region between these two
+        worldlines is the ship's <span class="concept">worldtube</span>. Think of it as a
+        sausage lying across the diagram, extending through time.
+      </p>
+      <p>
+        How long is the ship? That depends on how you slice the sausage. Measuring the length of a
+        moving ship means marking where the front and back are <em>at the same time</em>. But "at the
+        same time" means something different to different observers, as we just established.
+      </p>
+      <p>
+        There's one worldtube in spacetime. Alice slices it horizontally (her "now")
+        and measures the contracted length. Bob slices along his tilted "now" and recovers
+        the full rest length. Same tube, different slices, different answers.
+      </p>
+
+      <div class="viz-container" data-scene="length-contract-bob">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <p>
+        This is <span class="concept">length contraction</span>. A moving object is shorter
+        (<span class="live-val" data-scene="length-contract-bob" data-key="L">2.08</span> vs
+        <span class="live-val" data-scene="length-contract-bob" data-key="L0">2.4</span>) in
+        the direction of motion, not because it's compressed, but because "length" requires
+        a simultaneity judgment, and different frames disagree on simultaneity. The formula is
+        <span class="var">L = L₀/γ</span> =
+        <span class="var"><span class="live-val" data-scene="length-contract-bob" data-key="L0">2.4</span>/<span class="live-val" data-scene="length-contract-bob" data-key="gamma">1.155</span> = <span class="live-val" data-scene="length-contract-bob" data-key="L">2.08</span></span>.
+        The faster you go, the shorter you appear.
+      </p>
+      <p class="insight">
+        Length contraction isn't a physical squishing. Bob's purple line looks longer on screen
+        because it extends through <em>time</em> as well as space. The extra visual
+        length is time leaking in, not extra spatial distance. As we will see in the next section, the math shows the real measurements.</p>
+    </section>
+
+    <!-- ═══════════════ SECTION 7: THE INTERVAL AND THE MATH ═══════════════ -->
+    <section id="sec-7" class="essay-section">
+      <h2>7. The Math</h2>
+      <p>Time for some math. We've looked at these trippy thought experiments but nothing becomes certain until we rigorously formalize our intuitions. We can use the light clock as our initial scenario.&nbsp;</p>
+
+      <p><strong>The setup.</strong> We name our quantities:</p>
+      <p>
+        <span class="var">d</span> = distance between mirrors (same for both observers)<br>
+        <span class="var">v</span> = Bob's velocity relative to Alice<br>
+        <span class="var">c</span> = speed of light (same for both observers ← the key)<br>
+        Bob's photon path = <span class="var">d</span> (straight up)<br>
+        Alice's photon path = <span class="var">L</span> (diagonal, longer than <span class="var">d</span>)<br>
+        Both measure speed = <span class="var">c</span>
+      </p>
+
+      <div class="viz-container" data-scene="interval-math" data-opts="{&quot;height&quot;:480}">
+        <canvas></canvas>
+        <div class="viz-slider">
+          <span class="viz-slider-label"></span>
+          <input type="range" class="viz-range" min="0" max="1000" value="0">
+          <span class="viz-slider-value"></span>
+        </div>
+      </div>
+
+      <h2>Step 1: Pythagoras</h2>
+      <p>
+        The half-trip forms a right triangle. Vertical leg = <span class="var">d</span>.
+        Horizontal leg = how far Bob drifts during half a tick = <span class="var">vΔt/2</span>.
+        Hypotenuse = the photon's diagonal path = <span class="var">L/2</span>.
+      </p>
+      <p style="text-align:center; color:#8b2500;">
+        (<span class="var">L</span>/2)² = <span class="var">d</span>² + (<span class="var">v</span>Δt/2)²
+      </p>
+      <p>
+        But what is <span class="var">L</span>? Alice measures the photon at speed <span class="var">c</span>
+        for time <span class="var">Δt</span>, so <span class="var">L = c × Δt</span>.
+        Substitute <span class="var">L/2 = cΔt/2</span>:
+      </p>
+      <p style="text-align:center; color:#8b2500;">
+        (cΔt/2)² = d² + (vΔt/2)²
+      </p>
+      <p>
+        Everything is now in terms of things we know (<span class="var">d, v, c</span>)
+        and the one thing we want (<span class="var">Δt</span>).
+      </p><p>This should already breed interest since we know L/2 &gt; d. Therefore Alice's tick time will be longer than Bob's. Time dilation...</p><p></p>
+
+      <h2>Step 2: Algebra</h2>
+      <p>Expand the squares:</p>
+      <p style="text-align:center;">c²Δt²/4 = d² + v²Δt²/4</p>
+      <p>Move the v² term to the left:</p>
+      <p style="text-align:center;">c²Δt²/4 − v²Δt²/4 = d²</p>
+      <p>Factor out Δt²/4:</p>
+      <p style="text-align:center;">Δt²/4 × (<span class="var">c² − v²</span>) = d²</p>
+      
+      <p>Solve for Δt²:</p>
+      <p style="text-align:center;">Δt² = 4d² / (c² − v²)</p>
+      <p>Take the square root:</p>
+      <p style="text-align:center;">Δt = 2d / √(c² − v²)</p><p>This is the round trip time from bottom mirror to bottom mirror in Alice's frame. Remember she is stationary while the light clock is moving with Bob.&nbsp;</p>
+
+      <h2>Step 3: Extract γ</h2>
+      <p>
+        Alice's tick: <span class="var">Δt<sub>Alice</sub> = 2d / √(c² − v²)</span><br>
+        Bob's tick (straight bounce): <span class="var">Δt<sub>Bob</sub> = 2d / c</span>
+      </p>
+      <p>Divide Alice's by Bob's:</p>
+      <p style="text-align:center;">
+        Δt<sub>Alice</sub> / Δt<sub>Bob</sub>
+        = (2d / √(c² − v²)) × (c / 2d)
+        = c / √(c² − v²)
+      </p>
+      <p>Factor c² out of the square root:</p>
+      <p style="text-align:center;">
+        = c / (c × √(1 − v²/c²))
+        = 1 / √(1 − v²/c²)
+      </p>
+      <p>We define this as:</p>
+      <p style="text-align:center; color:#8b2500; font-size:1.15em;">
+        <strong>γ = 1 / √(1 − v²/c²)</strong>
+      </p>
+      <p>So: <strong>Δt<sub>Alice</sub> = γ × Δt<sub>Bob</sub></strong>. That's time dilation!</p>
+
+      <h2>Step 4: The spacetime interval</h2>
+      <p>Time dilation says:</p>
+      <p style="text-align:center;">Δt<sub>Alice</sub>² = γ² × Δt<sub>Bob</sub>²</p>
+      <p>
+        In Bob's frame, the two ticks happen at the same place, so Δx<sub>Bob</sub> = 0.
+        In Alice's frame, Bob moved: Δx<sub>Alice</sub> = v × Δt<sub>Alice</sub>.
+      </p>
+      <p>Substitute γ² = 1/(1 − v²/c²) and rearrange:</p>
+      <p style="text-align:center;">
+        Δt<sub>Alice</sub>² (1 − v²/c²) = Δt<sub>Bob</sub>²
+      </p>
+      <p style="text-align:center;">
+        Δt<sub>Alice</sub>² − v²Δt<sub>Alice</sub>²/c² = Δt<sub>Bob</sub>²
+      </p>
+      <p>
+        But vΔt<sub>Alice</sub> = Δx<sub>Alice</sub>,
+        so v²Δt<sub>Alice</sub>² = Δx<sub>Alice</sub>²:
+      </p>
+      <p style="text-align:center;">
+        Δt<sub>Alice</sub>² − Δx<sub>Alice</sub>²/c² = Δt<sub>Bob</sub>²
+      </p>
+      <p>
+        But Δt<sub>Bob</sub>² = Δt<sub>Bob</sub>² − Δx<sub>Bob</sub>²/c²
+        (since Δx<sub>Bob</sub> = 0). Both sides have the same form! Multiply through by c²:
+      </p>
+      <p style="text-align:center; color:#8b2500; font-size:1.15em;">
+        <strong>s² = Δx² − c²Δt²</strong> &nbsp; (same in both frames)
+      </p>
+      <p>
+        This is the <span class="concept">spacetime interval</span>. And it fell out of time dilation and our light clock scenario. This is the most significant math equation showing the invariance of space and time across different frames.&nbsp;</p><p></p><p style="text-align: start;">Alice and Bob disagree on almost everything: time, distance, simultaneity. Measurement is frame-relative. The only thing they DO agree on is the speed of light and, subsequently, the spacetime interval.&nbsp;</p><p></p>
+
+      <h2>Step 5: Length contraction from the interval</h2>
+      <p>
+        The interval is invariant: Δx² − c²Δt² is the same in all frames.
+        To measure a ship's length, you note both ends at the same time.
+      </p>
+      <p>
+        In Alice's frame (she measures while the ship flies past):<br>
+        &nbsp;&nbsp;Δt<sub>Alice</sub> = 0 (simultaneous measurement),
+        Δx<sub>Alice</sub> = L (the length she measures)
+      </p>
+      <p>
+        In Bob's frame (ship is at rest for him):<br>
+        &nbsp;&nbsp;Δx<sub>Bob</sub> = L_0 (rest length),
+        Δt<sub>Bob</sub> = ? (Alice's "same time" is NOT Bob's "same time")
+      </p>
+      <p>The interval must be equal in both frames:</p>
+      <p style="text-align:center;">L² − c²(0)² = L<sub>0</sub>² − c²Δt<sub>Bob</sub>²</p>
+      <p style="text-align:center;">L² = L<sub>0</sub>² − c²Δt<sub>Bob</sub>²</p>
+      <p>
+        The −c²Δt<sub>Bob</sub>² term subtracts from L<sub>0</sub>².
+        Since Δt<sub>Bob</sub> ≠ 0 (Alice's simultaneous events aren't simultaneous for Bob),
+        L &lt; L<sub>0</sub>. Working out Δt<sub>Bob</sub>:
+      </p>
+      <p style="text-align:center; color:#8b2500; font-size:1.15em;">
+        <strong>L = L<sub>0</sub> / γ = L<sub>0</sub> √(1 − v²/c²)</strong>
+      </p>
+
+      <h2>Step 6: The Lorentz transformation</h2>
+      <p>
+        We need a transformation from Alice's (<span class="var">x, t</span>) to Bob's
+        (<span class="var">x', t'</span>) that: (1) is linear (straight worldlines stay straight),
+        (2) preserves the spacetime interval, and (3) reduces to Galilean (<span class="var">x' = x − vt</span>)
+        when v ≪ c.
+      </p>
+      <p>The most general linear transformation is:</p>
+      <p style="text-align:center;">x' = Ax + Bt &nbsp;&nbsp;&nbsp; t' = Dx + Et</p>
+      <p>
+        Constraint: Bob sits at x' = 0, and x = vt in Alice's frame.
+        So 0 = A(vt) + Bt, which gives B = −Av.
+      </p>
+      <p>
+        Constraint: preserve the interval. Substitute and match coefficients. The algebra forces:
+      </p>
+      <p style="text-align:center;">A = γ, &nbsp; B = −γv, &nbsp; D = −γv/c², &nbsp; E = γ</p>
+      <p style="text-align:center; color:#8b2500; font-size:1.15em;">
+        <strong>x' = γ(x − vt)</strong>
+      </p>
+      <p style="text-align:center; color:#8b2500; font-size:1.15em;">
+        <strong>t' = γ(t − vx/c²)</strong>
+      </p>
+      <p>
+        The first equation: γ scales everything. (x − vt) is the Galilean part, subtract
+        how far Bob has moved. If γ = 1 (v ≪ c), this is just Newton.
+      </p>
+      <p>
+        The second equation is the revolutionary one. The <span class="var">vx/c²</span> term
+        <em>mixes position into time</em>. Two events at different x positions get different time
+        adjustments. That is the simultaneity shift. That is why the "now" axis tilts. Newton has
+        no such term. In Galilean physics, t' = t regardless of x.
+      </p>
+      <p>At v ≪ c: γ → 1, vx/c² → 0. Recovers: x' = x − vt, t' = t. Newton is the low-speed approximation. Einstein is the full picture.</p>
+    </section>
+
+    <!-- ═══════════════ WHAT'S NEXT ═══════════════ -->
+    <section id="sec-next" class="essay-section">
+      <h2>What's Next</h2>
+      <p>
+        We now have the complete machinery: time dilation, length contraction, the spacetime
+        interval, and the Lorentz transformation. All of it from two postulates and the
+        Pythagorean theorem. But we've only built the framework. We haven't yet explored
+        what it <em>means</em>.
+      </p>
+      <p>
+        In Part II, the 45-degree light lines on our diagrams become <em>light cones</em>,
+        and they carve spacetime into regions: your future, your past, and everything else
+        that is forever out of reach. Causality stops being an assumption and becomes a
+        geometric fact. You can <em>see</em> why nothing travels faster than light, not as
+        a speed limit imposed from outside, but as a consequence of the structure of
+        spacetime itself.
+      </p>
+      <p>
+        Then comes energy. The same framework that bent time and shrank rulers also
+        hides energy inside mass. E = mc² falls out of relativistic momentum the way
+        γ fell out of Pythagoras: not as a guess, but as the only answer consistent with
+        the postulates.
+      </p>
+      <p>The paradoxes, truths, everything follows from a simple curiosity.&nbsp;</p>
+    </section>
+
+  </article>
+
+  <button class="edit-toggle" id="editToggle">Edit</button>
+  <div class="save-toast" id="saveToast">Saved</div>
+
+  <script type="module" src="js/main.js"></script>
+  <script>
+  (function() {
+    const btn = document.getElementById('editToggle');
+    const toast = document.getElementById('saveToast');
+    let editing = false;
+    let dragSrc = null;
+
+    // ── Enter / exit edit mode ──
+    function enterEditMode() {
+      editing = true;
+      document.body.classList.add('editing');
+      btn.classList.add('active');
+      btn.textContent = 'Editing';
+      document.execCommand('defaultParagraphSeparator', false, 'p');
+
+      // Wrap every direct child of each section as a draggable block
+      document.querySelectorAll('.essay-header, .essay-section').forEach(sec => {
+        Array.from(sec.children).forEach(child => {
+          if (child.nodeType !== 1) return;
+          setupBlock(child);
+        });
+        // Add "+" buttons between blocks and at the end
+        addPlusButtons(sec);
+      });
+
+      // Wire drag events
+      document.addEventListener('dragstart', onDragStart);
+      document.addEventListener('dragover', onDragOver);
+      document.addEventListener('drop', onDrop);
+      document.addEventListener('dragend', onDragEnd);
+    }
+
+    function exitEditMode() {
+      editing = false;
+      document.body.classList.remove('editing');
+      btn.classList.remove('active');
+      btn.textContent = 'Edit';
+
+      // Remove all edit-mode decorations
+      document.querySelectorAll('.essay-block').forEach(el => {
+        el.classList.remove('essay-block', 'dragging');
+        el.removeAttribute('draggable');
+        el.removeAttribute('contenteditable');
+        const controls = el.querySelector('.block-controls');
+        if (controls) controls.remove();
+      });
+      document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
+      document.querySelectorAll('.add-block-btn').forEach(el => el.remove());
+
+      document.removeEventListener('dragstart', onDragStart);
+      document.removeEventListener('dragover', onDragOver);
+      document.removeEventListener('drop', onDrop);
+      document.removeEventListener('dragend', onDragEnd);
+    }
+
+    // ── Block setup helpers ──
+    function setupBlock(el) {
+      el.classList.add('essay-block');
+      el.setAttribute('draggable', 'true');
+
+      if (!el.classList.contains('viz-container')) {
+        el.setAttribute('contenteditable', 'true');
+      }
+
+      if (!el.querySelector('.block-controls')) {
+        const controls = document.createElement('span');
+        controls.className = 'block-controls';
+        controls.setAttribute('contenteditable', 'false');
+
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.textContent = '\u2630';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.textContent = '\u00D7'; // ×
+        delBtn.title = 'Delete block';
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm('Delete this block?')) {
+            // Remove associated + button too
+            const nextSib = el.nextElementSibling;
+            if (nextSib && nextSib.classList.contains('add-block-btn')) nextSib.remove();
+            el.remove();
+          }
+        });
+
+        controls.appendChild(handle);
+        controls.appendChild(delBtn);
+        el.prepend(controls);
+      }
+    }
+
+    function addPlusButtons(section) {
+      // Remove existing plus buttons first
+      section.querySelectorAll('.add-block-btn').forEach(b => b.remove());
+
+      const children = Array.from(section.children).filter(
+        c => c.nodeType === 1 && c.classList.contains('essay-block')
+      );
+
+      children.forEach(child => {
+        const plusBtn = document.createElement('button');
+        plusBtn.className = 'add-block-btn';
+        plusBtn.title = 'Add paragraph';
+        plusBtn.setAttribute('contenteditable', 'false');
+        plusBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const newP = document.createElement('p');
+          newP.textContent = 'New paragraph. Click to edit.';
+          child.parentNode.insertBefore(newP, plusBtn.nextSibling);
+          setupBlock(newP);
+          // Add a plus button after the new block
+          const newPlus = document.createElement('button');
+          newPlus.className = 'add-block-btn';
+          newPlus.title = 'Add paragraph';
+          newPlus.setAttribute('contenteditable', 'false');
+          newPlus.addEventListener('click', plusBtn.onclick);
+          newP.parentNode.insertBefore(newPlus, newP.nextSibling);
+          // Focus the new paragraph
+          newP.focus();
+        });
+        // Insert after the block
+        if (child.nextSibling) {
+          child.parentNode.insertBefore(plusBtn, child.nextSibling);
+        } else {
+          child.parentNode.appendChild(plusBtn);
+        }
+      });
+    }
+
+    // ── Drag and drop ──
+    function onDragStart(e) {
+      const block = e.target.closest('.essay-block');
+      if (!block) return;
+      dragSrc = block;
+      block.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', ''); // required for Firefox
+    }
+
+    function onDragOver(e) {
+      if (!dragSrc) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+
+      // Remove existing indicator
+      document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
+
+      // Find the closest block we're hovering over
+      const target = e.target.closest('.essay-block');
+      if (!target || target === dragSrc) return;
+
+      // Determine if we're in the top or bottom half
+      const rect = target.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      const indicator = document.createElement('div');
+      indicator.className = 'drop-indicator';
+
+      if (e.clientY < midY) {
+        target.parentNode.insertBefore(indicator, target);
+      } else {
+        target.parentNode.insertBefore(indicator, target.nextSibling);
+      }
+    }
+
+    function onDrop(e) {
+      if (!dragSrc) return;
+      e.preventDefault();
+      const indicator = document.querySelector('.drop-indicator');
+      if (indicator) {
+        indicator.parentNode.insertBefore(dragSrc, indicator);
+        indicator.remove();
+      }
+      dragSrc.classList.remove('dragging');
+      dragSrc = null;
+    }
+
+    function onDragEnd() {
+      document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
+      if (dragSrc) {
+        dragSrc.classList.remove('dragging');
+        dragSrc = null;
+      }
+    }
+
+    // ── Toggle ──
+    btn.addEventListener('click', () => {
+      if (editing) exitEditMode(); else enterEditMode();
+    });
+
+    // ── Cmd+S / Ctrl+S to save ──
+    document.addEventListener('keydown', async (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!editing) return;
+
+        // Temporarily strip all edit-mode decorations for clean HTML
+        exitEditMode();
+        document.body.removeAttribute('class');
+
+        // Strip runtime attributes
+        document.querySelectorAll('[class]').forEach(el => {
+          if (!el.getAttribute('class').trim()) el.removeAttribute('class');
+        });
+        document.querySelectorAll('[style]').forEach(el => {
+          if (!el.getAttribute('style').trim()) el.removeAttribute('style');
+        });
+        document.querySelectorAll('.viz-container canvas').forEach(c => {
+          c.removeAttribute('width');
+          c.removeAttribute('height');
+          c.removeAttribute('style');
+        });
+        document.querySelectorAll('.viz-range').forEach(r => {
+          r.value = 0; r.removeAttribute('style');
+        });
+        document.querySelectorAll('.viz-slider-value').forEach(s => { s.textContent = ''; });
+        document.querySelectorAll('.viz-slider-label').forEach(s => { s.textContent = ''; });
+        document.querySelectorAll('.viz-beta-label').forEach(s => { s.remove(); });
+
+        // Capture clean HTML
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML + '\n';
+
+        // POST to server, then reload to get clean state with working canvases
+        try {
+          const res = await fetch('/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/html' },
+            body: html,
+          });
+          const data = await res.json();
+          if (data.ok) {
+            // Reload the page from the saved file — this re-initializes all canvases cleanly
+            window.location.reload();
+          }
+        } catch (err) {
+          // If save failed, restore edit mode so user doesn't lose work
+          enterEditMode();
+          toast.textContent = 'Save failed!';
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+      }
+    });
+  })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>
