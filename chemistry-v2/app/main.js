@@ -4,9 +4,13 @@
  */
 
 import { LessonRunner } from './engine/LessonRunner.js';
+import { lesson_1_1 } from './lessons/lesson_1_1.js';
+import { lesson_1_2 } from './lessons/lesson_1_2.js';
 
 // Lesson registry — add lessons here as they're built
 const lessons = {
+  '1.1': lesson_1_1,
+  '1.2': lesson_1_2,
 };
 
 // --- localStorage persistence ---
